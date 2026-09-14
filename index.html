@@ -1,0 +1,2671 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ColisExpress - Version Finale</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f2f5; color: #1a1a2e; font-size: 15px; }
+.login-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
+.login-box { background: white; padding: 30px 24px; border-radius: 20px; width: 100%; max-width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+.login-box h1 { text-align: center; color: #0f3460; margin-bottom: 8px; font-size: 26px; }
+.login-box .subtitle { text-align: center; color: #666; margin-bottom: 24px; font-size: 13px; }
+.login-box input, .login-box select { width: 100%; padding: 14px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 16px; margin-bottom: 12px; background: white; }
+.login-box button { width: 100%; padding: 15px; background: #0f3460; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-bottom: 8px; }
+.login-error { color: #e74c3c; text-align: center; margin-top: 10px; font-size: 13px; display: none; }
+.demo-accounts { margin-top: 16px; padding: 12px; background: #f8f9fa; border-radius: 10px; font-size: 11px; color: #666; line-height: 1.6; }
+.reset-btn { background: #e74c3c !important; font-size: 12px !important; padding: 10px !important; }
+.topbar { background: #1a1a2e; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.topbar h2 { font-size: 16px; }
+.topbar .user-info { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+.topbar .badge { background: #e94560; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 600; }
+.badge-super { background: #f39c12; }
+.btn-logout { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 12px; border-radius: 8px; font-size: 12px; }
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-around; padding: 8px 0; box-shadow: 0 -2px 12px rgba(0,0,0,0.1); z-index: 100; overflow-x: auto; }
+.bottom-nav-item { display: flex; flex-direction: column; align-items: center; padding: 8px 4px; font-size: 10px; color: #999; cursor: pointer; flex: 1; min-width: 60px; }
+.bottom-nav-item.active { color: #0f3460; }
+.bottom-nav-item .icon { font-size: 22px; margin-bottom: 2px; }
+.main-content { padding: 16px; padding-bottom: 90px; max-width: 800px; margin: 0 auto; }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.stat-card { background: white; padding: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.stat-card .label { font-size: 11px; color: #666; margin-bottom: 4px; }
+.stat-card .value { font-size: 20px; font-weight: 700; color: #1a1a2e; }
+.stat-card .sub { font-size: 11px; color: #999; margin-top: 2px; }
+.chart-container { background: white; padding: 16px; border-radius: 12px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.chart-container h4 { margin-bottom: 12px; font-size: 14px; color: #1a1a2e; }
+.chart-wrapper { position: relative; height: 200px; }
+.btn { padding: 12px 20px; border: none; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-bottom: 10px; }
+.btn-primary { background: #0f3460; color: white; }
+.btn-success { background: #27ae60; color: white; }
+.btn-warning { background: #f39c12; color: white; }
+.btn-info { background: #17a2b8; color: white; }
+.btn-outline { background: transparent; border: 2px solid #0f3460; color: #0f3460; }
+.btn-lg { padding: 16px; font-size: 16px; }
+.btn-sm { padding: 8px 12px; font-size: 12px; width: auto; }
+.btn-danger { background: #e74c3c; color: white; }
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 6px; }
+.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 14px; background: white; }
+.section { display: none; }
+.section.active { display: block; }
+.settings-card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-top: 4px solid #0f3460; }
+.settings-card h3 { margin-bottom: 16px; color: #0f3460; font-size: 16px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+.tier-row { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; align-items: end; margin-bottom: 10px; padding: 10px; background: #f8f9fa; border-radius: 8px; }
+.tier-row input { padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; }
+.route-row { display: grid; grid-template-columns: 2fr 2fr 1fr auto; gap: 10px; align-items: end; margin-bottom: 10px; padding: 10px; background: #f8f9fa; border-radius: 8px; }
+.route-row select, .route-row input { padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; }
+.modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
+.modal.active { display: flex; }
+.modal-content { background: white; padding: 24px; border-radius: 16px; width: 90%; max-width: 400px; max-height: 90vh; overflow-y: auto; }
+.empty-state { text-align: center; padding: 40px 20px; color: #999; }
+.hidden { display: none !important; }
+.photo-zone { border: 3px dashed #d0d0d0; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; background: #f8f9fa; }
+.photo-zone .icon { font-size: 40px; margin-bottom: 10px; }
+.photo-preview { max-width: 100%; max-height: 200px; border-radius: 8px; margin-top: 12px; }
+.bordereau-card { background: white; padding: 16px; border-radius: 12px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #27ae60; }
+.bordereau-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px; }
+.bordereau-number { font-weight: 700; font-size: 16px; color: #0f3460; }
+.bordereau-info { font-size: 12px; color: #666; margin-top: 4px; }
+.parcel-checkbox { display: flex; align-items: center; padding: 12px; background: #f8f9fa; border-radius: 8px; margin-bottom: 8px; cursor: pointer; }
+.parcel-checkbox input { margin-right: 12px; width: 20px; height: 20px; }
+.parcel-checkbox .info { flex: 1; }
+.parcel-checkbox .tracking { font-weight: 600; font-size: 14px; }
+.parcel-checkbox .details { font-size: 12px; color: #666; }
+.douane-table { background: white; border-radius: 12px; overflow-x: auto; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 16px; }
+.douane-table table { width: 100%; border-collapse: collapse; min-width: 500px; }
+.douane-table th { background: #e67e22; color: white; padding: 12px; text-align: left; font-size: 11px; font-weight: 600; }
+.douane-table td { padding: 10px 12px; border-top: 1px solid #f0f0f0; font-size: 12px; }
+.douane-table tr.total-row { background: #fff3cd; font-weight: 700; }
+.user-card { background: white; padding: 16px; border-radius: 12px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+.user-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.user-info-block { flex: 1; }
+.simulator-box { background: #e8f4fd; padding: 15px; border-radius: 10px; margin-top: 15px; border: 1px solid #b6d4fe; }
+.simulator-result { font-weight: bold; color: #0f3460; font-size: 18px; margin-top: 10px; }
+.radio-group { display: flex; gap: 10px; margin-top: 8px; }
+.radio-group label { flex: 1; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; text-align: center; cursor: pointer; font-size: 13px; }
+.radio-group input { margin-right: 5px; }
+.role-badge { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; color: white; }
+.role-admin { background: #e94560; }
+.role-controller { background: #f39c12; }
+.role-field_chief { background: #9b59b6; }
+.role-clerk { background: #0f3460; }
+.trajet-timeline { background: white; padding: 20px; border-radius: 12px; margin-top: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.trajet-timeline h4 { margin-bottom: 16px; color: #0f3460; }
+.trajet-step { display: flex; align-items: flex-start; margin-bottom: 20px; position: relative; }
+.trajet-step:last-child { margin-bottom: 0; }
+.trajet-step::before { content: ''; position: absolute; left: 18px; top: 40px; bottom: -20px; width: 2px; background: #e0e0e0; }
+.trajet-step:last-child::before { display: none; }
+.trajet-icon { width: 38px; height: 38px; border-radius: 50%; background: #e0e0e0; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-right: 14px; flex-shrink: 0; z-index: 1; }
+.trajet-step.done .trajet-icon { background: #27ae60; }
+.trajet-step.current .trajet-icon { background: #0f3460; animation: pulse 2s infinite; }
+.trajet-step.pending .trajet-icon { background: #e0e0e0; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(15, 52, 96, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(15, 52, 96, 0); } 100% { box-shadow: 0 0 0 0 rgba(15, 52, 96, 0); } }
+.trajet-content { flex: 1; }
+.trajet-title { font-weight: 600; font-size: 14px; margin-bottom: 2px; }
+.trajet-subtitle { font-size: 12px; color: #666; }
+.trajet-date { font-size: 11px; color: #999; margin-top: 2px; }
+.search-bar { display: flex; gap: 10px; margin-bottom: 16px; }
+.search-bar input { flex: 1; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 14px; }
+.search-bar select { padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 14px; background: white; }
+.filter-tags { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.filter-tag { padding: 6px 12px; background: #f0f2f5; border-radius: 20px; font-size: 12px; cursor: pointer; border: 2px solid transparent; }
+.filter-tag.active { background: #0f3460; color: white; border-color: #0f3460; }
+.sms-preview { background: #f8f9fa; padding: 16px; border-radius: 12px; margin-top: 12px; border-left: 4px solid #27ae60; }
+.sms-preview .phone { font-weight: 600; color: #0f3460; margin-bottom: 8px; }
+.sms-preview .message { font-size: 13px; color: #333; line-height: 1.5; background: white; padding: 12px; border-radius: 8px; border: 1px solid #e0e0e0; }
+.sms-history { max-height: 300px; overflow-y: auto; margin-top: 12px; }
+.sms-item { background: white; padding: 12px; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid #17a2b8; }
+.sms-item .time { font-size: 11px; color: #999; }
+.sms-item .text { font-size: 13px; margin-top: 4px; }
+.ticket-thermal { width: 80mm; padding: 8px; font-family: 'Courier New', monospace; font-size: 12px; background: white; border: 1px dashed #ccc; margin: 20px auto; }
+.ticket-thermal .header { text-align: center; border-bottom: 1px dashed #000; padding-bottom: 8px; margin-bottom: 8px; }
+.ticket-thermal .line { display: flex; justify-content: space-between; margin: 4px 0; }
+.ticket-thermal .total { border-top: 1px dashed #000; padding-top: 8px; margin-top: 8px; font-weight: bold; font-size: 14px; }
+.ticket-thermal .footer { text-align: center; border-top: 1px dashed #000; padding-top: 8px; margin-top: 8px; font-size: 10px; }
+.report-card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.report-card h4 { color: #0f3460; margin-bottom: 12px; }
+.report-stat { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
+.report-stat:last-child { border-bottom: none; font-weight: 700; }
+.photo-viewer { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 2000; display: flex; justify-content: center; align-items: center; padding: 20px; }
+.photo-viewer-content { background: white; padding: 20px; border-radius: 12px; max-width: 90%; max-height: 90%; overflow: auto; }
+.photo-viewer-content img { max-width: 100%; max-height: 70vh; border-radius: 8px; }
+.company-detail-card { background: white; padding: 16px; border-radius: 12px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #0f3460; }
+.company-detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.company-detail-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.company-stat-item { text-align: center; padding: 10px; background: #f8f9fa; border-radius: 8px; }
+.company-stat-item .num { font-size: 18px; font-weight: 700; color: #0f3460; }
+.company-stat-item .lbl { font-size: 11px; color: #666; }
+.public-tracking { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); min-height: 100vh; padding: 20px; }
+.public-tracking-box { background: white; padding: 30px; border-radius: 20px; max-width: 500px; margin: 0 auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+.confirmation-code { background: #f8f9fa; padding: 20px; border-radius: 12px; text-align: center; margin: 20px 0; border: 2px dashed #0f3460; }
+.confirmation-code .code { font-size: 32px; font-weight: bold; color: #0f3460; letter-spacing: 4px; margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+    <div class="login-box">
+        <h1>📦 ColisExpress</h1>
+        <p class="subtitle">Plateforme multi-compagnies</p>
+        <button class="reset-btn" onclick="if(confirm('⚠️ Réinitialiser TOUTES les données ?')){localStorage.clear();location.reload();}">🔄 Réinitialiser la base</button>
+        <select id="loginCompany">
+            <option value="">-- Sélectionner --</option>
+            <option value="super">👑 SUPER ADMIN</option>
+        </select>
+        <input type="text" id="loginPhone" placeholder="Téléphone / Identifiant">
+        <input type="password" id="loginPassword" placeholder="Mot de passe">
+        <button onclick="login()">Se connecter</button>
+        <div class="login-error" id="loginError">Identifiants incorrects</div>
+        <div class="demo-accounts">
+            <strong>👑 SUPER ADMIN :</strong><br>
+            superadmin / admin123<br><br>
+            <strong>Admin SONEF :</strong><br>
+            70000001 / admin
+        </div>
+        <button class="btn btn-outline" onclick="showPublicTracking()" style="margin-top:12px;">🔍 Suivi client (sans connexion)</button>
+        <button class="btn btn-outline" onclick="showClientConfirmation()" style="margin-top:8px;">✅ Confirmer réception colis</button>
+    </div>
+</div>
+
+<!-- SUIVI PUBLIC -->
+<div class="public-tracking" id="publicTrackingScreen" style="display:none;">
+    <div class="public-tracking-box">
+        <h2 style="text-align:center;color:#0f3460;margin-bottom:20px;">🔍 Suivre votre colis</h2>
+        <p style="text-align:center;color:#666;margin-bottom:20px;">Entrez votre numéro de suivi pour voir l'état de votre colis</p>
+        <div class="form-group">
+            <input type="text" id="publicTrackInput" placeholder="Ex: SONE-2026-000001" style="width:100%;padding:14px;border:2px solid #e0e0e0;border-radius:10px;font-size:16px;">
+        </div>
+        <button class="btn btn-primary" onclick="publicTrackParcel()">🔍 Rechercher</button>
+        <div id="publicTrackResult" style="margin-top:20px;"></div>
+        <button class="btn btn-outline" onclick="hidePublicTracking()" style="margin-top:20px;">← Retour à la connexion</button>
+    </div>
+</div>
+
+<!-- CONFIRMATION CLIENT -->
+<div class="public-tracking" id="clientConfirmationScreen" style="display:none;">
+    <div class="public-tracking-box">
+        <h2 style="text-align:center;color:#0f3460;margin-bottom:20px;">✅ Confirmer la réception</h2>
+        <p style="text-align:center;color:#666;margin-bottom:20px;">Entrez votre code de confirmation pour confirmer la réception de votre colis</p>
+        <div class="form-group">
+            <input type="text" id="confirmationCodeInput" placeholder="Code de confirmation (ex: ABC123)" style="width:100%;padding:14px;border:2px solid #e0e0e0;border-radius:10px;font-size:16px;text-transform:uppercase;">
+        </div>
+        <button class="btn btn-success" onclick="confirmReception()">✅ Confirmer la réception</button>
+        <div id="confirmationResult" style="margin-top:20px;"></div>
+        <button class="btn btn-outline" onclick="hideClientConfirmation()" style="margin-top:20px;">← Retour à la connexion</button>
+    </div>
+</div>
+
+<!-- APP -->
+<div class="app-layout" id="appLayout" style="display:none;">
+    <div class="topbar">
+        <h2>📦 <span id="companyName"></span></h2>
+        <div class="user-info">
+            <span id="userName"></span>
+            <span class="badge" id="userRole"></span>
+            <button class="btn-logout" onclick="logout()">⏻</button>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <!-- SUPER ADMIN -->
+        <div class="section" id="sec-superDashboard">
+            <h3 style="margin-bottom:16px;">👑 Tableau de bord global</h3>
+            <div class="stats-grid" id="superStats"></div>
+            <h3 style="margin:20px 0 12px;">📊 Situation par compagnie</h3>
+            <div id="companiesDetails"></div>
+            <h3 style="margin:20px 0 12px;"> Gestion des compagnies</h3>
+            <button class="btn btn-primary" onclick="showAddCompanyModal()" style="margin-bottom:16px;">➕ Ajouter une compagnie</button>
+            <div id="companiesList"></div>
+        </div>
+
+        <!-- DASHBOARD COMPAGNIE -->
+        <div class="section" id="sec-dashboard">
+            <h3 style="margin-bottom:16px;">🏠 Vue d'ensemble</h3>
+            <div class="stats-grid" id="statsGrid"></div>
+            <div class="chart-container">
+                <h4>📈 Évolution des envois (7 derniers jours)</h4>
+                <div class="chart-wrapper"><canvas id="chartParcels"></canvas></div>
+            </div>
+            <div class="chart-container">
+                <h4>💰 Revenus (7 derniers jours)</h4>
+                <div class="chart-wrapper"><canvas id="chartRevenue"></canvas></div>
+            </div>
+            <div class="chart-container">
+                <h4>🥧 Répartition par destination</h4>
+                <div class="chart-wrapper"><canvas id="chartDestinations"></canvas></div>
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <button class="btn btn-primary btn-lg" onclick="showSection('newParcel')">📦 Nouvel Envoi</button>
+                <button class="btn btn-success btn-lg" onclick="showSection('bordereaux')">🚌 Bordereaux</button>
+                <button class="btn btn-warning btn-lg" onclick="showSection('douane')">🛃 Douane</button>
+                <button class="btn btn-info btn-lg" onclick="showSection('transactions')">💰 Transactions</button>
+                <button class="btn btn-outline btn-lg" onclick="showSection('tracking')"> Suivi</button>
+                <button class="btn btn-outline btn-lg" onclick="showSection('reports')">📊 Rapports</button>
+            </div>
+        </div>
+
+        <!-- NOUVEL ENVOI -->
+        <div class="section" id="sec-newParcel">
+            <h3 style="margin-bottom:16px;"> Nouvel envoi</h3>
+            <div class="form-group"><label>Expéditeur *</label><input id="senderName" placeholder="Nom complet"></div>
+            <div class="form-group"><label>Téléphone expéditeur *</label><input id="senderPhone" placeholder="+228 70 XX XX XX"></div>
+            <div class="form-group"><label>Destinataire *</label><input id="recipientName" placeholder="Nom complet"></div>
+            <div class="form-group"><label>Téléphone destinataire *</label><input id="recipientPhone" placeholder="+228 70 XX XX XX"></div>
+            <div class="form-group"><label>Ville de destination *</label><select id="destCity" onchange="onDestCityChange()"><option value="">-- Choisir une ville --</option></select></div>
+            <div class="form-group"><label>Agence de destination</label><select id="destAgency"></select></div>
+            <div class="form-group"><label>Description du contenu *</label><input id="description" placeholder="Ex: Vêtements, documents..."></div>
+            <div class="form-group">
+                <label>📸 Photo du colis *</label>
+                <div class="photo-zone" onclick="document.getElementById('parcelPhoto').click()">
+                    <div class="icon">📷</div>
+                    <p id="photoLabel">Cliquez pour prendre une photo (OBLIGATOIRE)</p>
+                    <input type="file" id="parcelPhoto" accept="image/*" capture="environment" style="display:none" onchange="previewParcelPhoto(this)">
+                    <img id="photoPreview" class="photo-preview hidden">
+                </div>
+            </div>
+            <div class="form-group"><label>Poids (kg) *</label><input type="number" id="weightKg" placeholder="Ex: 15" step="0.1" oninput="calcPrice()"></div>
+            <div class="form-group"><label>Valeur déclarée (FCFA) *</label><input type="number" id="declaredValue" value="0" oninput="calcPrice()"></div>
+            <div class="form-group"><label><input type="checkbox" id="isInsured" onchange="calcPrice()"> 🛡️ Assurer le colis</label></div>
+            <div class="form-group"><label><input type="checkbox" id="isCustoms" onchange="calcPrice()"> 🛃 Colis soumis à la douane</label></div>
+            <div id="priceSummary" class="simulator-box">
+                <p style="color:#999;text-align:center;">Entrez le poids et la valeur pour voir le calcul</p>
+            </div>
+            <div class="form-group" style="margin-top:16px;">
+                <label>Mode de paiement</label>
+                <div style="display:flex;gap:10px;margin-top:8px;">
+                    <label style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px;text-align:center;"><input type="radio" name="payment" value="cash" checked> 💵 Espèces</label>
+                    <label style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px;text-align:center;"><input type="radio" name="payment" value="mobile_money">  Mobile</label>
+                </div>
+            </div>
+            <button class="btn btn-success" onclick="submitParcel()">✅ Valider et créer le colis</button>
+        </div>
+
+        <!-- LISTE COLIS -->
+        <div class="section" id="sec-parcelsList">
+            <h3 style="margin-bottom:16px;">📋 Liste des colis</h3>
+            <div class="search-bar">
+                <input type="text" id="searchParcels" placeholder="🔍 Rechercher par N°, nom, téléphone..." oninput="filterParcels()">
+                <select id="filterStatus" onchange="filterParcels()">
+                    <option value="">Tous les statuts</option>
+                    <option value="paid">Payé</option>
+                    <option value="loaded">Chargé</option>
+                    <option value="in_transit">En transit</option>
+                    <option value="arrived">Arrivé</option>
+                    <option value="delivered">Livré</option>
+                </select>
+            </div>
+            <div class="filter-tags">
+                <div class="filter-tag active" onclick="setFilter('all')">Tous</div>
+                <div class="filter-tag" onclick="setFilter('today')">Aujourd'hui</div>
+                <div class="filter-tag" onclick="setFilter('week')">Cette semaine</div>
+                <div class="filter-tag" onclick="setFilter('customs')">Douane</div>
+                <div class="filter-tag" onclick="setFilter('insured')">Assurés</div>
+            </div>
+            <div id="parcelsListContainer"></div>
+        </div>
+
+        <!-- BORDREAUX LIST -->
+        <div class="section" id="sec-bordereaux">
+            <h3 style="margin-bottom:16px;">🚌 Bordereaux d'envoi</h3>
+            <button class="btn btn-primary" onclick="showSection('createBordereau')" style="margin-bottom:16px;">➕ Créer un bordereau</button>
+            <div id="bordereauxList"></div>
+        </div>
+
+        <!-- CREATE BORDREAU -->
+        <div class="section" id="sec-createBordereau">
+            <button class="btn btn-outline btn-sm" onclick="showSection('bordereaux')" style="margin-bottom:16px;">← Retour</button>
+            <h3 style="margin-bottom:16px;">🚌 Nouveau bordereau</h3>
+            <div class="form-group"><label>📍 Ville de destination *</label><select id="bordCity" onchange="filterParcelsByDestination()"><option value="">-- Choisir --</option></select></div>
+            <div class="form-group"><label>👤 Nom du chauffeur *</label><input type="text" id="bordDriver" placeholder="Ex: Jean Dupont"></div>
+            <div class="form-group"><label>🚐 Plaque du bus *</label><input type="text" id="bordPlate" placeholder="Ex: AB-1234-CD"></div>
+            <div class="form-group"><label> Date de départ</label><input type="date" id="bordDate"></div>
+            <h4 style="margin:20px 0 12px;">📦 Colis disponibles</h4>
+            <div id="parcelsToLoad"><p style="color:#999;text-align:center;padding:20px;">Sélectionnez d'abord une destination</p></div>
+            <div style="background:#f8f9fa;padding:16px;border-radius:12px;margin-top:16px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span>Colis sélectionnés :</span><strong id="selectedCount">0</strong></div>
+                <div style="display:flex;justify-content:space-between;"><span>Poids total :</span><strong id="totalWeight">0 kg</strong></div>
+            </div>
+            <button class="btn btn-success" onclick="saveBordereau()" style="margin-top:16px;">✅ Créer le bordereau et générer PDF</button>
+        </div>
+
+        <!-- DOUANE -->
+        <div class="section" id="sec-douane">
+            <h3 style="margin-bottom:16px;">🛃 Situation Douane</h3>
+            <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+                <button class="btn btn-sm btn-primary" onclick="setDouanePeriod('today')">Aujourd'hui</button>
+                <button class="btn btn-sm btn-outline" onclick="setDouanePeriod('week')">Semaine</button>
+                <button class="btn btn-sm btn-outline" onclick="setDouanePeriod('month')">Mois</button>
+                <button class="btn btn-sm btn-outline" onclick="setDouanePeriod('all')">Tout</button>
+            </div>
+            <div class="stats-grid" id="douaneStats"></div>
+            <div class="douane-table" id="douaneTable"></div>
+            <button class="btn btn-info" onclick="exportDouane()">📥 Exporter rapport</button>
+        </div>
+
+        <!-- TRANSACTIONS -->
+        <div class="section" id="sec-transactions">
+            <h3 style="margin-bottom:16px;">💰 Transactions</h3>
+            <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+                <button class="btn btn-sm btn-primary period-btn active" data-period="today" onclick="setTransactionPeriod('today', this)">Aujourd'hui</button>
+                <button class="btn btn-sm btn-outline period-btn" data-period="week" onclick="setTransactionPeriod('week', this)">Semaine</button>
+                <button class="btn btn-sm btn-outline period-btn" data-period="month" onclick="setTransactionPeriod('month', this)">Mois</button>
+                <button class="btn btn-sm btn-outline period-btn" data-period="all" onclick="setTransactionPeriod('all', this)">Tout</button>
+            </div>
+            <div class="stats-grid" id="transactionStats"></div>
+            <div class="douane-table" id="transactionTable"></div>
+            <button class="btn btn-info" onclick="exportTransactions()">📥 Exporter CSV</button>
+        </div>
+
+        <!-- RAPPORTS -->
+        <div class="section" id="sec-reports">
+            <h3 style="margin-bottom:16px;">📊 Rapports automatiques</h3>
+            <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+                <button class="btn btn-sm btn-primary" onclick="generateReport('daily')">📅 Journalier</button>
+                <button class="btn btn-sm btn-outline" onclick="generateReport('weekly')">📆 Hebdomadaire</button>
+                <button class="btn btn-sm btn-outline" onclick="generateReport('monthly')">🗓️ Mensuel</button>
+            </div>
+            <div id="reportContent"></div>
+        </div>
+
+        <!-- GESTION DU PERSONNEL -->
+        <div class="section" id="sec-users">
+            <h3 style="margin-bottom:16px;">👥 Gestion du Personnel</h3>
+            <button class="btn btn-primary" onclick="showAddUserModal()" style="margin-bottom:16px;">➕ Ajouter un utilisateur</button>
+            <div id="usersList"></div>
+        </div>
+
+        <!-- PARAMÈTRES -->
+        <div class="section" id="sec-settings">
+            <h3 style="margin-bottom:16px;">⚙️ Paramètres</h3>
+            <p style="color:#666; margin-bottom:20px; font-size:13px;">Configurez ici les règles de calcul et les destinations.</p>
+            
+            <div class="settings-card">
+                <h3>🗺️ 1. Destinations & Distances</h3>
+                <p style="color:#666; font-size:12px; margin-bottom:12px;">Définissez les villes desservies et les distances depuis votre agence principale.</p>
+                <div id="routesList"></div>
+                <button class="btn btn-outline btn-sm" onclick="addRouteRow()">+ Ajouter une destination</button>
+                <button class="btn btn-success btn-sm" onclick="saveRoutes()" style="margin-top:10px;"> Enregistrer les destinations</button>
+            </div>
+
+            <div class="settings-card">
+                <h3>⚖️ 2. Prix selon le Poids (Forfait)</h3>
+                <div id="weightTiersList"></div>
+                <button class="btn btn-outline btn-sm" onclick="addWeightTierRow()">+ Ajouter une tranche</button>
+                <button class="btn btn-success btn-sm" onclick="saveWeightTiers()" style="margin-top:10px;">💾 Enregistrer Poids</button>
+            </div>
+
+            <div class="settings-card">
+                <h3>🛣️ 3. Prix selon la Distance (Au Km)</h3>
+                <div id="distanceTiersList"></div>
+                <button class="btn btn-outline btn-sm" onclick="addDistanceTierRow()">+ Ajouter une tranche</button>
+                <button class="btn btn-success btn-sm" onclick="saveDistanceTiers()" style="margin-top:10px;">💾 Enregistrer Distance</button>
+            </div>
+
+            <div class="settings-card">
+                <h3>📊 4. Frais Additionnels</h3>
+                <div class="form-group">
+                    <label>🔹 Frais de gestion (% sur la valeur déclarée)</label>
+                    <input type="number" id="settingValuePercent" placeholder="Ex: 1" step="0.1">
+                    <small style="color:#666;">Ajoute un % de la valeur déclarée du colis.</small>
+                </div>
+                <div class="form-group">
+                    <label>🔹 Type de frais de douane</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="customsType" value="flat" checked onchange="toggleCustomsType()"> 💰 Forfait fixe</label>
+                        <label><input type="radio" name="customsType" value="percent" onchange="toggleCustomsType()"> 📊 Pourcentage</label>
+                    </div>
+                </div>
+                <div class="form-group" id="customsFlatGroup">
+                    <label>🔹 Frais de Douane - Forfait Fixe (FCFA)</label>
+                    <input type="number" id="settingCustomsFlat" placeholder="Ex: 2000">
+                </div>
+                <div class="form-group hidden" id="customsPercentGroup">
+                    <label>🔹 Frais de Douane - Pourcentage sur la valeur déclarée (%)</label>
+                    <input type="number" id="settingCustomsPercent" placeholder="Ex: 2" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label>🔹 Assurance - Taux (%)</label>
+                    <input type="number" id="settingInsurancePercent" placeholder="Ex: 1" step="0.1">
+                </div>
+                <button class="btn btn-success" onclick="saveFeesSettings()">💾 Enregistrer les Frais</button>
+            </div>
+
+            <div class="settings-card" style="border-top-color: #27ae60;">
+                <h3> Simulateur de Prix (Test)</h3>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div class="form-group"><label>Poids (kg)</label><input type="number" id="simWeight" value="15" oninput="runSimulator()"></div>
+                    <div class="form-group"><label>Distance (km)</label><input type="number" id="simDistance" value="330" oninput="runSimulator()"></div>
+                    <div class="form-group"><label>Valeur (FCFA)</label><input type="number" id="simValue" value="50000" oninput="runSimulator()"></div>
+                    <div class="form-group" style="display:flex; align-items:end; padding-bottom:10px;">
+                        <label><input type="checkbox" id="simCustoms" onchange="runSimulator()"> 🛃 Colis Douane ?</label>
+                    </div>
+                </div>
+                <div id="simResult" class="simulator-result">Total: 0 FCFA</div>
+            </div>
+        </div>
+
+        <!-- SUIVI -->
+        <div class="section" id="sec-tracking">
+            <h3 style="margin-bottom:12px;">🔍 Suivre un colis</h3>
+            <input type="text" id="trackInput" placeholder="Numéro de suivi (ex: SONE-2026-000001)" style="width:100%;padding:14px;border:2px solid #e0e0e0;border-radius:10px;font-size:15px;margin-bottom:12px;">
+            <button class="btn btn-primary" onclick="trackParcel()">Rechercher</button>
+            <div id="trackResult" style="margin-top:16px;"></div>
+        </div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav" id="bottomNav"></div>
+</div>
+
+<!-- MODAL REÇU PDF -->
+<div class="modal" id="recuModal">
+    <div class="modal-content" style="max-width: 500px;">
+        <h3 style="margin-bottom:16px;">🧾 Reçu du colis</h3>
+        <div id="recuContent"></div>
+        <div style="display:flex;gap:10px;margin-top:20px;">
+            <button class="btn btn-success" onclick="downloadRecuPDF()">📄 Télécharger PDF</button>
+            <button class="btn btn-outline" onclick="closeRecuModal()">Fermer</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL SMS -->
+<div class="modal" id="smsModal">
+    <div class="modal-content">
+        <h3 style="margin-bottom:16px;"> Notifications SMS</h3>
+        <div id="smsContent"></div>
+        <div style="display:flex;gap:10px;margin-top:20px;">
+            <button class="btn btn-primary" onclick="simulateSendSMS()">📤 Envoyer (simulation)</button>
+            <button class="btn btn-outline" onclick="closeSmsModal()">Fermer</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL TICKET THERMIQUE -->
+<div class="modal" id="ticketModal">
+    <div class="modal-content" style="max-width: 350px;">
+        <h3 style="margin-bottom:16px;">🖨️ Ticket thermique</h3>
+        <div id="ticketContent"></div>
+        <div style="display:flex;gap:10px;margin-top:20px;">
+            <button class="btn btn-success" onclick="printTicket()">🖨️ Imprimer</button>
+            <button class="btn btn-outline" onclick="closeTicketModal()">Fermer</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ADD COMPANY -->
+<div class="modal" id="addCompanyModal">
+    <div class="modal-content">
+        <h3 style="margin-bottom:16px;">🏢 Nouvelle compagnie</h3>
+        <div class="form-group"><label>Nom</label><input type="text" id="newCompanyName"></div>
+        <div class="form-group"><label>Téléphone</label><input type="text" id="newCompanyPhone"></div>
+        <div class="form-group"><label>Pays</label><input type="text" id="newCompanyCountry"></div>
+        <div class="form-group"><label>Plan</label>
+            <select id="newCompanyPlan">
+                <option value="basic">Basic - 50 000 F/mois</option>
+                <option value="pro">Pro - 100 000 F/mois</option>
+                <option value="enterprise">Enterprise - 200 000 F/mois</option>
+            </select>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:20px;">
+            <button class="btn btn-outline" onclick="closeAddCompanyModal()">Annuler</button>
+            <button class="btn btn-primary" onclick="saveCompany()">Enregistrer</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ADD USER -->
+<div class="modal" id="addUserModal">
+    <div class="modal-content">
+        <h3 style="margin-bottom:16px;">👤 Nouvel utilisateur</h3>
+        <div class="form-group"><label>Prénom *</label><input type="text" id="newUserFirstName"></div>
+        <div class="form-group"><label>Nom *</label><input type="text" id="newUserLastName"></div>
+        <div class="form-group"><label>Téléphone (Identifiant) *</label><input type="text" id="newUserPhone"></div>
+        <div class="form-group"><label>Mot de passe *</label><input type="text" id="newUserPassword"></div>
+        <div class="form-group"><label>Rôle *</label>
+            <select id="newUserRole">
+                <option value="admin">👑 Administrateur</option>
+                <option value="controller">📋 Contrôleur</option>
+                <option value="field_chief">🚚 Chef de terrain</option>
+                <option value="clerk">📝 Guichetier</option>
+            </select>
+        </div>
+        <div class="form-group"><label>Agence d'affectation</label><select id="newUserAgency"></select></div>
+        <div style="display:flex;gap:10px;margin-top:20px;">
+            <button class="btn btn-outline" onclick="closeAddUserModal()">Annuler</button>
+            <button class="btn btn-primary" onclick="saveUser()">Enregistrer</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============================================
+// UTILITAIRES
+// ============================================
+function roundPrice(value) {
+    return Math.ceil(value / 100) * 100;
+}
+
+function generateConfirmationCode() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = '';
+    for (let i = 0; i < 6; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+}
+
+// ============================================
+// DATABASE
+// ============================================
+const DB = {
+    get(key) { return JSON.parse(localStorage.getItem(key) || 'null'); },
+    set(key, val) { localStorage.setItem(key, JSON.stringify(val)); },
+    init() {
+        if (!this.get('initialized')) {
+            this.set('companies', [
+                { id: 1, name: 'SONEF', phone: '+228 70 00 00 01', country: 'Togo', plan: 'pro', status: 'active' }
+            ]);
+            this.set('cities', [ 
+                { id: 1, name: 'Lomé' }, 
+                { id: 2, name: 'Niamey' }, 
+                { id: 3, name: 'Cotonou' },
+                { id: 4, name: 'Ouagadougou' }
+            ]);
+            this.set('agencies', [
+                { id: 1, company_id: 1, city_id: 1, name: 'SONEF Lomé' },
+                { id: 2, company_id: 1, city_id: 2, name: 'SONEF Niamey' },
+                { id: 3, company_id: 1, city_id: 3, name: 'SONEF Cotonou' }
+            ]);
+            this.set('users', [
+                { id: 0, role: 'super_admin', first_name: 'Propriétaire', last_name: 'Plateforme', phone: 'superadmin', password: 'admin123', company_id: null },
+                { id: 1, company_id: 1, agency_id: 1, role: 'admin', first_name: 'Admin', last_name: 'SONEF', phone: '70000001', password: 'admin' }
+            ]);
+            this.set('routes', [
+                { id: 1, company_id: 1, from_city_id: 1, to_city_id: 2, distance_km: 900, from_name: 'Lomé', to_name: 'Niamey' },
+                { id: 2, company_id: 1, from_city_id: 1, to_city_id: 3, distance_km: 250, from_name: 'Lomé', to_name: 'Cotonou' },
+                { id: 3, company_id: 1, from_city_id: 1, to_city_id: 4, distance_km: 1200, from_name: 'Lomé', to_name: 'Ouagadougou' }
+            ]);
+            this.set('weight_tiers', [
+                { company_id: 1, min: 0, max: 10, price: 2000 },
+                { company_id: 1, min: 11, max: 20, price: 3500 },
+                { company_id: 1, min: 21, max: 30, price: 5000 }
+            ]);
+            this.set('distance_tiers', [
+                { company_id: 1, min: 0, max: 250, price_per_km: 30 },
+                { company_id: 1, min: 251, max: 500, price_per_km: 25 },
+                { company_id: 1, min: 501, max: 1000, price_per_km: 20 }
+            ]);
+            this.set('fee_settings', [
+                { company_id: 1, value_percent: 1, customs_type: 'flat', customs_flat: 2000, customs_percent: 2.0, insurance_percent: 1.0 }
+            ]);
+            this.set('parcels', []);
+            this.set('bordereaux', []);
+            this.set('sms_history', []);
+            this.set('initialized', true);
+        }
+    }
+};
+DB.init();
+
+// ============================================
+// STATE
+// ============================================
+let currentUser = null;
+let charts = {};
+let douanePeriod = 'today';
+let transactionPeriod = 'today';
+let currentParcelPhoto = null;
+let selectedParcelsForBordereau = [];
+let currentRecuParcel = null;
+let currentSmsParcel = null;
+let currentFilter = 'all';
+
+const PLAN_PRICES = { basic: 50000, pro: 100000, enterprise: 200000 };
+const STATUS_LABELS = { created: 'Créé', paid: 'Payé', loaded: 'Chargé', in_transit: 'En transit', arrived: 'Arrivé', delivered: 'Livré', incident: 'Incident' };
+const ROLE_LABELS = { admin: 'Administrateur', controller: 'Contrôleur', field_chief: 'Chef de terrain', clerk: 'Guichetier' };
+
+// ============================================
+// CONFIRMATION CLIENT
+// ============================================
+function showClientConfirmation() {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('clientConfirmationScreen').style.display = 'block';
+}
+
+function hideClientConfirmation() {
+    document.getElementById('clientConfirmationScreen').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+}
+
+function confirmReception() {
+    const code = document.getElementById('confirmationCodeInput').value.trim().toUpperCase();
+    if (!code) { 
+        alert('Veuillez entrer le code de confirmation'); 
+        return; 
+    }
+    
+    const parcels = DB.get('parcels') || [];
+    const parcel = parcels.find(p => p.confirmation_code === code);
+    const el = document.getElementById('confirmationResult');
+    
+    if (!parcel) {
+        el.innerHTML = '<div style="background:#fee;color:#c33;padding:20px;border-radius:12px;text-align:center;"><p style="font-size:48px;margin-bottom:12px;">❌</p><p style="font-weight:600;">Code invalide ou colis déjà livré</p><p style="font-size:13px;color:#666;margin-top:8px;">Vérifiez le code reçu par SMS</p></div>';
+        return;
+    }
+    
+    if (parcel.status === 'delivered') {
+        el.innerHTML = '<div style="background:#e8f5e9;color:#2e7d32;padding:20px;border-radius:12px;text-align:center;"><p style="font-size:48px;margin-bottom:12px;">✅</p><p style="font-weight:600;">Colis déjà confirmé comme livré</p><p style="font-size:13px;color:#666;margin-top:8px;">N°: ' + parcel.tracking_number + '</p></div>';
+        return;
+    }
+    
+    // Mettre à jour le statut
+    parcel.status = 'delivered';
+    if (!parcel.trajet) parcel.trajet = [];
+    parcel.trajet.push({
+        status: 'delivered',
+        label: 'Colis livré et confirmé',
+        location: 'Confirmé par le destinataire',
+        date: new Date().toISOString()
+    });
+    parcel.delivered_at = new Date().toISOString();
+    parcel.confirmed_by_recipient = true;
+    
+    DB.set('parcels', parcels);
+    
+    el.innerHTML = `
+        <div style="background:#e8f5e9;color:#2e7d32;padding:20px;border-radius:12px;text-align:center;">
+            <p style="font-size:48px;margin-bottom:12px;">✅</p>
+            <p style="font-weight:600;font-size:18px;">Réception confirmée !</p>
+            <p style="margin-top:12px;"><strong>N° Colis:</strong> ${parcel.tracking_number}</p>
+            <p style="font-size:13px;color:#666;margin-top:8px;">Merci d'avoir confirmé la réception de votre colis</p>
+        </div>
+    `;
+    
+    document.getElementById('confirmationCodeInput').value = '';
+}
+
+// ============================================
+// SUIVI PUBLIC
+// ============================================
+function showPublicTracking() {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('publicTrackingScreen').style.display = 'block';
+}
+
+function hidePublicTracking() {
+    document.getElementById('publicTrackingScreen').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+}
+
+function publicTrackParcel() {
+    const num = document.getElementById('publicTrackInput').value.trim();
+    if (!num) { alert('Entrez un numéro de suivi'); return; }
+    
+    const parcels = DB.get('parcels') || [];
+    const parcel = parcels.find(p => p.tracking_number === num);
+    const el = document.getElementById('publicTrackResult');
+    
+    if (!parcel) {
+        el.innerHTML = '<p style="color:#e74c3c;text-align:center;">❌ Colis non trouvé</p>';
+        return;
+    }
+    
+    const cities = DB.get('cities');
+    const originCity = cities.find(c => c.id === parcel.origin_city_id);
+    const destCity = cities.find(c => c.id === parcel.destination_city_id);
+    const company = DB.get('companies').find(c => c.id === parcel.company_id);
+    
+    let html = `<div style="background:#f8f9fa;padding:20px;border-radius:12px;">`;
+    html += `<h3 style="color:#0f3460;margin-bottom:12px;">📦 ${parcel.tracking_number}</h3>`;
+    html += `<p style="font-size:13px;color:#666;margin-bottom:12px;">Compagnie: ${company?.name || 'N/A'}</p>`;
+    html += `<p><strong>Trajet:</strong> ${originCity?.name || 'Départ'} → ${destCity?.name || 'Destination'} (${parcel.distance_km} km)</p>`;
+    html += `<p style="margin-top:12px;"><strong>Statut actuel:</strong> <span class="role-badge role-admin">${STATUS_LABELS[parcel.status]}</span></p>`;
+    html += `<p><strong>Total payé:</strong> ${roundPrice(parcel.total_price).toLocaleString()} FCFA</p>`;
+    
+    if (parcel.confirmation_code && parcel.status !== 'delivered') {
+        html += `<div class="confirmation-code"><p style="font-size:12px;color:#666;margin-bottom:8px;">Code de confirmation destinataire</p><div class="code">${parcel.confirmation_code}</div><p style="font-size:11px;color:#999;">À communiquer au destinataire pour confirmation</p></div>`;
+    }
+    
+    if (parcel.trajet && parcel.trajet.length > 0) {
+        html += `<div class="trajet-timeline" style="margin-top:20px;"><h4>🗺️ Historique du trajet</h4>`;
+        const statusIcons = { created: '📝', paid: '💰', loaded: '🚌', in_transit: '🚚', arrived: '📍', ready_for_pickup: '📬', delivered: '✅' };
+        parcel.trajet.forEach((step, i) => {
+            const isLast = i === parcel.trajet.length - 1;
+            html += `
+                <div class="trajet-step ${isLast ? 'current' : 'done'}">
+                    <div class="trajet-icon">${statusIcons[step.status] || '📦'}</div>
+                    <div class="trajet-content">
+                        <div class="trajet-title">${step.label}</div>
+                        <div class="trajet-subtitle">📍 ${step.location}</div>
+                        <div class="trajet-date">${new Date(step.date).toLocaleString('fr-FR')}</div>
+                    </div>
+                </div>
+            `;
+        });
+        html += `</div>`;
+    }
+    
+    html += `</div>`;
+    el.innerHTML = html;
+}
+
+// ============================================
+// AUTH & NAV
+// ============================================
+function loadCompanies() {
+    const companies = DB.get('companies').filter(c => c.status === 'active');
+    const select = document.getElementById('loginCompany');
+    select.innerHTML = '<option value="">-- Sélectionner --</option><option value="super">👑 SUPER ADMIN</option>';
+    companies.forEach(c => { select.innerHTML += `<option value="${c.id}">${c.name} (${c.country})</option>`; });
+}
+
+function login() {
+    const companyId = document.getElementById('loginCompany').value;
+    const phone = document.getElementById('loginPhone').value;
+    const password = document.getElementById('loginPassword').value;
+    if (!companyId) { alert('Sélectionnez une option'); return; }
+    
+    if (companyId === 'super') {
+        const user = DB.get('users').find(u => u.role === 'super_admin' && u.phone === phone && u.password === password);
+        if (user) { currentUser = { ...user, company_name: 'ColisExpress Platform', isSuperAdmin: true }; showApp(); loadSuperDashboard(); return; }
+    } else {
+        const cid = parseInt(companyId);
+        const user = DB.get('users').find(u => u.company_id === cid && u.phone === phone && u.password === password);
+        if (user) {
+            const company = DB.get('companies').find(c => c.id === cid);
+            const agency = DB.get('agencies').find(a => a.id === user.agency_id);
+            currentUser = { ...user, company_name: company.name, agency_name: agency?.name, isSuperAdmin: false };
+            showApp(); loadDashboard(); return;
+        }
+    }
+    document.getElementById('loginError').style.display = 'block';
+}
+
+function showApp() {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('appLayout').style.display = 'block';
+    document.getElementById('companyName').textContent = currentUser.company_name;
+    document.getElementById('userName').textContent = currentUser.first_name;
+    const roleBadge = document.getElementById('userRole');
+    if (currentUser.isSuperAdmin) { roleBadge.textContent = 'Super Admin'; roleBadge.className = 'badge badge-super'; } 
+    else { roleBadge.textContent = ROLE_LABELS[currentUser.role] || currentUser.role; roleBadge.className = 'badge'; }
+    buildBottomNav();
+}
+
+function buildBottomNav() {
+    const nav = document.getElementById('bottomNav');
+    if (currentUser.isSuperAdmin) {
+        nav.innerHTML = `<div class="bottom-nav-item active" onclick="showSection('superDashboard')"><div class="icon">👑</div>Global</div>`;
+    } else {
+        let navHTML = `
+            <div class="bottom-nav-item active" onclick="showSection('dashboard')"><div class="icon">🏠</div>Accueil</div>
+            <div class="bottom-nav-item" onclick="showSection('newParcel')"><div class="icon">📦</div>Envoi</div>
+            <div class="bottom-nav-item" onclick="showSection('parcelsList')"><div class="icon">📋</div>Colis</div>
+            <div class="bottom-nav-item" onclick="showSection('transactions')"><div class="icon"></div>Transactions</div>
+        `;
+        if (currentUser.role === 'admin') {
+            navHTML += `<div class="bottom-nav-item" onclick="showSection('users')"><div class="icon">👥</div>Staff</div>`;
+            navHTML += `<div class="bottom-nav-item" onclick="showSection('settings')"><div class="icon">⚙️</div>Paramètres</div>`;
+        }
+        navHTML += `<div class="bottom-nav-item" onclick="showSection('tracking')"><div class="icon"></div>Suivi</div>`;
+        nav.innerHTML = navHTML;
+    }
+}
+
+function logout() { currentUser = null; document.getElementById('loginScreen').style.display = 'flex'; document.getElementById('appLayout').style.display = 'none'; Object.values(charts).forEach(c => c.destroy()); charts = {}; }
+
+function showSection(name) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    const sec = document.getElementById('sec-' + name);
+    if (sec) sec.classList.add('active');
+    document.querySelectorAll('.bottom-nav-item').forEach(t => t.classList.remove('active'));
+    
+    if (name === 'dashboard') loadDashboard();
+    if (name === 'superDashboard') loadSuperDashboard();
+    if (name === 'newParcel') initNewParcel();
+    if (name === 'parcelsList') loadParcelsList();
+    if (name === 'bordereaux') loadBordereaux();
+    if (name === 'createBordereau') initCreateBordereau();
+    if (name === 'douane') loadDouane();
+    if (name === 'transactions') loadTransactions();
+    if (name === 'reports') generateReport('daily');
+    if (name === 'settings') loadSettings();
+    if (name === 'users') loadUsers();
+    if (name === 'tracking') showTrackingSection();
+}
+
+// ============================================
+// SUIVI DÉDIÉ
+// ============================================
+function showTrackingSection() {
+    document.getElementById('trackInput').value = '';
+    document.getElementById('trackResult').innerHTML = '';
+    const recentParcels = (DB.get('parcels') || []).filter(p => p.company_id === currentUser.company_id).slice(-3).reverse();
+    document.getElementById('trackResult').innerHTML = `
+        <div style="background:white;padding:30px;border-radius:12px;margin-top:16px;text-align:center;">
+            <div style="font-size:64px;margin-bottom:16px;">🔍</div>
+            <h3 style="margin-bottom:12px;">Suivre un colis</h3>
+            <p style="color:#666;margin-bottom:20px;">Entrez le numéro de suivi pour voir le trajet en temps réel</p>
+            <div style="display:flex;gap:10px;max-width:500px;margin:0 auto;">
+                <input type="text" id="trackInputMain" placeholder="Ex: SONE-2026-000001" 
+                    style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px;font-size:16px;">
+                <button class="btn btn-primary" onclick="trackSpecificParcel()" style="width:auto;margin:0;">🔍</button>
+            </div>
+            ${recentParcels.length > 0 ? `
+                <div style="margin-top:20px;font-size:13px;color:#999;">
+                    <p>Colis récents :</p>
+                    ${recentParcels.map(p => 
+                        `<div style="margin-top:6px;cursor:pointer;color:#0f3460;padding:8px;background:#f8f9fa;border-radius:8px;" onclick="document.getElementById('trackInputMain').value='${p.tracking_number}';trackSpecificParcel()">📦 ${p.tracking_number} - ${STATUS_LABELS[p.status]}</div>`
+                    ).join('')}
+                </div>
+            ` : ''}
+        </div>
+    `;
+}
+
+function trackSpecificParcel() {
+    const num = document.getElementById('trackInputMain').value.trim();
+    if (!num) { alert('Entrez un numéro de suivi'); return; }
+    document.getElementById('trackInput').value = num;
+    trackParcel();
+}
+
+// ============================================
+// REÇU PDF
+// ============================================
+function showRecuModal(parcelId) {
+    const parcel = DB.get('parcels').find(p => p.id === parcelId);
+    if (!parcel) return;
+    currentRecuParcel = parcel;
+    
+    const cities = DB.get('cities');
+    const originCity = cities.find(c => c.id === parcel.origin_city_id);
+    const destCity = cities.find(c => c.id === parcel.destination_city_id);
+    
+    let html = `<div style="background:#f8f9fa;padding:20px;border-radius:12px;">`;
+    html += `<h4 style="color:#0f3460;margin-bottom:12px;">🧾 Reçu N° ${parcel.tracking_number}</h4>`;
+    html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px;">`;
+    html += `<div><strong>Expéditeur:</strong><br>${parcel.sender_name}<br>${parcel.sender_phone}</div>`;
+    html += `<div><strong>Destinataire:</strong><br>${parcel.recipient_name}<br>${parcel.recipient_phone}</div>`;
+    html += `<div><strong>Départ:</strong> ${originCity?.name || 'N/A'}</div>`;
+    html += `<div><strong>Destination:</strong> ${destCity?.name || 'N/A'}</div>`;
+    html += `<div><strong>Poids:</strong> ${parcel.weight_kg} kg</div>`;
+    html += `<div><strong>Distance:</strong> ${parcel.distance_km} km</div>`;
+    html += `</div>`;
+    html += `<div style="margin-top:16px;padding-top:16px;border-top:2px solid #0f3460;">`;
+    html += `<div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span>Transport:</span><span>${roundPrice(parcel.weight_price + parcel.distance_price).toLocaleString()} F</span></div>`;
+    if (parcel.handling_fee > 0) html += `<div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span>Frais gestion:</span><span>${roundPrice(parcel.handling_fee).toLocaleString()} F</span></div>`;
+    if (parcel.insurance_fee > 0) html += `<div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span>Assurance:</span><span>${roundPrice(parcel.insurance_fee).toLocaleString()} F</span></div>`;
+    if (parcel.customs_fee > 0) html += `<div style="display:flex;justify-content:space-between;margin-bottom:8px;color:#e67e22;"><span>Douane:</span><span>${roundPrice(parcel.customs_fee).toLocaleString()} F</span></div>`;
+    html += `<div style="display:flex;justify-content:space-between;font-size:18px;font-weight:700;color:#0f3460;margin-top:12px;padding-top:12px;border-top:2px solid #0f3460;"><span>TOTAL:</span><span>${roundPrice(parcel.total_price).toLocaleString()} FCFA</span></div>`;
+    html += `</div>`;
+    
+    if (parcel.confirmation_code) {
+        html += `<div class="confirmation-code" style="margin-top:16px;"><p style="font-size:12px;color:#666;margin-bottom:8px;">Code de confirmation destinataire</p><div class="code">${parcel.confirmation_code}</div><p style="font-size:11px;color:#999;">À communiquer au destinataire</p></div>`;
+    }
+    
+    html += `<div style="margin-top:16px;font-size:11px;color:#666;text-align:center;">Date: ${new Date(parcel.created_at).toLocaleString('fr-FR')}<br>Conservez ce reçu pour le suivi de votre colis</div>`;
+    html += `</div>`;
+    
+    document.getElementById('recuContent').innerHTML = html;
+    document.getElementById('recuModal').classList.add('active');
+}
+
+function closeRecuModal() { document.getElementById('recuModal').classList.remove('active'); currentRecuParcel = null; }
+
+function downloadRecuPDF() {
+    if (!currentRecuParcel) return;
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const p = currentRecuParcel;
+    const cities = DB.get('cities');
+    const originCity = cities.find(c => c.id === p.origin_city_id);
+    const destCity = cities.find(c => c.id === p.destination_city_id);
+    const company = DB.get('companies').find(c => c.id === p.company_id);
+    
+    doc.setFillColor(15, 52, 96);
+    doc.rect(0, 0, 210, 40, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(22);
+    doc.text('REÇU COLIS', 105, 20, { align: 'center' });
+    doc.setFontSize(12);
+    doc.text(`${company?.name || 'ColisExpress'} | N° ${p.tracking_number}`, 105, 30, { align: 'center' });
+    
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(11);
+    doc.setFont(undefined, 'bold');
+    doc.text('EXPÉDITEUR', 20, 60);
+    doc.setFont(undefined, 'normal');
+    doc.text(`${p.sender_name} - ${p.sender_phone}`, 20, 70);
+    
+    doc.setFont(undefined, 'bold');
+    doc.text('DESTINATAIRE', 120, 60);
+    doc.setFont(undefined, 'normal');
+    doc.text(`${p.recipient_name} - ${p.recipient_phone}`, 120, 70);
+    
+    doc.setFont(undefined, 'bold');
+    doc.text('TRAJET', 20, 90);
+    doc.setFont(undefined, 'normal');
+    doc.text(`${originCity?.name || 'N/A'} → ${destCity?.name || 'N/A'} (${p.distance_km} km)`, 20, 100);
+    
+    doc.setFont(undefined, 'bold');
+    doc.text('DÉTAILS', 20, 120);
+    doc.setFont(undefined, 'normal');
+    doc.text(`Poids: ${p.weight_kg} kg`, 20, 130);
+    doc.text(`Description: ${p.description || 'N/A'}`, 20, 140);
+    
+    doc.setFont(undefined, 'bold');
+    doc.text('FACTURATION', 20, 160);
+    doc.setFont(undefined, 'normal');
+    let y = 170;
+    doc.text(`Transport: ${roundPrice(p.weight_price + p.distance_price).toLocaleString()} FCFA`, 20, y); y += 10;
+    if (p.handling_fee > 0) { doc.text(`Frais gestion: ${roundPrice(p.handling_fee).toLocaleString()} FCFA`, 20, y); y += 10; }
+    if (p.insurance_fee > 0) { doc.text(`Assurance: ${roundPrice(p.insurance_fee).toLocaleString()} FCFA`, 20, y); y += 10; }
+    if (p.customs_fee > 0) { doc.text(`Douane: ${roundPrice(p.customs_fee).toLocaleString()} FCFA`, 20, y); y += 10; }
+    
+    doc.setFont(undefined, 'bold');
+    doc.setFontSize(14);
+    doc.text(`TOTAL: ${roundPrice(p.total_price).toLocaleString()} FCFA`, 20, y + 10);
+    
+    if (p.confirmation_code) {
+        y += 20;
+        doc.setFontSize(10);
+        doc.text(`Code confirmation destinataire: ${p.confirmation_code}`, 20, y);
+    }
+    
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+    doc.text(`Date: ${new Date(p.created_at).toLocaleString('fr-FR')}`, 20, 270);
+    doc.text('Merci de votre confiance - ColisExpress', 105, 280, { align: 'center' });
+    
+    doc.save(`recu_${p.tracking_number}.pdf`);
+    
+    setTimeout(() => simulateSMSForParcel(p), 500);
+}
+
+// ============================================
+// SIMULATION SMS
+// ============================================
+function simulateSMSForParcel(parcel) {
+    currentSmsParcel = parcel;
+    const cities = DB.get('cities');
+    const destCity = cities.find(c => c.id === parcel.destination_city_id);
+    
+    const messages = [
+        { to: parcel.sender_phone, label: 'Expéditeur', text: `Bonjour ${parcel.sender_name}, votre colis ${parcel.tracking_number} (${parcel.weight_kg}kg) a été pris en charge par ${currentUser.company_name}. Destination: ${destCity?.name}. Suivi: colisexpress.com/track/${parcel.tracking_number}` },
+        { to: parcel.recipient_phone, label: 'Destinataire', text: `Bonjour ${parcel.recipient_name}, un colis vous provenant de ${parcel.sender_name} est en cours d'acheminement vers ${destCity?.name}. N°: ${parcel.tracking_number}. Code de confirmation: ${parcel.confirmation_code || 'N/A'}. Nous vous notifierons à l'arrivée.` }
+    ];
+    
+    document.getElementById('smsContent').innerHTML = `
+        <div style="margin-bottom:16px;">
+            <h4 style="color:#0f3460;margin-bottom:12px;">📱 Messages à envoyer</h4>
+            ${messages.map((msg, i) => `
+                <div class="sms-preview">
+                    <div class="phone">📞 ${msg.to} (${msg.label})</div>
+                    <div class="message">${msg.text}</div>
+                </div>
+            `).join('')}
+        </div>
+        <div>
+            <h4 style="color:#0f3460;margin-bottom:12px;">📜 Historique des SMS envoyés</h4>
+            <div class="sms-history" id="smsHistory">
+                ${loadSmsHistory()}
+            </div>
+        </div>
+    `;
+    document.getElementById('smsModal').classList.add('active');
+}
+
+function loadSmsHistory() {
+    const history = DB.get('sms_history') || [];
+    const companyHistory = history.filter(s => s.company_id === currentUser.company_id).slice(-10).reverse();
+    if (companyHistory.length === 0) return '<p style="color:#999;text-align:center;">Aucun SMS envoyé</p>';
+    return companyHistory.map(s => `
+        <div class="sms-item">
+            <div class="time">${new Date(s.date).toLocaleString('fr-FR')} → ${s.phone}</div>
+            <div class="text">${s.message}</div>
+        </div>
+    `).join('');
+}
+
+function simulateSendSMS() {
+    if (!currentSmsParcel) return;
+    const cities = DB.get('cities');
+    const destCity = cities.find(c => c.id === currentSmsParcel.destination_city_id);
+    const history = DB.get('sms_history') || [];
+    const now = new Date().toISOString();
+    
+    history.push({
+        company_id: currentUser.company_id,
+        phone: currentSmsParcel.sender_phone,
+        message: `Colis ${currentSmsParcel.tracking_number} pris en charge. Destination: ${destCity?.name}`,
+        date: now,
+        type: 'sender'
+    });
+    history.push({
+        company_id: currentUser.company_id,
+        phone: currentSmsParcel.recipient_phone,
+        message: `Colis ${currentSmsParcel.tracking_number} en cours d'acheminement vers ${destCity?.name}. Code: ${currentSmsParcel.confirmation_code}`,
+        date: now,
+        type: 'recipient'
+    });
+    DB.set('sms_history', history);
+    
+    document.getElementById('smsHistory').innerHTML = loadSmsHistory();
+    alert('✅ SMS envoyés avec succès ! (Simulation)\n\n2 messages envoyés :\n- Expéditeur : ' + currentSmsParcel.sender_phone + '\n- Destinataire : ' + currentSmsParcel.recipient_phone + '\n\nCode de confirmation: ' + currentSmsParcel.confirmation_code);
+}
+
+function closeSmsModal() { document.getElementById('smsModal').classList.remove('active'); currentSmsParcel = null; }
+
+// ============================================
+// TICKET THERMIQUE
+// ============================================
+function showTicketModal(parcelId) {
+    const parcel = DB.get('parcels').find(p => p.id === parcelId);
+    if (!parcel) return;
+    const cities = DB.get('cities');
+    const originCity = cities.find(c => c.id === parcel.origin_city_id);
+    const destCity = cities.find(c => c.id === parcel.destination_city_id);
+    const company = DB.get('companies').find(c => c.id === parcel.company_id);
+    
+    document.getElementById('ticketContent').innerHTML = `
+        <div class="ticket-thermal">
+            <div class="header">
+                <div style="font-weight:bold;font-size:14px;">${company?.name || 'ColisExpress'}</div>
+                <div style="font-size:10px;">${company?.phone || ''}</div>
+                <div style="font-size:10px;margin-top:4px;">================================</div>
+                <div style="font-weight:bold;">REÇU COLIS</div>
+                <div style="font-size:10px;">N° ${parcel.tracking_number}</div>
+            </div>
+            <div class="line"><span>Date:</span><span>${new Date(parcel.created_at).toLocaleDateString('fr-FR')}</span></div>
+            <div class="line"><span>Heure:</span><span>${new Date(parcel.created_at).toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'})}</span></div>
+            <div style="border-top:1px dashed #000;margin:8px 0;"></div>
+            <div style="font-size:11px;"><strong>EXP:</strong> ${parcel.sender_name}</div>
+            <div style="font-size:11px;"><strong>DEST:</strong> ${parcel.recipient_name}</div>
+            <div style="font-size:11px;"><strong>TEL:</strong> ${parcel.recipient_phone}</div>
+            <div style="border-top:1px dashed #000;margin:8px 0;"></div>
+            <div class="line"><span>Trajet:</span><span>${originCity?.name || '?'}→${destCity?.name || '?'}</span></div>
+            <div class="line"><span>Poids:</span><span>${parcel.weight_kg} kg</span></div>
+            <div class="line"><span>Distance:</span><span>${parcel.distance_km} km</span></div>
+            <div style="border-top:1px dashed #000;margin:8px 0;"></div>
+            <div class="line"><span>Transport:</span><span>${roundPrice(parcel.weight_price + parcel.distance_price).toLocaleString()} F</span></div>
+            ${parcel.handling_fee > 0 ? `<div class="line"><span>Gestion:</span><span>${roundPrice(parcel.handling_fee).toLocaleString()} F</span></div>` : ''}
+            ${parcel.insurance_fee > 0 ? `<div class="line"><span>Assurance:</span><span>${roundPrice(parcel.insurance_fee).toLocaleString()} F</span></div>` : ''}
+            ${parcel.customs_fee > 0 ? `<div class="line"><span>Douane:</span><span>${roundPrice(parcel.customs_fee).toLocaleString()} F</span></div>` : ''}
+            <div class="total">
+                <div class="line"><span>TOTAL:</span><span>${roundPrice(parcel.total_price).toLocaleString()} FCFA</span></div>
+            </div>
+            ${parcel.confirmation_code ? `<div style="margin-top:8px;font-size:10px;text-align:center;">Code confirmation: <strong>${parcel.confirmation_code}</strong></div>` : ''}
+            <div class="footer">
+                <div>================================</div>
+                <div>Merci de votre confiance !</div>
+                <div style="margin-top:4px;">Conservez ce reçu</div>
+                <div>Pour suivi: colisexpress.com</div>
+            </div>
+        </div>
+    `;
+    document.getElementById('ticketModal').classList.add('active');
+}
+
+function closeTicketModal() { document.getElementById('ticketModal').classList.remove('active'); }
+
+function printTicket() {
+    const ticketContent = document.getElementById('ticketContent').innerHTML;
+    const printWindow = window.open('', '', 'width=300,height=600');
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Ticket</title>
+            <style>
+                body { margin: 0; padding: 0; font-family: 'Courier New', monospace; }
+                .ticket-thermal { width: 80mm; padding: 8px; font-size: 12px; }
+                .header { text-align: center; border-bottom: 1px dashed #000; padding-bottom: 8px; margin-bottom: 8px; }
+                .line { display: flex; justify-content: space-between; margin: 4px 0; }
+                .total { border-top: 1px dashed #000; padding-top: 8px; margin-top: 8px; font-weight: bold; font-size: 14px; }
+                .footer { text-align: center; border-top: 1px dashed #000; padding-top: 8px; margin-top: 8px; font-size: 10px; }
+            </style>
+        </head>
+        <body>${ticketContent}</body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+}
+
+// ============================================
+// VOIR PHOTO DU COLIS
+// ============================================
+function showParcelPhoto(parcelId) {
+    const parcel = DB.get('parcels').find(p => p.id === parcelId);
+    if (!parcel || !parcel.photo) {
+        alert('Aucune photo disponible');
+        return;
+    }
+    
+    const modal = document.createElement('div');
+    modal.className = 'photo-viewer';
+    modal.innerHTML = `
+        <div class="photo-viewer-content">
+            <h3 style="margin-bottom:12px;">📦 ${parcel.tracking_number}</h3>
+            <img src="${parcel.photo}" alt="Photo du colis">
+            <div style="margin-top:12px;text-align:center;">
+                <button onclick="this.closest('.photo-viewer').remove()" class="btn btn-outline" style="width:auto;">Fermer</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+// ============================================
+// LISTE COLIS
+// ============================================
+function loadParcelsList() {
+    filterParcels();
+}
+
+function filterParcels() {
+    const searchTerm = document.getElementById('searchParcels').value.toLowerCase();
+    const statusFilter = document.getElementById('filterStatus').value;
+    
+    let parcels = (DB.get('parcels') || []).filter(p => p.company_id === currentUser.company_id);
+    
+    if (searchTerm) {
+        parcels = parcels.filter(p => 
+            p.tracking_number.toLowerCase().includes(searchTerm) ||
+            p.sender_name.toLowerCase().includes(searchTerm) ||
+            p.recipient_name.toLowerCase().includes(searchTerm) ||
+            p.sender_phone.includes(searchTerm) ||
+            p.recipient_phone.includes(searchTerm)
+        );
+    }
+    
+    if (statusFilter) {
+        parcels = parcels.filter(p => p.status === statusFilter);
+    }
+    
+    if (currentFilter === 'today') {
+        const today = new Date().toISOString().split('T')[0];
+        parcels = parcels.filter(p => p.created_at.startsWith(today));
+    } else if (currentFilter === 'week') {
+        const weekAgo = new Date(Date.now() - 7 * 86400000);
+        parcels = parcels.filter(p => new Date(p.created_at) >= weekAgo);
+    } else if (currentFilter === 'customs') {
+        parcels = parcels.filter(p => p.is_customs);
+    } else if (currentFilter === 'insured') {
+        parcels = parcels.filter(p => p.is_insured);
+    }
+    
+    parcels.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    
+    const container = document.getElementById('parcelsListContainer');
+    if (parcels.length === 0) {
+        container.innerHTML = '<div class="empty-state"><div style="font-size:48px;">📦</div><p>Aucun colis trouvé</p></div>';
+        return;
+    }
+    
+    const cities = DB.get('cities');
+    container.innerHTML = parcels.map(p => {
+        const destCity = cities.find(c => c.id === p.destination_city_id);
+        return `
+            <div class="user-card" style="border-left: 4px solid ${p.status === 'delivered' ? '#27ae60' : p.status === 'in_transit' ? '#f39c12' : '#0f3460'};" onclick="showParcelActions(${p.id})">
+                <div class="user-info-block">
+                    <div style="font-weight:700; font-size:15px;">${p.tracking_number} ${p.is_customs ? '<span style="background:#e67e22;color:white;padding:2px 6px;border-radius:8px;font-size:10px;">🛃</span>' : ''} ${p.confirmed_by_recipient ? '<span style="background:#27ae60;color:white;padding:2px 6px;border-radius:8px;font-size:10px;">✅</span>' : ''}</div>
+                    <div style="font-size:12px; color:#666; margin-top:4px;">${p.sender_name} → ${p.recipient_name}</div>
+                    <div style="font-size:12px; color:#999; margin-top:2px;">📍 ${destCity?.name || 'N/A'} • ${p.weight_kg} kg • ${STATUS_LABELS[p.status]}</div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-weight:700;color:#0f3460;">${roundPrice(p.total_price).toLocaleString()} F</div>
+                    <div style="font-size:11px;color:#999;">${new Date(p.created_at).toLocaleDateString('fr-FR')}</div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function setFilter(filter) {
+    currentFilter = filter;
+    document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    filterParcels();
+}
+
+function showParcelActions(parcelId) {
+    const parcel = DB.get('parcels').find(p => p.id === parcelId);
+    if (!parcel) return;
+    
+    const cities = DB.get('cities');
+    const originCity = cities.find(c => c.id === parcel.origin_city_id);
+    const destCity = cities.find(c => c.id === parcel.destination_city_id);
+    
+    const actionsDiv = document.createElement('div');
+    actionsDiv.id = 'parcelActionsDiv';
+    actionsDiv.style.cssText = 'background:white;padding:20px;border-radius:12px;margin-top:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06);';
+    
+    let html = `
+        <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:16px;">
+            <div>
+                <h3 style="margin-bottom:8px;">📦 ${parcel.tracking_number}</h3>
+                <p style="color:#666;font-size:13px;">${originCity?.name || 'Départ'} → ${destCity?.name || 'Destination'} (${parcel.distance_km} km)</p>
+            </div>
+            <span class="role-badge role-${parcel.status === 'delivered' ? 'admin' : parcel.status === 'in_transit' ? 'controller' : 'clerk'}" 
+                style="font-size:12px;padding:6px 12px;">${STATUS_LABELS[parcel.status]}</span>
+        </div>
+        
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+            <div style="background:#f8f9fa;padding:12px;border-radius:8px;">
+                <div style="font-size:11px;color:#666;">Expéditeur</div>
+                <div style="font-weight:600;">${parcel.sender_name}</div>
+                <div style="font-size:12px;color:#666;">${parcel.sender_phone}</div>
+            </div>
+            <div style="background:#f8f9fa;padding:12px;border-radius:8px;">
+                <div style="font-size:11px;color:#666;">Destinataire</div>
+                <div style="font-weight:600;">${parcel.recipient_name}</div>
+                <div style="font-size:12px;color:#666;">${parcel.recipient_phone}</div>
+            </div>
+        </div>
+        
+        <div style="border-top:1px solid #e0e0e0;padding-top:16px;margin-top:16px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                <span>Poids:</span><strong>${parcel.weight_kg} kg</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                <span>Description:</span><strong>${parcel.description || 'N/A'}</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                <span>Total payé:</span><strong style="color:#0f3460;font-size:18px;">${roundPrice(parcel.total_price).toLocaleString()} FCFA</strong>
+            </div>
+    `;
+    
+    if (parcel.confirmation_code) {
+        html += `<div class="confirmation-code" style="margin-top:16px;"><p style="font-size:12px;color:#666;margin-bottom:8px;">Code de confirmation destinataire</p><div class="code">${parcel.confirmation_code}</div><p style="font-size:11px;color:#999;">${parcel.confirmed_by_recipient ? '✅ Confirmé par le destinataire' : '⏳ En attente de confirmation'}</p></div>`;
+    }
+    
+    html += `
+        </div>
+        
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:16px;">
+            <button class="btn btn-sm btn-success" onclick="showRecuModal(${parcel.id})">🧾 Reçu</button>
+            <button class="btn btn-sm btn-info" onclick="showTicketModal(${parcel.id})">🖨️ Ticket</button>
+            <button class="btn btn-sm btn-warning" onclick="simulateSMSForParcel(DB.get('parcels').find(p => p.id === ${parcel.id}))">📱 SMS</button>
+        </div>
+        
+        <button class="btn btn-outline" onclick="viewParcelTrajet(${parcel.id})" style="margin-top:10px;">
+            🗺️ Voir le trajet complet
+        </button>
+    `;
+    
+    actionsDiv.innerHTML = html;
+    
+    const existing = document.getElementById('parcelActionsDiv');
+    if (existing) existing.remove();
+    
+    document.getElementById('parcelsListContainer').insertAdjacentElement('afterend', actionsDiv);
+}
+
+function viewParcelTrajet(parcelId) {
+    const parcel = DB.get('parcels').find(p => p.id === parcelId);
+    if (!parcel) {
+        alert('Colis non trouvé');
+        return;
+    }
+    
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('sec-tracking').classList.add('active');
+    
+    document.getElementById('trackInput').value = parcel.tracking_number;
+    
+    const cities = DB.get('cities');
+    const originCity = cities.find(c => c.id === parcel.origin_city_id);
+    const destCity = cities.find(c => c.id === parcel.destination_city_id);
+    
+    let html = `<div style="background:white;padding:20px;border-radius:12px;margin-top:16px;">`;
+    html += `<h3>📦 ${parcel.tracking_number} ${parcel.is_customs ? '<span style="background:#e67e22;color:white;padding:3px 10px;border-radius:10px;font-size:12px;">🛃 DOUANE</span>' : ''}</h3>`;
+    html += `<p style="margin-top:8px;"><strong>Trajet:</strong> ${originCity?.name || 'Départ'} → ${destCity?.name || 'Destination'} (${parcel.distance_km} km)</p>`;
+    html += `<p><strong>Statut:</strong> ${STATUS_LABELS[parcel.status]}</p>`;
+    html += `<p><strong>Total payé:</strong> ${roundPrice(parcel.total_price).toLocaleString()} FCFA</p>`;
+    if (parcel.photo) html += `<img src="${parcel.photo}" style="max-width:100%;border-radius:8px;margin-top:12px;">`;
+    
+    if (parcel.trajet && parcel.trajet.length > 0) {
+        html += `<div class="trajet-timeline" style="margin-top:20px;"><h4>🗺️ Historique du trajet</h4>`;
+        const statusIcons = { created: '📝', paid: '💰', loaded: '🚌', in_transit: '🚚', arrived: '', ready_for_pickup: '📬', delivered: '✅' };
+        parcel.trajet.forEach((step, i) => {
+            const isLast = i === parcel.trajet.length - 1;
+            html += `
+                <div class="trajet-step ${isLast ? 'current' : 'done'}">
+                    <div class="trajet-icon">${statusIcons[step.status] || '📦'}</div>
+                    <div class="trajet-content">
+                        <div class="trajet-title">${step.label}</div>
+                        <div class="trajet-subtitle"> ${step.location}</div>
+                        <div class="trajet-date">${new Date(step.date).toLocaleString('fr-FR')}</div>
+                    </div>
+                </div>
+            `;
+        });
+        html += `</div>`;
+    }
+    
+    html += `<div style="margin-top:20px;display:flex;gap:10px;">`;
+    html += `<button class="btn btn-success" onclick="showRecuModal(${parcel.id})">🧾 Reçu PDF</button>`;
+    html += `<button class="btn btn-info" onclick="showTicketModal(${parcel.id})">🖨️ Ticket</button>`;
+    html += `<button class="btn btn-warning" onclick="simulateSMSForParcel(DB.get('parcels').find(p => p.id === ${parcel.id}))">📱 SMS</button>`;
+    html += `</div>`;
+    
+    html += `</div>`;
+    document.getElementById('trackResult').innerHTML = html;
+}
+
+// ============================================
+// TRANSACTIONS
+// ============================================
+function loadTransactions() {
+    const parcels = (DB.get('parcels') || []).filter(p => p.company_id === currentUser.company_id);
+    const now = new Date();
+    let filtered = parcels;
+    
+    if (transactionPeriod === 'today') {
+        const today = now.toISOString().split('T')[0];
+        filtered = parcels.filter(p => p.created_at.startsWith(today));
+    } else if (transactionPeriod === 'week') {
+        const weekAgo = new Date(now - 7 * 86400000);
+        filtered = parcels.filter(p => new Date(p.created_at) >= weekAgo);
+    } else if (transactionPeriod === 'month') {
+        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+        filtered = parcels.filter(p => new Date(p.created_at) >= monthStart);
+    }
+    
+    const totalTransactions = filtered.length;
+    const totalRevenue = filtered.reduce((sum, p) => sum + p.total_price, 0);
+    const transportRevenue = filtered.reduce((sum, p) => sum + p.weight_price + p.distance_price, 0);
+    const handlingRevenue = filtered.reduce((sum, p) => sum + (p.handling_fee || 0), 0);
+    const insuranceRevenue = filtered.reduce((sum, p) => sum + (p.insurance_fee || 0), 0);
+    const customsRevenue = filtered.reduce((sum, p) => sum + (p.customs_fee || 0), 0);
+    const cashAmount = filtered.filter(p => p.payment_method === 'cash').reduce((sum, p) => sum + p.total_price, 0);
+    const mobileAmount = filtered.filter(p => p.payment_method === 'mobile_money').reduce((sum, p) => sum + p.total_price, 0);
+    
+    document.getElementById('transactionStats').innerHTML = `
+        <div class="stat-card">
+            <div class="label">💰 Transactions</div>
+            <div class="value">${totalTransactions}</div>
+            <div class="sub">Colis</div>
+        </div>
+        <div class="stat-card" style="background:#27ae60;color:white;">
+            <div class="label" style="color:rgba(255,255,255,0.8);">Total Recettes</div>
+            <div class="value">${roundPrice(totalRevenue).toLocaleString()} F</div>
+            <div class="sub">FCFA</div>
+        </div>
+        <div class="stat-card">
+            <div class="label">💵 Espèces</div>
+            <div class="value">${roundPrice(cashAmount).toLocaleString()} F</div>
+            <div class="sub">${totalRevenue > 0 ? Math.round(cashAmount/totalRevenue*100) : 0}%</div>
+        </div>
+        <div class="stat-card">
+            <div class="label">📱 Mobile Money</div>
+            <div class="value">${roundPrice(mobileAmount).toLocaleString()} F</div>
+            <div class="sub">${totalRevenue > 0 ? Math.round(mobileAmount/totalRevenue*100) : 0}%</div>
+        </div>
+    `;
+    
+    const agencies = DB.get('agencies');
+    let tableHTML = `
+        <table>
+            <thead>
+                <tr>
+                    <th>N° Suivi</th>
+                    <th>Date</th>
+                    <th>Expéditeur</th>
+                    <th>Destination</th>
+                    <th>Transport</th>
+                    <th>Frais</th>
+                    <th>Total</th>
+                    <th>Paiement</th>
+                    <th>Photo</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    
+    filtered.forEach(p => {
+        const dest = agencies.find(a => a.id === p.destination_agency_id)?.name || 'N/A';
+        const paymentLabel = p.payment_method === 'cash' ? '💵 Espèces' : '📱 Mobile';
+        const paymentColor = p.payment_method === 'cash' ? '#27ae60' : '#f39c12';
+        const transportTotal = p.weight_price + p.distance_price;
+        const feesTotal = (p.handling_fee || 0) + (p.insurance_fee || 0) + (p.customs_fee || 0);
+        
+        tableHTML += `
+            <tr>
+                <td><strong>${p.tracking_number}</strong></td>
+                <td>${new Date(p.created_at).toLocaleDateString('fr-FR')}</td>
+                <td>${p.sender_name}</td>
+                <td>${dest}</td>
+                <td>${roundPrice(transportTotal).toLocaleString()} F</td>
+                <td>${roundPrice(feesTotal).toLocaleString()} F</td>
+                <td><strong>${roundPrice(p.total_price).toLocaleString()} F</strong></td>
+                <td><span style="color:${paymentColor};font-weight:600;">${paymentLabel}</span></td>
+                <td>
+                    ${p.photo 
+                        ? `<button class="btn btn-sm btn-info" onclick="showParcelPhoto(${p.id})" style="width:auto;padding:4px 8px;">👁️ Voir</button>` 
+                        : '<span style="color:#999;">Aucune</span>'}
+                </td>
+            </tr>
+        `;
+    });
+    
+    tableHTML += `
+            </tbody>
+            <tfoot>
+                <tr class="total-row">
+                    <td colspan="5">TOTAL (${totalTransactions} transactions)</td>
+                    <td>${roundPrice(transportRevenue).toLocaleString()} F</td>
+                    <td>${roundPrice(handlingRevenue + insuranceRevenue + customsRevenue).toLocaleString()} F</td>
+                    <td colspan="2">${roundPrice(totalRevenue).toLocaleString()} FCFA</td>
+                </tr>
+            </tfoot>
+        </table>
+    `;
+    
+    document.getElementById('transactionTable').innerHTML = filtered.length === 0 
+        ? '<p style="padding:40px;text-align:center;color:#999;">Aucune transaction pour cette période</p>' 
+        : tableHTML;
+}
+
+function setTransactionPeriod(period, btnElement) {
+    transactionPeriod = period;
+    
+    document.querySelectorAll('.period-btn').forEach(btn => {
+        btn.classList.remove('btn-primary', 'active');
+        btn.classList.add('btn-outline');
+    });
+    
+    if (btnElement) {
+        btnElement.classList.remove('btn-outline');
+        btnElement.classList.add('btn-primary', 'active');
+    }
+    
+    loadTransactions();
+}
+
+function exportTransactions() {
+    const parcels = (DB.get('parcels') || []).filter(p => p.company_id === currentUser.company_id);
+    const now = new Date();
+    let filtered = parcels;
+    
+    if (transactionPeriod === 'today') {
+        const today = now.toISOString().split('T')[0];
+        filtered = parcels.filter(p => p.created_at.startsWith(today));
+    } else if (transactionPeriod === 'week') {
+        const weekAgo = new Date(now - 7 * 86400000);
+        filtered = parcels.filter(p => new Date(p.created_at) >= weekAgo);
+    } else if (transactionPeriod === 'month') {
+        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+        filtered = parcels.filter(p => new Date(p.created_at) >= monthStart);
+    }
+    
+    const cities = DB.get('cities');
+    let csv = 'N° Suivi;Date;Expéditeur;Tél Exp;Destinataire;Tél Dest;Destination;Poids;Distance;Transport;Gestion;Assurance;Douane;Total;Paiement;Statut\n';
+    filtered.forEach(p => {
+        const destCity = cities.find(c => c.id === p.destination_city_id);
+        csv += `${p.tracking_number};${new Date(p.created_at).toLocaleDateString('fr-FR')};${p.sender_name};${p.sender_phone};${p.recipient_name};${p.recipient_phone};${destCity?.name || 'N/A'};${p.weight_kg};${p.distance_km};${roundPrice(p.weight_price + p.distance_price)};${roundPrice(p.handling_fee || 0)};${roundPrice(p.insurance_fee || 0)};${roundPrice(p.customs_fee || 0)};${roundPrice(p.total_price)};${p.payment_method};${p.status}\n`;
+    });
+    
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `transactions_${currentUser.company_name}_${transactionPeriod}_${now.toISOString().split('T')[0]}.csv`;
+    link.click();
+}
+
+// ============================================
+// SUIVI COLIS
+// ============================================
+function trackParcel() {
+    const num = document.getElementById('trackInput').value.trim();
+    if (!num) { alert('Entrez un numéro'); return; }
+    const parcels = (DB.get('parcels') || []).filter(p => currentUser.isSuperAdmin || p.company_id === currentUser.company_id);
+    const parcel = parcels.find(p => p.tracking_number === num);
+    const el = document.getElementById('trackResult');
+    if (!parcel) { el.innerHTML = '<p style="color:#e74c3c;">❌ Colis non trouvé</p>'; return; }
+    
+    const cities = DB.get('cities');
+    const originCity = cities.find(c => c.id === parcel.origin_city_id);
+    const destCity = cities.find(c => c.id === parcel.destination_city_id);
+    
+    let html = `<div style="background:white;padding:20px;border-radius:12px;margin-top:16px;">`;
+    html += `<h3>📦 ${parcel.tracking_number} ${parcel.is_customs ? '<span style="background:#e67e22;color:white;padding:3px 10px;border-radius:10px;font-size:12px;"> DOUANE</span>' : ''}</h3>`;
+    html += `<p style="margin-top:8px;"><strong>Trajet:</strong> ${originCity?.name || 'Départ'} → ${destCity?.name || 'Destination'} (${parcel.distance_km} km)</p>`;
+    html += `<p><strong>Statut:</strong> ${STATUS_LABELS[parcel.status]}</p>`;
+    html += `<p><strong>Total payé:</strong> ${roundPrice(parcel.total_price).toLocaleString()} FCFA</p>`;
+    if (parcel.photo) html += `<img src="${parcel.photo}" style="max-width:100%;border-radius:8px;margin-top:12px;">`;
+    
+    if (parcel.trajet && parcel.trajet.length > 0) {
+        html += `<div class="trajet-timeline" style="margin-top:20px;"><h4>🗺️ Historique du trajet</h4>`;
+        const statusIcons = { created: '📝', paid: '💰', loaded: '🚌', in_transit: '🚚', arrived: '📍', ready_for_pickup: '📬', delivered: '✅' };
+        parcel.trajet.forEach((step, i) => {
+            const isLast = i === parcel.trajet.length - 1;
+            html += `
+                <div class="trajet-step ${isLast ? 'current' : 'done'}">
+                    <div class="trajet-icon">${statusIcons[step.status] || '📦'}</div>
+                    <div class="trajet-content">
+                        <div class="trajet-title">${step.label}</div>
+                        <div class="trajet-subtitle">📍 ${step.location}</div>
+                        <div class="trajet-date">${new Date(step.date).toLocaleString('fr-FR')}</div>
+                    </div>
+                </div>
+            `;
+        });
+        html += `</div>`;
+    }
+    
+    html += `<div style="margin-top:20px;display:flex;gap:10px;">`;
+    html += `<button class="btn btn-success" onclick="showRecuModal(${parcel.id})">🧾 Reçu PDF</button>`;
+    html += `<button class="btn btn-info" onclick="showTicketModal(${parcel.id})">🖨️ Ticket</button>`;
+    html += `<button class="btn btn-warning" onclick="simulateSMSForParcel(DB.get('parcels').find(p => p.id === ${parcel.id}))">📱 SMS</button>`;
+    html += `</div>`;
+    
+    html += `</div>`;
+    el.innerHTML = html;
+}
+
+// ============================================
+// DASHBOARD
+// ============================================
+function loadDashboard() {
+    const parcels = (DB.get('parcels') || []).filter(p => p.company_id === currentUser.company_id);
+    const today = new Date().toISOString().split('T')[0];
+    const todayParcels = parcels.filter(p => p.created_at.startsWith(today));
+    const todayRevenue = todayParcels.reduce((sum, p) => sum + p.total_price, 0);
+    const weekAgo = new Date(Date.now() - 7 * 86400000);
+    const weekParcels = parcels.filter(p => new Date(p.created_at) >= weekAgo);
+    const weekRevenue = weekParcels.reduce((sum, p) => sum + p.total_price, 0);
+    const deliveredCount = parcels.filter(p => p.status === 'delivered').length;
+    const transitCount = parcels.filter(p => p.status === 'in_transit').length;
+    
+    const senderStats = {};
+    parcels.forEach(p => {
+        if (!senderStats[p.sender_phone]) {
+            senderStats[p.sender_phone] = { count: 0, name: p.sender_name };
+        }
+        senderStats[p.sender_phone].count += 1;
+    });
+    const topSenders = Object.entries(senderStats)
+        .sort((a, b) => b[1].count - a[1].count)
+        .slice(0, 3);
+
+    document.getElementById('statsGrid').innerHTML = `
+        <div class="stat-card"><div class="label">📦 Aujourd'hui</div><div class="value">${todayParcels.length}</div><div class="sub">Total: ${parcels.length}</div></div>
+        <div class="stat-card"><div class="label">💰 Recettes jour</div><div class="value">${roundPrice(todayRevenue).toLocaleString()} F</div><div class="sub">Semaine: ${roundPrice(weekRevenue).toLocaleString()} F</div></div>
+        <div class="stat-card"><div class="label">🚚 En transit</div><div class="value">${transitCount}</div><div class="sub">À suivre</div></div>
+        <div class="stat-card"><div class="label">✅ Livrés</div><div class="value">${deliveredCount}</div><div class="sub">Total</div></div>
+        <div class="stat-card" style="grid-column: span 2;">
+            <div class="label">🏆 Top 3 Expéditeurs</div>
+            ${topSenders.length > 0 
+                ? topSenders.map((s, i) => `
+                    <div style="margin-top:4px;font-size:13px;">
+                        <strong>${i+1}.</strong> ${s[1].name} 
+                        <span style="color:#666;font-size:11px;">(${s[0]})</span>
+                        <span style="background:#0f3460;color:white;padding:2px 8px;border-radius:10px;margin-left:6px;">${s[1].count} colis</span>
+                    </div>
+                `).join('') 
+                : '<div style="color:#999;font-size:13px;">Aucune donnée</div>'}
+        </div>
+    `;
+    
+    const last7Days = [];
+    const parcelsByDay = [];
+    for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dateStr = date.toISOString().split('T')[0];
+        last7Days.push(date.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric' }));
+        parcelsByDay.push(parcels.filter(p => p.created_at.startsWith(dateStr)).length);
+    }
+    
+    if (charts.parcels) charts.parcels.destroy();
+    charts.parcels = new Chart(document.getElementById('chartParcels'), {
+        type: 'line',
+        data: {
+            labels: last7Days,
+            datasets: [{
+                label: 'Colis',
+                data: parcelsByDay,
+                borderColor: '#0f3460',
+                backgroundColor: 'rgba(15, 52, 96, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+    });
+    
+    const revenueByDay = [];
+    for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dateStr = date.toISOString().split('T')[0];
+        revenueByDay.push(parcels.filter(p => p.created_at.startsWith(dateStr)).reduce((sum, p) => sum + p.total_price, 0));
+    }
+    
+    if (charts.revenue) charts.revenue.destroy();
+    charts.revenue = new Chart(document.getElementById('chartRevenue'), {
+        type: 'bar',
+        data: {
+            labels: last7Days,
+            datasets: [{
+                label: 'Revenus (FCFA)',
+                data: revenueByDay,
+                backgroundColor: '#27ae60'
+            }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+    });
+    
+    const cities = DB.get('cities');
+    const destCounts = {};
+    parcels.forEach(p => {
+        const city = cities.find(c => c.id === p.destination_city_id);
+        const cityName = city?.name || 'Inconnue';
+        destCounts[cityName] = (destCounts[cityName] || 0) + 1;
+    });
+    
+    if (charts.destinations) charts.destinations.destroy();
+    charts.destinations = new Chart(document.getElementById('chartDestinations'), {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(destCounts),
+            datasets: [{
+                data: Object.values(destCounts),
+                backgroundColor: ['#0f3460', '#27ae60', '#f39c12', '#e74c3c', '#9b59b6']
+            }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+    });
+}
+
+// ============================================
+// DESTINATIONS & DISTANCES
+// ============================================
+function getOriginCity() {
+    const agencies = DB.get('agencies').filter(a => a.company_id === currentUser.company_id);
+    if (agencies.length === 0) return null;
+    const mainAgency = agencies[0];
+    const cities = DB.get('cities');
+    return cities.find(c => c.id === mainAgency.city_id);
+}
+
+function loadRoutes() {
+    const cid = currentUser.company_id;
+    const routes = DB.get('routes').filter(r => r.company_id === cid);
+    const cities = DB.get('cities');
+    const originCity = getOriginCity();
+    
+    const container = document.getElementById('routesList');
+    if (routes.length === 0) {
+        container.innerHTML = '<p style="color:#999;text-align:center;padding:10px;">Aucune destination configurée</p>';
+        return;
+    }
+    
+    container.innerHTML = routes.map(r => {
+        const toCity = cities.find(c => c.id === r.to_city_id);
+        return `
+            <div class="route-row" data-id="${r.id}">
+                <div><label style="font-size:10px;">De (Origine)</label><input type="text" value="${r.from_name || originCity?.name || ''}" class="r-from" readonly style="background:#f0f0f0;"></div>
+                <div><label style="font-size:10px;">Vers (Destination)</label><input type="text" value="${r.to_name || toCity?.name || ''}" class="r-to" readonly style="background:#f0f0f0;"></div>
+                <div><label style="font-size:10px;">Distance (km)</label><input type="number" value="${r.distance_km}" class="r-dist"></div>
+                <button class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">🗑️</button>
+            </div>
+        `;
+    }).join('');
+}
+
+function addRouteRow() {
+    const originCity = getOriginCity();
+    const cities = DB.get('cities');
+    const cityOptions = cities.filter(c => c.id !== originCity?.id).map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+    
+    document.getElementById('routesList').insertAdjacentHTML('beforeend', `
+        <div class="route-row">
+            <div>
+                <label style="font-size:10px;">De (Origine)</label>
+                <input type="text" value="${originCity?.name || ''}" class="r-from" readonly style="background:#f0f0f0;">
+            </div>
+            <div>
+                <label style="font-size:10px;">Vers (Destination)</label>
+                <div style="display:flex;gap:6px;">
+                    <select class="r-to-city" onchange="this.parentElement.querySelector('.r-to').value = this.options[this.selectedIndex].text; this.parentElement.querySelector('.r-to-city-id').value = this.value" style="flex:1;">
+                        <option value="">-- Choisir ou saisir --</option>
+                        ${cityOptions}
+                    </select>
+                    <input type="hidden" class="r-to" value="">
+                    <input type="hidden" class="r-to-city-id" value="">
+                    <button type="button" class="btn btn-sm btn-outline" onclick="addManualCity(this)" title="Ajouter une ville manuellement" style="padding:8px;">+</button>
+                </div>
+            </div>
+            <div>
+                <label style="font-size:10px;">Distance (km)</label>
+                <input type="number" value="0" class="r-dist" placeholder="Ex: 350">
+            </div>
+            <button class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">🗑️</button>
+        </div>
+    `);
+}
+
+function addManualCity(btn) {
+    const cityName = prompt('Nom de la nouvelle ville :');
+    if (!cityName) return;
+    
+    const cities = DB.get('cities') || [];
+    const existingCity = cities.find(c => c.name.toLowerCase() === cityName.toLowerCase());
+    
+    if (existingCity) {
+        alert(`La ville "${cityName}" existe déjà !`);
+        return;
+    }
+    
+    const newId = cities.length > 0 ? Math.max(...cities.map(c => c.id)) + 1 : 1;
+    cities.push({ id: newId, name: cityName });
+    DB.set('cities', cities);
+    
+    const row = btn.closest('.route-row');
+    const select = row.querySelector('.r-to-city');
+    const hiddenInput = row.querySelector('.r-to');
+    const cityIdInput = row.querySelector('.r-to-city-id');
+    
+    const option = document.createElement('option');
+    option.value = newId;
+    option.textContent = cityName;
+    option.selected = true;
+    select.appendChild(option);
+    
+    hiddenInput.value = cityName;
+    cityIdInput.value = newId;
+    
+    alert(`✅ Ville "${cityName}" ajoutée avec succès !`);
+}
+
+function saveRoutes() {
+    const rows = document.querySelectorAll('#routesList .route-row');
+    const routes = [];
+    const originCity = getOriginCity();
+    const cities = DB.get('cities') || [];
+
+    rows.forEach(r => {
+        const fromInput = r.querySelector('.r-from');
+        const toInput = r.querySelector('.r-to');
+        const distInput = r.querySelector('.r-dist');
+
+        const fromName = fromInput.value.trim();
+        const toName = toInput.value.trim();
+        const dist = parseFloat(distInput.value);
+
+        if (!fromName || !toName || isNaN(dist) || dist <= 0) return;
+
+        let fromCity = cities.find(c => c.name === fromName);
+        let toCity = cities.find(c => c.name === toName);
+
+        if (!fromCity) {
+            const newCityId = Date.now() + Math.random();
+            cities.push({ id: newCityId, name: fromName });
+            DB.set('cities', cities);
+            fromCity = { id: newCityId, name: fromName };
+        }
+
+        if (!toCity) {
+            const newCityId = Date.now() + Math.random();
+            cities.push({ id: newCityId, name: toName });
+            DB.set('cities', cities);
+            toCity = { id: newCityId, name: toName };
+        }
+
+        routes.push({
+            id: Date.now() + Math.random(),
+            company_id: currentUser.company_id,
+            from_city_id: fromCity.id,
+            to_city_id: toCity.id,
+            from_name: fromName,
+            to_name: toName,
+            distance_km: dist
+        });
+    });
+
+    const allRoutes = DB.get('routes').filter(r => r.company_id !== currentUser.company_id).concat(routes);
+    DB.set('routes', allRoutes);
+
+    alert(`✅ ${routes.length} destination(s) enregistrée(s) !`);
+    loadRoutes();
+}
+
+// ============================================
+// PARAMÈTRES & CALCUL
+// ============================================
+function getFeeSettings() {
+    const settings = DB.get('fee_settings') || [];
+    return settings.find(s => s.company_id === currentUser.company_id) || { value_percent: 0, customs_type: 'flat', customs_flat: 0, customs_percent: 0, insurance_percent: 0 };
+}
+
+function toggleCustomsType() {
+    const type = document.querySelector('input[name="customsType"]:checked').value;
+    if (type === 'flat') {
+        document.getElementById('customsFlatGroup').classList.remove('hidden');
+        document.getElementById('customsPercentGroup').classList.add('hidden');
+    } else {
+        document.getElementById('customsFlatGroup').classList.add('hidden');
+        document.getElementById('customsPercentGroup').classList.remove('hidden');
+    }
+    runSimulator();
+}
+
+function loadSettings() {
+    const cid = currentUser.company_id;
+    const wTiers = DB.get('weight_tiers').filter(t => t.company_id === cid);
+    const dTiers = DB.get('distance_tiers').filter(t => t.company_id === cid);
+    const fees = getFeeSettings();
+
+    loadRoutes();
+
+    document.getElementById('weightTiersList').innerHTML = wTiers.map(t => `
+        <div class="tier-row">
+            <div><label style="font-size:10px;">Min (kg)</label><input type="number" value="${t.min}" class="w-min"></div>
+            <div><label style="font-size:10px;">Max (kg)</label><input type="number" value="${t.max}" class="w-max"></div>
+            <div><label style="font-size:10px;">Prix (F)</label><input type="number" value="${t.price}" class="w-price"></div>
+            <button class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">️</button>
+        </div>
+    `).join('');
+
+    document.getElementById('distanceTiersList').innerHTML = dTiers.map(t => `
+        <div class="tier-row">
+            <div><label style="font-size:10px;">Min (km)</label><input type="number" value="${t.min}" class="d-min"></div>
+            <div><label style="font-size:10px;">Max (km)</label><input type="number" value="${t.max}" class="d-max"></div>
+            <div><label style="font-size:10px;">Prix/km (F)</label><input type="number" value="${t.price_per_km}" class="d-price"></div>
+            <button class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">🗑️</button>
+        </div>
+    `).join('');
+
+    document.getElementById('settingValuePercent').value = fees.value_percent || 0;
+    document.getElementById('settingCustomsFlat').value = fees.customs_flat || 0;
+    document.getElementById('settingCustomsPercent').value = fees.customs_percent || 0;
+    document.getElementById('settingInsurancePercent').value = fees.insurance_percent || 0;
+    
+    document.querySelector(`input[name="customsType"][value="${fees.customs_type || 'flat'}"]`).checked = true;
+    toggleCustomsType();
+    runSimulator();
+}
+
+function addWeightTierRow() {
+    document.getElementById('weightTiersList').insertAdjacentHTML('beforeend', `<div class="tier-row"><div><label style="font-size:10px;">Min</label><input type="number" value="0" class="w-min"></div><div><label style="font-size:10px;">Max</label><input type="number" value="0" class="w-max"></div><div><label style="font-size:10px;">Prix</label><input type="number" value="0" class="w-price"></div><button class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">🗑️</button></div>`);
+}
+function addDistanceTierRow() {
+    document.getElementById('distanceTiersList').insertAdjacentHTML('beforeend', `<div class="tier-row"><div><label style="font-size:10px;">Min</label><input type="number" value="0" class="d-min"></div><div><label style="font-size:10px;">Max</label><input type="number" value="0" class="d-max"></div><div><label style="font-size:10px;">Prix/km</label><input type="number" value="0" class="d-price"></div><button class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">🗑️</button></div>`);
+}
+
+function saveWeightTiers() {
+    const rows = document.querySelectorAll('#weightTiersList .tier-row');
+    const tiers = [];
+    rows.forEach(r => { const min = r.querySelector('.w-min').value; if (min !== '') tiers.push({ company_id: currentUser.company_id, min: parseFloat(min), max: parseFloat(r.querySelector('.w-max').value), price: parseFloat(r.querySelector('.w-price').value) }); });
+    const all = DB.get('weight_tiers').filter(t => t.company_id !== currentUser.company_id).concat(tiers);
+    DB.set('weight_tiers', all);
+    alert('✅ Tranches de poids enregistrées !'); runSimulator();
+}
+
+function saveDistanceTiers() {
+    const rows = document.querySelectorAll('#distanceTiersList .tier-row');
+    const tiers = [];
+    rows.forEach(r => { const min = r.querySelector('.d-min').value; if (min !== '') tiers.push({ company_id: currentUser.company_id, min: parseFloat(min), max: parseFloat(r.querySelector('.d-max').value), price_per_km: parseFloat(r.querySelector('.d-price').value) }); });
+    const all = DB.get('distance_tiers').filter(t => t.company_id !== currentUser.company_id).concat(tiers);
+    DB.set('distance_tiers', all);
+    alert('✅ Tranches de distance enregistrées !'); runSimulator();
+}
+
+function saveFeesSettings() {
+    const fees = {
+        company_id: currentUser.company_id,
+        value_percent: parseFloat(document.getElementById('settingValuePercent').value) || 0,
+        customs_type: document.querySelector('input[name="customsType"]:checked').value,
+        customs_flat: parseFloat(document.getElementById('settingCustomsFlat').value) || 0,
+        customs_percent: parseFloat(document.getElementById('settingCustomsPercent').value) || 0,
+        insurance_percent: parseFloat(document.getElementById('settingInsurancePercent').value) || 0
+    };
+    const all = DB.get('fee_settings').filter(s => s.company_id !== currentUser.company_id);
+    all.push(fees);
+    DB.set('fee_settings', all);
+    alert('✅ Frais et pourcentages enregistrés !'); runSimulator();
+}
+
+function getDistanceToDestination(destCityId) {
+    const routes = DB.get('routes').filter(r => r.company_id === currentUser.company_id);
+    const route = routes.find(r => r.to_city_id === destCityId);
+    return route ? route.distance_km : 300;
+}
+
+function calculateDynamicPrice(weight, distance, declaredValue, isInsured, isCustoms) {
+    const cid = currentUser.company_id;
+    const wTiers = DB.get('weight_tiers').filter(t => t.company_id === cid).sort((a,b) => a.min - b.min);
+    let weightPrice = 0;
+    const wTier = wTiers.find(t => weight >= t.min && weight <= t.max) || wTiers[wTiers.length-1];
+    if (wTier) weightPrice = roundPrice(wTier.price);
+
+    const dTiers = DB.get('distance_tiers').filter(t => t.company_id === cid).sort((a,b) => a.min - b.min);
+    let distancePrice = 0, remaining = distance;
+    for (const tier of dTiers) {
+        if (remaining <= 0) break;
+        const range = tier.max - tier.min + 1;
+        const km = Math.min(remaining, range);
+        distancePrice = roundPrice(distancePrice + (km * tier.price_per_km));
+        remaining -= km;
+    }
+
+    const fees = getFeeSettings();
+    const handlingFee = roundPrice(declaredValue * (fees.value_percent / 100));
+
+    let customsFee = 0;
+    if (isCustoms) {
+        if (fees.customs_type === 'flat') customsFee = roundPrice(fees.customs_flat || 0);
+        else customsFee = roundPrice(declaredValue * (fees.customs_percent / 100));
+    }
+
+    let insuranceFee = 0;
+    if (isInsured && declaredValue > 0) insuranceFee = roundPrice(declaredValue * (fees.insurance_percent / 100));
+
+    const total = roundPrice(weightPrice + distancePrice + handlingFee + customsFee + insuranceFee);
+    return { weightPrice, distancePrice, handlingFee, customsFee, insuranceFee, total, distance };
+}
+
+function calcPrice() {
+    const weight = parseFloat(document.getElementById('weightKg').value) || 0;
+    const declaredValue = parseFloat(document.getElementById('declaredValue').value) || 0;
+    const destCityId = parseInt(document.getElementById('destCity')?.value);
+    if (weight <= 0 || !destCityId) return;
+    
+    const distance = getDistanceToDestination(destCityId);
+    const isInsured = document.getElementById('isInsured').checked;
+    const isCustoms = document.getElementById('isCustoms').checked;
+    const prices = calculateDynamicPrice(weight, distance, declaredValue, isInsured, isCustoms);
+    const fees = getFeeSettings();
+
+    document.getElementById('priceSummary').innerHTML = `
+        <div style="display:flex;justify-content:space-between;padding:6px 0;"><span>📦 Poids (Forfait)</span><span>${roundPrice(prices.weightPrice).toLocaleString()} F</span></div>
+        <div style="display:flex;justify-content:space-between;padding:6px 0;"><span>️ Distance (${distance} km)</span><span>${roundPrice(prices.distancePrice).toLocaleString()} F</span></div>
+        ${prices.handlingFee > 0 ? `<div style="display:flex;justify-content:space-between;padding:6px 0;color:#f39c12;"><span>🔹 Frais gestion (${fees.value_percent}% sur valeur)</span><span>${roundPrice(prices.handlingFee).toLocaleString()} F</span></div>` : ''}
+        ${prices.insuranceFee > 0 ? `<div style="display:flex;justify-content:space-between;padding:6px 0;"><span>🛡️ Assurance</span><span>${roundPrice(prices.insuranceFee).toLocaleString()} F</span></div>` : ''}
+        ${prices.customsFee > 0 ? `<div style="display:flex;justify-content:space-between;padding:6px 0;color:#e67e22;"><span>🛃 Douane (${fees.customs_type === 'flat' ? 'Forfait' : fees.customs_percent + '%'})</span><span>${roundPrice(prices.customsFee).toLocaleString()} F</span></div>` : ''}
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-top:2px solid #1a1a2e;margin-top:8px;font-weight:700;font-size:18px;color:#0f3460;"><span>💵 TOTAL À PAYER</span><span>${roundPrice(prices.total).toLocaleString()} FCFA</span></div>
+    `;
+}
+
+function runSimulator() {
+    const weight = parseFloat(document.getElementById('simWeight').value) || 0;
+    const distance = parseFloat(document.getElementById('simDistance').value) || 0;
+    const value = parseFloat(document.getElementById('simValue').value) || 0;
+    const isCustoms = document.getElementById('simCustoms').checked;
+    const prices = calculateDynamicPrice(weight, distance, value, false, isCustoms);
+    const fees = getFeeSettings();
+    document.getElementById('simResult').innerHTML = `
+        <div style="font-size:14px; color:#555; margin-bottom:5px;">
+            Poids: ${roundPrice(prices.weightPrice)} F | Distance: ${roundPrice(prices.distancePrice)} F<br>
+            Frais gestion: ${roundPrice(prices.handlingFee)} F | Douane: ${roundPrice(prices.customsFee)} F
+        </div>
+        <div style="font-size:20px; color:#0f3460; font-weight:bold;">TOTAL: ${roundPrice(prices.total).toLocaleString()} FCFA</div>
+    `;
+}
+
+// ============================================
+// NOUVEL ENVOI
+// ============================================
+function previewParcelPhoto(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (e) => { currentParcelPhoto = e.target.result; document.getElementById('photoPreview').src = e.target.result; document.getElementById('photoPreview').classList.remove('hidden'); document.getElementById('photoLabel').textContent = '✅ Photo prise'; };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function initNewParcel() {
+    const agencies = DB.get('agencies').filter(a => a.company_id === currentUser.company_id);
+    const cities = DB.get('cities');
+    const routes = DB.get('routes').filter(r => r.company_id === currentUser.company_id);
+    const originCity = getOriginCity();
+    
+    const destCities = routes.map(r => {
+        const city = cities.find(c => c.id === r.to_city_id);
+        return { id: r.to_city_id, name: city?.name || 'Inconnue', distance: r.distance_km };
+    });
+    
+    document.getElementById('destCity').innerHTML = '<option value="">-- Choisir une ville --</option>' + 
+        destCities.map(c => `<option value="${c.id}" data-distance="${c.distance}">${c.name} (${c.distance} km)</option>`).join('');
+    
+    document.getElementById('destAgency').innerHTML = agencies.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
+    
+    currentParcelPhoto = null; 
+    document.getElementById('photoPreview').classList.add('hidden'); 
+    document.getElementById('parcelPhoto').value = ''; 
+    document.getElementById('photoLabel').textContent = 'Cliquez pour prendre une photo (OBLIGATOIRE)';
+    document.getElementById('priceSummary').innerHTML = '<p style="color:#999;text-align:center;">Entrez le poids et la valeur</p>';
+}
+
+function onDestCityChange() {
+    const destCityId = parseInt(document.getElementById('destCity').value);
+    if (!destCityId) { document.getElementById('destAgency').innerHTML = ''; return; }
+    
+    const cities = DB.get('cities');
+    const destCity = cities.find(c => c.id === destCityId);
+    const agencies = DB.get('agencies').filter(a => a.company_id === currentUser.company_id && a.city_id === destCityId);
+    
+    document.getElementById('destAgency').innerHTML = agencies.length > 0 
+        ? agencies.map(a => `<option value="${a.id}">${a.name}</option>`).join('')
+        : `<option value="">Aucune agence à ${destCity?.name || 'cette ville'}</option>`;
+    
+    calcPrice();
+}
+
+function submitParcel() {
+    const senderName = document.getElementById('senderName').value.trim(); const senderPhone = document.getElementById('senderPhone').value.trim();
+    const recipientName = document.getElementById('recipientName').value.trim(); const recipientPhone = document.getElementById('recipientPhone').value.trim();
+    const description = document.getElementById('description').value.trim();
+    const weightKg = parseFloat(document.getElementById('weightKg').value); const declaredValue = parseFloat(document.getElementById('declaredValue').value) || 0;
+    const destCityId = parseInt(document.getElementById('destCity').value);
+    const destAgencyId = parseInt(document.getElementById('destAgency').value);
+    
+    if (!senderName || !senderPhone || !recipientName || !recipientPhone) { alert('Remplissez tous les champs obligatoires'); return; }
+    if (!description) { alert('La description du contenu est obligatoire'); return; }
+    if (!weightKg || weightKg <= 0) { alert('Entrez un poids valide'); return; }
+    if (!destCityId) { alert('Sélectionnez une ville de destination'); return; }
+    
+    if (!currentParcelPhoto) { 
+        alert(' La photo du colis est OBLIGATOIRE !\n\nVeuillez prendre une photo avant de valider.'); 
+        return; 
+    }
+    
+    const companies = DB.get('companies'); const company = companies.find(c => c.id === currentUser.company_id);
+    const parcels = DB.get('parcels') || []; const count = parcels.filter(p => p.company_id === currentUser.company_id).length;
+    const trackingNumber = `${company.name.substring(0,4).toUpperCase()}-${new Date().getFullYear()}-${String(count + 1).padStart(6, '0')}`;
+    const confirmationCode = generateConfirmationCode();
+
+    const distance = getDistanceToDestination(destCityId);
+    const isInsured = document.getElementById('isInsured').checked; const isCustoms = document.getElementById('isCustoms').checked;
+    const prices = calculateDynamicPrice(weightKg, distance, declaredValue, isInsured, isCustoms);
+
+    const newParcel = { 
+        id: Date.now(), company_id: currentUser.company_id, tracking_number: trackingNumber, 
+        sender_name: senderName, sender_phone: senderPhone, recipient_name: recipientName, recipient_phone: recipientPhone, 
+        origin_agency_id: currentUser.agency_id, destination_agency_id: destAgencyId, 
+        origin_city_id: getOriginCity()?.id, destination_city_id: destCityId,
+        distance_km: distance, description: description, 
+        weight_kg: weightKg, declared_value: declaredValue, 
+        is_insured: isInsured, is_customs: isCustoms, 
+        weight_price: prices.weightPrice, distance_price: prices.distancePrice, 
+        handling_fee: prices.handlingFee, insurance_fee: prices.insuranceFee, customs_fee: prices.customsFee, 
+        total_price: prices.total, payment_method: document.querySelector('input[name="payment"]:checked').value, 
+        photo: currentParcelPhoto, status: 'paid', bordereau_id: null,
+        confirmation_code: confirmationCode,
+        confirmed_by_recipient: false,
+        trajet: [
+            { status: 'created', label: 'Colis créé', location: getOriginCity()?.name || 'Agence départ', date: new Date().toISOString() },
+            { status: 'paid', label: 'Paiement reçu', location: getOriginCity()?.name || 'Agence départ', date: new Date().toISOString() }
+        ],
+        created_by: currentUser.id, created_at: new Date().toISOString() 
+    };
+    
+    parcels.push(newParcel);
+    DB.set('parcels', parcels);
+    
+    showRecuModal(newParcel.id);
+}
+
+// ============================================
+// BORDREAUX
+// ============================================
+function initCreateBordereau() {
+    const routes = DB.get('routes').filter(r => r.company_id === currentUser.company_id);
+    const cities = DB.get('cities');
+    let options = '<option value="">-- Choisir une destination --</option>';
+    routes.forEach(r => { 
+        const city = cities.find(c => c.id === r.to_city_id);
+        options += `<option value="${r.to_city_id}">${city?.name || 'Inconnue'} (${r.distance_km} km)</option>`; 
+    });
+    document.getElementById('bordCity').innerHTML = options;
+    document.getElementById('bordDate').value = new Date().toISOString().split('T')[0];
+    document.getElementById('bordDriver').value = ''; document.getElementById('bordPlate').value = '';
+    selectedParcelsForBordereau = [];
+    document.getElementById('parcelsToLoad').innerHTML = '<p style="color:#999;text-align:center;padding:20px;">Sélectionnez d\'abord une destination</p>';
+    updateBordereauSummary();
+}
+
+function filterParcelsByDestination() {
+    const destCityId = parseInt(document.getElementById('bordCity').value);
+    if (!destCityId) return;
+    const parcels = (DB.get('parcels') || []).filter(p => p.company_id === currentUser.company_id && p.destination_city_id === destCityId && !p.bordereau_id);
+    const container = document.getElementById('parcelsToLoad');
+    if (parcels.length === 0) { container.innerHTML = '<p style="color:#999;text-align:center;padding:20px;">Aucun colis prêt pour cette destination</p>'; return; }
+    container.innerHTML = parcels.map(p => `<label class="parcel-checkbox"><input type="checkbox" value="${p.id}" onchange="toggleParcelSelection(${p.id}, this.checked)"><div class="info"><div class="tracking">${p.tracking_number}</div><div class="details">${p.sender_name} → ${p.recipient_name} • ${p.weight_kg} kg</div></div></label>`).join('');
+}
+
+function toggleParcelSelection(id, checked) { if (checked) { if (!selectedParcelsForBordereau.includes(id)) selectedParcelsForBordereau.push(id); } else { selectedParcelsForBordereau = selectedParcelsForBordereau.filter(i => i !== id); } updateBordereauSummary(); }
+function updateBordereauSummary() { const parcels = DB.get('parcels') || []; const selected = parcels.filter(p => selectedParcelsForBordereau.includes(p.id)); const totalWeight = selected.reduce((sum, p) => sum + p.weight_kg, 0); document.getElementById('selectedCount').textContent = selected.length; document.getElementById('totalWeight').textContent = totalWeight.toFixed(1) + ' kg'; }
+
+function saveBordereau() {
+    const destCityId = parseInt(document.getElementById('bordCity').value); 
+    const driver = document.getElementById('bordDriver').value.trim(); 
+    const plate = document.getElementById('bordPlate').value.trim(); 
+    const date = document.getElementById('bordDate').value;
+    if (!destCityId || !driver || !plate || selectedParcelsForBordereau.length === 0) { alert('Remplissez tout et sélectionnez des colis'); return; }
+    
+    const cities = DB.get('cities'); 
+    const destCity = cities.find(c => c.id === destCityId);
+    const originCity = getOriginCity();
+    const parcels = DB.get('parcels') || []; 
+    const bordereaux = DB.get('bordereaux') || [];
+    const bordNumber = `BORD-${new Date().getFullYear()}-${String(bordereaux.length + 1).padStart(4, '0')}`;
+    const selectedParcels = parcels.filter(p => selectedParcelsForBordereau.includes(p.id));
+    const totalWeight = selectedParcels.reduce((sum, p) => sum + p.weight_kg, 0); 
+    const totalValue = selectedParcels.reduce((sum, p) => sum + p.total_price, 0);
+    const distance = getDistanceToDestination(destCityId);
+    
+    bordereaux.push({ 
+        id: Date.now(), company_id: currentUser.company_id, number: bordNumber, 
+        origin_city_id: originCity?.id, origin_city_name: originCity?.name || '',
+        destination_city_id: destCityId, destination_city_name: destCity?.name || '', 
+        distance_km: distance,
+        driver_name: driver, bus_plate: plate, departure_date: date, 
+        parcel_ids: [...selectedParcelsForBordereau], 
+        total_parcels: selectedParcelsForBordereau.length, total_weight: totalWeight, total_value: totalValue, 
+        status: 'created', created_at: new Date().toISOString() 
+    });
+    DB.set('bordereaux', bordereaux);
+    
+    const now = new Date().toISOString();
+    selectedParcelsForBordereau.forEach(pid => { 
+        const p = parcels.find(x => x.id === pid); 
+        if (p) { 
+            p.bordereau_id = bordereaux[bordereaux.length-1].id; 
+            p.status = 'loaded';
+            if (!p.trajet) p.trajet = [];
+            p.trajet.push({ status: 'loaded', label: 'Chargé dans le bus', location: `${originCity?.name || 'Départ'} → ${destCity?.name || 'Destination'}`, chauffeur: driver, plaque: plate, date: now });
+        } 
+    });
+    DB.set('parcels', parcels);
+    
+    alert(`✅ Bordereau ${bordNumber} créé !\nTrajet: ${originCity?.name || ''} → ${destCity?.name || ''} (${distance} km)`);
+    generateBordereauPDF(bordereaux[bordereaux.length-1]);
+    selectedParcelsForBordereau = []; 
+    showSection('bordereaux');
+}
+
+function loadBordereaux() {
+    const bordereaux = (DB.get('bordereaux') || []).filter(b => b.company_id === currentUser.company_id).reverse();
+    const container = document.getElementById('bordereauxList');
+    if (bordereaux.length === 0) { container.innerHTML = '<div class="empty-state"><p>Aucun bordereau</p></div>'; return; }
+    container.innerHTML = bordereaux.map(b => `
+        <div class="bordereau-card">
+            <div class="bordereau-header">
+                <div>
+                    <div class="bordereau-number">🚌 ${b.number}</div>
+                    <div class="bordereau-info">📍 ${b.origin_city_name || 'Départ'} → ${b.destination_city_name} (${b.distance_km} km)</div>
+                    <div class="bordereau-info">👤 ${b.driver_name} • 🚐 ${b.bus_plate}</div>
+                    <div class="bordereau-info">📅 ${new Date(b.departure_date).toLocaleDateString('fr-FR')}</div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-weight:700;">${b.total_parcels} colis</div>
+                    <div style="font-size:12px;">${b.total_weight.toFixed(1)} kg</div>
+                    <div style="font-size:12px;color:#27ae60;font-weight:600;margin-top:4px;">${roundPrice(b.total_value).toLocaleString()} F</div>
+                </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:12px;">
+                <button class="btn btn-sm btn-info" onclick="viewBordereauTrajet(${b.id})">🗺️ Voir le trajet</button>
+                <button class="btn btn-sm btn-success" onclick="regenerateBordereauPDF(${b.id})">📄 PDF</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function viewBordereauTrajet(bordId) {
+    const bord = DB.get('bordereaux').find(b => b.id === bordId);
+    if (!bord) return;
+    const parcels = (DB.get('parcels') || []).filter(p => bord.parcel_ids.includes(p.id));
+    
+    let html = `<div style="background:white;padding:20px;border-radius:12px;margin-top:16px;">`;
+    html += `<h3>🚌 Bordereau ${bord.number}</h3>`;
+    html += `<p style="color:#666;margin-top:8px;">Trajet: <strong>${bord.origin_city_name || 'Départ'} → ${bord.destination_city_name}</strong> (${bord.distance_km} km)</p>`;
+    html += `<p>Chauffeur: ${bord.driver_name} | Plaque: ${bord.bus_plate}</p>`;
+    html += `<p>Date: ${new Date(bord.departure_date).toLocaleDateString('fr-FR')}</p>`;
+    
+    html += `<div class="trajet-timeline" style="margin-top:20px;">`;
+    html += `<h4>🗺️ Trajet du bordereau</h4>`;
+    
+    const steps = [
+        { icon: '', title: 'Colis créés', subtitle: `${bord.total_parcels} colis enregistrés`, location: bord.origin_city_name, date: bord.created_at, done: true },
+        { icon: '✅', title: 'Paiement reçu', subtitle: `${roundPrice(bord.total_value).toLocaleString()} FCFA`, location: bord.origin_city_name, date: bord.created_at, done: true },
+        { icon: '🚌', title: 'Chargé dans le bus', subtitle: `Chauffeur: ${bord.driver_name}`, location: `${bord.origin_city_name} → ${bord.destination_city_name}`, date: bord.created_at, current: true },
+        { icon: '🚚', title: 'En transit', subtitle: `${bord.distance_km} km à parcourir`, location: 'Sur la route', done: false },
+        { icon: '📍', title: 'Arrivé à destination', subtitle: bord.destination_city_name, location: bord.destination_city_name, done: false },
+        { icon: '📬', title: 'Prêt à être retiré', subtitle: 'Notifier les destinataires', location: bord.destination_city_name, done: false },
+        { icon: '✅', title: 'Livré', subtitle: 'Remis aux destinataires', location: bord.destination_city_name, done: false }
+    ];
+    
+    html += steps.map(s => `
+        <div class="trajet-step ${s.done ? 'done' : s.current ? 'current' : 'pending'}">
+            <div class="trajet-icon">${s.icon}</div>
+            <div class="trajet-content">
+                <div class="trajet-title">${s.title}</div>
+                <div class="trajet-subtitle">${s.subtitle}</div>
+                <div class="trajet-date">📍 ${s.location} ${s.date ? '• ' + new Date(s.date).toLocaleString('fr-FR') : ''}</div>
+            </div>
+        </div>
+    `).join('');
+    
+    html += `</div>`;
+    
+    html += `<h4 style="margin-top:20px;"> Colis dans ce bordereau (${parcels.length})</h4>`;
+    html += parcels.map(p => `
+        <div style="background:#f8f9fa;padding:10px;border-radius:8px;margin-top:8px;">
+            <strong>${p.tracking_number}</strong> ${p.is_customs ? '<span style="background:#e67e22;color:white;padding:2px 6px;border-radius:8px;font-size:10px;">🛃</span>' : ''}
+            <div style="font-size:12px;color:#666;">${p.sender_name} → ${p.recipient_name} • ${p.weight_kg} kg • ${roundPrice(p.total_price).toLocaleString()} F</div>
+        </div>
+    `).join('');
+    
+    html += `<div style="margin-top:20px;display:flex;gap:10px;">`;
+    html += `<button class="btn btn-warning" onclick="updateTrajetStatus(${bord.id}, 'in_transit')">🚚 Marquer En Transit</button>`;
+    html += `<button class="btn btn-info" onclick="updateTrajetStatus(${bord.id}, 'arrived')"> Marquer Arrivé</button>`;
+    html += `</div>`;
+    
+    html += `</div>`;
+    
+    document.getElementById('trackResult').innerHTML = html;
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('sec-tracking').classList.add('active');
+}
+
+function updateTrajetStatus(bordId, newStatus) {
+    const bordereaux = DB.get('bordereaux');
+    const bord = bordereaux.find(b => b.id === bordId);
+    if (!bord) return;
+
+    const parcels = DB.get('parcels');
+    const now = new Date().toISOString();
+    const statusLabels = {
+        created: 'Créé',
+        paid: 'Payé',
+        loaded: 'Chargé',
+        in_transit: 'En transit',
+        arrived: 'Arrivé',
+        delivered: 'Livré'
+    };
+
+    bord.status = newStatus;
+    DB.set('bordereaux', bordereaux);
+
+    bord.parcel_ids.forEach(pid => {
+        const p = parcels.find(x => x.id === pid);
+        if (p) {
+            p.status = newStatus;
+            if (!p.trajet) p.trajet = [];
+            p.trajet.push({
+                status: newStatus,
+                label: statusLabels[newStatus],
+                location: newStatus === 'in_transit' ? 'Sur la route' : bord.destination_city_name,
+                date: now
+            });
+        }
+    });
+
+    DB.set('parcels', parcels);
+    alert(`✅ Statut mis à jour: ${statusLabels[newStatus]}`);
+    viewBordereauTrajet(bordId);
+}
+
+function regenerateBordereauPDF(bordId) { const bord = DB.get('bordereaux').find(b => b.id === bordId); if (bord) generateBordereauPDF(bord); }
+
+function generateBordereauPDF(bord) {
+    const { jsPDF } = window.jspdf; 
+    const doc = new jsPDF('landscape');
+    const parcels = (DB.get('parcels') || []).filter(p => bord.parcel_ids.includes(p.id)); 
+    const company = DB.get('companies').find(c => c.id === bord.company_id);
+    
+    doc.setFillColor(15, 52, 96); 
+    doc.rect(0, 0, 297, 40, 'F'); 
+    doc.setTextColor(255, 255, 255); 
+    doc.setFontSize(20); 
+    doc.text('BORDREAU D\'ENVOI', 148, 20, { align: 'center' }); 
+    doc.setFontSize(12); 
+    doc.text(`${company?.name} | N° ${bord.number}`, 148, 30, { align: 'center' });
+    
+    doc.setTextColor(0, 0, 0); 
+    doc.setFontSize(10); 
+    doc.text(`Trajet: ${bord.origin_city_name || 'Départ'} → ${bord.destination_city_name} (${bord.distance_km} km)`, 20, 55);
+    doc.text(`Chauffeur: ${bord.driver_name} | Plaque: ${bord.bus_plate}`, 20, 65); 
+    doc.text(`Date: ${new Date(bord.departure_date).toLocaleDateString('fr-FR')}`, 20, 75); 
+    doc.text(`Colis: ${bord.total_parcels} | Poids: ${bord.total_weight.toFixed(1)} kg`, 180, 55);
+    
+    doc.setFont(undefined, 'bold'); 
+    doc.text('LISTE DES COLIS', 20, 90); 
+    
+    doc.setFillColor(240, 242, 245); 
+    doc.rect(20, 95, 257, 8, 'F'); 
+    doc.setFontSize(8); 
+    doc.text('N° Suivi', 22, 101); 
+    doc.text('Expéditeur', 50, 101); 
+    doc.text('Destinataire', 80, 101); 
+    doc.text('Description', 115, 101);
+    doc.text('Poids', 180, 101); 
+    doc.text('Douane', 200, 101); 
+    doc.text('Prix', 225, 101);
+    
+    doc.setFont(undefined, 'normal'); 
+    let y = 110; 
+    parcels.forEach(p => { 
+        if (y > 195) { doc.addPage(); y = 20; } 
+        doc.text(p.tracking_number, 22, y); 
+        doc.text(p.sender_name.substring(0, 12), 50, y); 
+        doc.text(p.recipient_name.substring(0, 12), 80, y); 
+        doc.text((p.description || '-').substring(0, 25), 115, y);
+        doc.text(p.weight_kg + ' kg', 180, y); 
+        doc.text(p.is_customs ? 'OUI' : '-', 200, y); 
+        doc.text(roundPrice(p.total_price) + ' F', 225, y); 
+        y += 8; 
+    });
+    
+    doc.save(`bordereau_${bord.number}.pdf`);
+}
+
+// ============================================
+// GESTION DU PERSONNEL
+// ============================================
+function showAddUserModal() {
+    const agencies = DB.get('agencies').filter(a => a.company_id === currentUser.company_id);
+    document.getElementById('newUserAgency').innerHTML = agencies.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
+    document.getElementById('newUserFirstName').value = ''; document.getElementById('newUserLastName').value = ''; 
+    document.getElementById('newUserPhone').value = ''; document.getElementById('newUserPassword').value = '';
+    document.getElementById('addUserModal').classList.add('active');
+}
+function closeAddUserModal() { document.getElementById('addUserModal').classList.remove('active'); }
+
+function saveUser() {
+    const firstName = document.getElementById('newUserFirstName').value.trim(); const lastName = document.getElementById('newUserLastName').value.trim();
+    const phone = document.getElementById('newUserPhone').value.trim(); const password = document.getElementById('newUserPassword').value.trim();
+    const role = document.getElementById('newUserRole').value; const agencyId = parseInt(document.getElementById('newUserAgency').value);
+    if (!firstName || !lastName || !phone || !password) { alert('Veuillez remplir tous les champs obligatoires'); return; }
+    const users = DB.get('users');
+    if (users.find(u => u.phone === phone)) { alert('❌ Ce numéro de téléphone est déjà utilisé !'); return; }
+    users.push({ id: Date.now(), company_id: currentUser.company_id, agency_id: agencyId, role: role, first_name: firstName, last_name: lastName, phone: phone, password: password });
+    DB.set('users', users);
+    closeAddUserModal();
+    alert(`✅ Utilisateur ${firstName} ${lastName} créé !\nRôle: ${ROLE_LABELS[role]}\nIdentifiant: ${phone}\nMot de passe: ${password}`);
+    loadUsers();
+}
+
+function loadUsers() {
+    const users = DB.get('users').filter(u => u.company_id === currentUser.company_id);
+    const agencies = DB.get('agencies');
+    const container = document.getElementById('usersList');
+    if (!container) return;
+    if (users.length === 0) { container.innerHTML = '<div class="empty-state"><p>Aucun utilisateur dans votre compagnie</p></div>'; return; }
+    container.innerHTML = users.map(u => {
+        const agency = agencies.find(a => a.id === u.agency_id);
+        const isSelf = u.id === currentUser.id;
+        return `
+            <div class="user-card" style="border-left: 4px solid ${u.role === 'admin' ? '#e94560' : u.role === 'controller' ? '#f39c12' : u.role === 'field_chief' ? '#9b59b6' : '#0f3460'}">
+                <div class="user-info-block">
+                    <div style="font-weight:700; font-size:15px;">${u.first_name} ${u.last_name} ${isSelf ? '(Vous)' : ''}</div>
+                    <div style="font-size:12px; color:#666; margin-top:4px;">📞 ${u.phone} • 🏢 ${agency?.name || 'Non affecté'}</div>
+                    <div style="margin-top:6px;"><span class="role-badge role-${u.role}">${ROLE_LABELS[u.role]}</span></div>
+                </div>
+                ${!isSelf && u.role !== 'admin' ? `<button class="btn btn-sm btn-danger" onclick="deleteUser(${u.id})">🗑️</button>` : ''}
+            </div>
+        `;
+    }).join('');
+}
+
+function deleteUser(userId) {
+    if (!confirm('⚠️ Supprimer cet utilisateur ? Il ne pourra plus se connecter.')) return;
+    const users = DB.get('users').filter(u => u.id !== userId);
+    DB.set('users', users);
+    loadUsers();
+}
+
+// ============================================
+// DOUANE
+// ============================================
+function setDouanePeriod(p) { douanePeriod = p; loadDouane(); }
+function loadDouane() {
+    const parcels = (DB.get('parcels') || []).filter(p => p.company_id === currentUser.company_id && p.is_customs);
+    const now = new Date(); let filtered = parcels;
+    if (douanePeriod === 'today') filtered = parcels.filter(p => p.created_at.startsWith(now.toISOString().split('T')[0]));
+    else if (douanePeriod === 'week') filtered = parcels.filter(p => new Date(p.created_at) >= new Date(now - 7 * 86400000));
+    const total = filtered.reduce((sum, p) => sum + (p.customs_fee || 0), 0);
+    document.getElementById('douaneStats').innerHTML = `<div class="stat-card"><div class="label">🛃 Colis douane</div><div class="value">${filtered.length}</div></div><div class="stat-card" style="background:#e67e22;color:white;"><div class="label">Total Douane</div><div class="value">${roundPrice(total).toLocaleString()} F</div></div>`;
+    document.getElementById('douaneTable').innerHTML = filtered.length === 0 ? '<p style="padding:20px;text-align:center;">Aucune donnée</p>' : '<p style="padding:20px;">Tableau des colis douane...</p>';
+}
+function exportDouane() { alert('Export CSV généré !'); }
+
+// ============================================
+// RAPPORTS
+// ============================================
+function generateReport(period) {
+    const parcels = (DB.get('parcels') || []).filter(p => p.company_id === currentUser.company_id);
+    const now = new Date();
+    let filtered = parcels;
+    let periodLabel = '';
+    
+    if (period === 'daily') {
+        const today = now.toISOString().split('T')[0];
+        filtered = parcels.filter(p => p.created_at.startsWith(today));
+        periodLabel = "Aujourd'hui";
+    } else if (period === 'weekly') {
+        const weekAgo = new Date(now - 7 * 86400000);
+        filtered = parcels.filter(p => new Date(p.created_at) >= weekAgo);
+        periodLabel = 'Cette semaine';
+    } else if (period === 'monthly') {
+        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+        filtered = parcels.filter(p => new Date(p.created_at) >= monthStart);
+        periodLabel = 'Ce mois';
+    }
+    
+    const totalRevenue = filtered.reduce((sum, p) => sum + p.total_price, 0);
+    const transportRevenue = filtered.reduce((sum, p) => sum + p.weight_price + p.distance_price, 0);
+    const handlingRevenue = filtered.reduce((sum, p) => sum + (p.handling_fee || 0), 0);
+    const insuranceRevenue = filtered.reduce((sum, p) => sum + (p.insurance_fee || 0), 0);
+    const customsRevenue = filtered.reduce((sum, p) => sum + (p.customs_fee || 0), 0);
+    const cashAmount = filtered.filter(p => p.payment_method === 'cash').reduce((sum, p) => sum + p.total_price, 0);
+    const mobileAmount = filtered.filter(p => p.payment_method === 'mobile_money').reduce((sum, p) => sum + p.total_price, 0);
+    const customsCount = filtered.filter(p => p.is_customs).length;
+    const insuredCount = filtered.filter(p => p.is_insured).length;
+    
+    document.getElementById('reportContent').innerHTML = `
+        <div class="report-card">
+            <h4> Rapport ${periodLabel}</h4>
+            <div style="font-size:12px;color:#666;margin-bottom:16px;">Généré le ${now.toLocaleString('fr-FR')} par ${currentUser.first_name} ${currentUser.last_name}</div>
+            
+            <div class="report-stat"><span>Nombre de colis</span><span>${filtered.length}</span></div>
+            <div class="report-stat"><span>💰 Chiffre d'affaires</span><span>${roundPrice(totalRevenue).toLocaleString()} FCFA</span></div>
+            <div class="report-stat"><span>🚚 Transport</span><span>${roundPrice(transportRevenue).toLocaleString()} FCFA</span></div>
+            <div class="report-stat"><span>🔹 Frais gestion</span><span>${roundPrice(handlingRevenue).toLocaleString()} FCFA</span></div>
+            <div class="report-stat"><span>🛡️ Assurance</span><span>${roundPrice(insuranceRevenue).toLocaleString()} FCFA (${insuredCount} colis)</span></div>
+            <div class="report-stat"><span>🛃 Douane</span><span>${roundPrice(customsRevenue).toLocaleString()} FCFA (${customsCount} colis)</span></div>
+            <div class="report-stat"><span>💵 Espèces</span><span>${roundPrice(cashAmount).toLocaleString()} FCFA</span></div>
+            <div class="report-stat"><span>📱 Mobile Money</span><span>${roundPrice(mobileAmount).toLocaleString()} FCFA</span></div>
+        </div>
+        
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <button class="btn btn-info" onclick="exportReportPDF('${period}')"> Exporter PDF</button>
+            <button class="btn btn-success" onclick="exportReportCSV('${period}')">📥 Exporter CSV</button>
+        </div>
+    `;
+}
+
+function exportReportPDF(period) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const parcels = (DB.get('parcels') || []).filter(p => p.company_id === currentUser.company_id);
+    const now = new Date();
+    let filtered = parcels;
+    let periodLabel = '';
+    
+    if (period === 'daily') {
+        const today = now.toISOString().split('T')[0];
+        filtered = parcels.filter(p => p.created_at.startsWith(today));
+        periodLabel = "Journalier";
+    } else if (period === 'weekly') {
+        const weekAgo = new Date(now - 7 * 86400000);
+        filtered = parcels.filter(p => new Date(p.created_at) >= weekAgo);
+        periodLabel = 'Hebdomadaire';
+    } else {
+        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+        filtered = parcels.filter(p => new Date(p.created_at) >= monthStart);
+        periodLabel = 'Mensuel';
+    }
+    
+    const totalRevenue = filtered.reduce((sum, p) => sum + p.total_price, 0);
+    const company = DB.get('companies').find(c => c.id === currentUser.company_id);
+    
+    doc.setFillColor(15, 52, 96);
+    doc.rect(0, 0, 210, 40, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(20);
+    doc.text(`RAPPORT ${periodLabel.toUpperCase()}`, 105, 20, { align: 'center' });
+    doc.setFontSize(12);
+    doc.text(`${company?.name || 'ColisExpress'} | ${now.toLocaleDateString('fr-FR')}`, 105, 30, { align: 'center' });
+    
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(11);
+    let y = 60;
+    doc.text(`Période: ${periodLabel}`, 20, y); y += 10;
+    doc.text(`Généré par: ${currentUser.first_name} ${currentUser.last_name}`, 20, y); y += 10;
+    doc.text(`Nombre de colis: ${filtered.length}`, 20, y); y += 15;
+    
+    doc.setFont(undefined, 'bold');
+    doc.text('RÉSUMÉ FINANCIER', 20, y); y += 10;
+    doc.setFont(undefined, 'normal');
+    doc.text(`Chiffre d'affaires: ${roundPrice(totalRevenue).toLocaleString()} FCFA`, 20, y); y += 10;
+    doc.text(`Transport: ${roundPrice(filtered.reduce((sum, p) => sum + p.weight_price + p.distance_price, 0)).toLocaleString()} FCFA`, 20, y); y += 10;
+    doc.text(`Frais gestion: ${roundPrice(filtered.reduce((sum, p) => sum + (p.handling_fee || 0), 0)).toLocaleString()} FCFA`, 20, y); y += 10;
+    doc.text(`Assurance: ${roundPrice(filtered.reduce((sum, p) => sum + (p.insurance_fee || 0), 0)).toLocaleString()} FCFA`, 20, y); y += 10;
+    doc.text(`Douane: ${roundPrice(filtered.reduce((sum, p) => sum + (p.customs_fee || 0), 0)).toLocaleString()} FCFA`, 20, y); y += 15;
+    
+    doc.setFont(undefined, 'bold');
+    doc.text('MODES DE PAIEMENT', 20, y); y += 10;
+    doc.setFont(undefined, 'normal');
+    doc.text(`Espèces: ${roundPrice(filtered.filter(p => p.payment_method === 'cash').reduce((sum, p) => sum + p.total_price, 0)).toLocaleString()} FCFA`, 20, y); y += 10;
+    doc.text(`Mobile Money: ${roundPrice(filtered.filter(p => p.payment_method === 'mobile_money').reduce((sum, p) => sum + p.total_price, 0)).toLocaleString()} FCFA`, 20, y);
+    
+    doc.save(`rapport_${period}_${now.toISOString().split('T')[0]}.pdf`);
+}
+
+function exportReportCSV(period) {
+    const parcels = (DB.get('parcels') || []).filter(p => p.company_id === currentUser.company_id);
+    const now = new Date();
+    let filtered = parcels;
+    
+    if (period === 'daily') {
+        const today = now.toISOString().split('T')[0];
+        filtered = parcels.filter(p => p.created_at.startsWith(today));
+    } else if (period === 'weekly') {
+        const weekAgo = new Date(now - 7 * 86400000);
+        filtered = parcels.filter(p => new Date(p.created_at) >= weekAgo);
+    } else {
+        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+        filtered = parcels.filter(p => new Date(p.created_at) >= monthStart);
+    }
+    
+    const cities = DB.get('cities');
+    let csv = 'N° Suivi;Date;Expéditeur;Tél Exp;Destinataire;Tél Dest;Destination;Poids;Distance;Transport;Gestion;Assurance;Douane;Total;Paiement;Statut\n';
+    filtered.forEach(p => {
+        const destCity = cities.find(c => c.id === p.destination_city_id);
+        csv += `${p.tracking_number};${new Date(p.created_at).toLocaleDateString('fr-FR')};${p.sender_name};${p.sender_phone};${p.recipient_name};${p.recipient_phone};${destCity?.name || 'N/A'};${p.weight_kg};${p.distance_km};${roundPrice(p.weight_price + p.distance_price)};${roundPrice(p.handling_fee || 0)};${roundPrice(p.insurance_fee || 0)};${roundPrice(p.customs_fee || 0)};${roundPrice(p.total_price)};${p.payment_method};${p.status}\n`;
+    });
+    
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `rapport_${period}_${now.toISOString().split('T')[0]}.csv`;
+    link.click();
+}
+
+// ============================================
+// SUPER ADMIN
+// ============================================
+function loadSuperDashboard() {
+    const companies = DB.get('companies');
+    const parcels = DB.get('parcels') || [];
+    const activeCompanies = companies.filter(c => c.status === 'active');
+    const platformRevenue = activeCompanies.reduce((sum, c) => sum + (PLAN_PRICES[c.plan] || 0), 0);
+    
+    document.getElementById('superStats').innerHTML = `
+        <div class="stat-card"><div class="label"> Compagnies actives</div><div class="value">${activeCompanies.length}</div><div class="sub">sur ${companies.length} total</div></div>
+        <div class="stat-card"><div class="label">📦 Total colis</div><div class="value">${parcels.length}</div><div class="sub">toutes compagnies</div></div>
+        <div class="stat-card" style="background:#f39c12;color:white;"><div class="label" style="color:rgba(255,255,255,0.8);">💰 Revenus plateforme</div><div class="value">${roundPrice(platformRevenue).toLocaleString()} F</div><div class="sub">/mois (abonnements)</div></div>
+    `;
+    
+    const companiesDetails = activeCompanies.map(c => {
+        const companyParcels = parcels.filter(p => p.company_id === c.id);
+        const companyRevenue = companyParcels.reduce((sum, p) => sum + p.total_price, 0);
+        const todayParcels = companyParcels.filter(p => p.created_at.startsWith(new Date().toISOString().split('T')[0]));
+        const users = DB.get('users').filter(u => u.company_id === c.id);
+        
+        return `
+            <div class="company-detail-card">
+                <div class="company-detail-header">
+                    <div>
+                        <h4 style="color:#0f3460;margin-bottom:4px;">🏢 ${c.name}</h4>
+                        <div style="font-size:12px;color:#666;">${c.country} • Plan ${c.plan} • ${users.length} utilisateurs</div>
+                    </div>
+                    <span style="background:#27ae60;color:white;padding:4px 12px;border-radius:12px;font-size:11px;">✅ Active</span>
+                </div>
+                <div class="company-detail-stats">
+                    <div class="company-stat-item">
+                        <div class="num">${companyParcels.length}</div>
+                        <div class="lbl">Total colis</div>
+                    </div>
+                    <div class="company-stat-item">
+                        <div class="num">${todayParcels.length}</div>
+                        <div class="lbl">Aujourd'hui</div>
+                    </div>
+                    <div class="company-stat-item">
+                        <div class="num">${roundPrice(companyRevenue).toLocaleString()}</div>
+                        <div class="lbl">Revenus (F)</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    document.getElementById('companiesDetails').innerHTML = companiesDetails || '<p style="color:#999;text-align:center;">Aucune compagnie active</p>';
+    
+    document.getElementById('companiesList').innerHTML = companies.map(c => `
+        <div class="user-card" style="border-left: 4px solid #0f3460;">
+            <div class="user-info-block">
+                <div style="font-weight:700;">${c.name}</div>
+                <div style="font-size:12px;color:#666;">${c.country} • Plan ${c.plan}</div>
+            </div>
+            <span>${c.status === 'active' ? '✅' : '⏸️'}</span>
+        </div>
+    `).join('');
+}
+
+function showAddCompanyModal() { document.getElementById('addCompanyModal').classList.add('active'); }
+function closeAddCompanyModal() { document.getElementById('addCompanyModal').classList.remove('active'); }
+function saveCompany() {
+    const name = document.getElementById('newCompanyName').value.trim(); if (!name) { alert('Nom requis'); return; }
+    const companies = DB.get('companies'); const newId = companies.length > 0 ? Math.max(...companies.map(c => c.id)) + 1 : 1;
+    companies.push({ id: newId, name, phone: document.getElementById('newCompanyPhone').value, country: document.getElementById('newCompanyCountry').value, plan: document.getElementById('newCompanyPlan').value, status: 'active' });
+    DB.set('companies', companies);
+    const users = DB.get('users'); users.push({ id: Date.now(), company_id: newId, agency_id: null, role: 'admin', first_name: 'Admin', last_name: name, phone: 'admin_' + newId, password: 'admin' });
+    DB.set('users', users);
+    const fees = DB.get('fee_settings'); fees.push({ company_id: newId, value_percent: 1, customs_type: 'flat', customs_flat: 2000, customs_percent: 2.0, insurance_percent: 1.0 });
+    DB.set('fee_settings', fees);
+    closeAddCompanyModal(); alert(`✅ ${name} créée ! Admin: admin_${newId} / admin`); loadSuperDashboard(); loadCompanies();
+}
+
+// ============================================
+// INIT
+// ============================================
+loadCompanies();
+document.getElementById('loginPassword').addEventListener('keypress', e => { if(e.key==='Enter') login(); });
+</script>
+</body>
+</html>
