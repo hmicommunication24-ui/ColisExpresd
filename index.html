@@ -8,7 +8,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0a1628 0%, #1e3a5f 100%); color: #1a1a2e; min-height: 100vh; }
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a1628 0%, #1e3a5f 100%); color: #1a1a2e; min-height: 100vh; }
 :root { --primary: #1e3a5f; --primary-light: #2e5984; --accent: #f39c12; --success: #27ae60; --danger: #e74c3c; --white: #fff; --gray: #6c757d; }
 
 .login-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; background: linear-gradient(135deg, #0a1628 0%, #1e3a5f 50%, #2e5984 100%); }
@@ -125,14 +125,25 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
 
 .company-detail-card { background: white; padding: 20px; border-radius: 16px; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-left: 5px solid var(--primary); }
 .company-detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.company-contact-info { font-size: 12px; color: var(--gray); margin-top: 6px; padding-top: 6px; border-top: 1px dashed #e0e0e0; }
+.company-plan-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; margin-top: 4px; }
+.plan-basic { background: #e8f4fd; color: #2980b9; }
+.plan-pro { background: #fff9e6; color: #f39c12; }
+.plan-enterprise { background: #f0e6ff; color: #8e44ad; }
 .company-stats-row { display: flex; gap: 12px; margin-top: 12px; }
 .company-stat-item { flex: 1; text-align: center; padding: 10px; background: #f8f9fa; border-radius: 8px; }
 .company-stat-item .num { font-size: 18px; font-weight: 700; color: var(--primary); }
 .company-stat-item .lbl { font-size: 11px; color: var(--gray); }
+
+.tier-row, .route-row { display: grid; gap: 12px; align-items: end; margin-bottom: 12px; padding: 12px; background: #f8f9fa; border-radius: 12px; border-left: 4px solid var(--accent); }
+.tier-row { grid-template-columns: 1fr 1fr 1fr auto; }
+.route-row { grid-template-columns: 2fr 2fr 1fr auto; }
+.tier-row input, .route-row input, .route-row select { padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; }
 </style>
 </head>
 <body>
 
+<!-- LOGIN - VERSION CORRIGÉE (sans doublon) -->
 <div class="login-screen" id="loginScreen">
     <div class="login-box">
         <div class="logo-container">
@@ -146,31 +157,31 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
         <input type="text" id="loginPhone" placeholder="Téléphone / Identifiant">
         <input type="password" id="loginPassword" placeholder="Mot de passe">
         <button onclick="login()">Se connecter</button>
-        <div class="login-error" id="loginError">❌ Identifiants incorrects</div>
-        <button class="btn btn-outline" onclick="showPublicTracking()">🔍 Suivi client</button>
-        <button class="btn btn-outline" onclick="showClientConfirmation()">✅ Confirmer réception</button>
+        <div class="login-error" id="loginError">Identifiants incorrects</div>
+        <button class="btn btn-outline" onclick="showPublicTracking()">Suivi client</button>
+        <button class="btn btn-outline" onclick="showClientConfirmation()">Confirmer réception</button>
     </div>
 </div>
 
 <div class="public-screen" id="publicTrackingScreen" style="display:none;">
     <div class="public-box">
-        <h2>🔍 Suivre votre colis</h2>
+        <h2>Suivre votre colis</h2>
         <p class="subtitle">Entrez votre numéro de suivi</p>
         <input type="text" id="publicTrackInput" placeholder="Ex: HMiG-2026-000001" style="width:100%;padding:14px;border:2px solid #e0e0e0;border-radius:10px;margin-bottom:12px;">
         <button class="btn btn-primary" onclick="publicTrackParcel()">Rechercher</button>
         <div id="publicTrackResult" style="margin-top:20px;"></div>
-        <button class="btn btn-outline" onclick="hidePublicTracking()" style="margin-top:20px;">← Retour</button>
+        <button class="btn btn-outline" onclick="hidePublicTracking()" style="margin-top:20px;">Retour</button>
     </div>
 </div>
 
 <div class="public-screen" id="clientConfirmationScreen" style="display:none;">
     <div class="public-box">
-        <h2>✅ Confirmer la réception</h2>
+        <h2>Confirmer la réception</h2>
         <p class="subtitle">Entrez votre code</p>
         <input type="text" id="confirmationCodeInput" placeholder="Code (ex: ABC123)" style="width:100%;padding:14px;border:2px solid #e0e0e0;border-radius:10px;margin-bottom:12px;text-transform:uppercase;">
         <button class="btn btn-success" onclick="confirmReception()">Confirmer</button>
         <div id="confirmationResult" style="margin-top:20px;"></div>
-        <button class="btn btn-outline" onclick="hideClientConfirmation()" style="margin-top:20px;">← Retour</button>
+        <button class="btn btn-outline" onclick="hideClientConfirmation()" style="margin-top:20px;">Retour</button>
     </div>
 </div>
 
@@ -180,40 +191,40 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
         <div class="user-info">
             <span id="userName"></span>
             <span class="badge" id="userRole"></span>
-            <button class="btn-logout" onclick="logout()">⏻</button>
+            <button class="btn-logout" onclick="logout()">Déconnexion</button>
         </div>
     </div>
 
     <div class="main-content">
         <div class="section" id="sec-superDashboard">
-            <h3 style="margin-bottom:16px;">👑 Tableau de bord global</h3>
+            <h3 style="margin-bottom:16px;">Tableau de bord global</h3>
             <div class="stats-grid" id="superStats"></div>
-            <h3 style="margin:20px 0 12px;"> Situation par compagnie</h3>
+            <h3 style="margin:20px 0 12px;">Situation par compagnie</h3>
             <div id="companiesDetails"></div>
         </div>
 
         <div class="section" id="sec-companies">
-            <h3 style="margin-bottom:16px;">🏢 Gestion des compagnies</h3>
-            <button class="btn btn-primary" onclick="showAddCompanyModal()" style="margin-bottom:16px;">➕ Ajouter une compagnie</button>
+            <h3 style="margin-bottom:16px;">Gestion des compagnies</h3>
+            <button class="btn btn-primary" onclick="showAddCompanyModal()" style="margin-bottom:16px;">+ Ajouter une compagnie</button>
             <div id="companiesListFull"></div>
         </div>
 
         <div class="section" id="sec-dashboard">
-            <h3 style="margin-bottom:16px;"> Vue d'ensemble</h3>
+            <h3 style="margin-bottom:16px;">Vue d'ensemble</h3>
             <div class="stats-grid" id="statsGrid"></div>
-            <div class="chart-container"><h4>📈 Évolution (7 jours)</h4><div class="chart-wrapper"><canvas id="chartParcels"></canvas></div></div>
+            <div class="chart-container"><h4>Évolution (7 jours)</h4><div class="chart-wrapper"><canvas id="chartParcels"></canvas></div></div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                <button class="btn btn-primary btn-lg" onclick="showSection('newParcel')">📦 Nouvel Envoi</button>
-                <button class="btn btn-success btn-lg" onclick="showSection('bordereaux')">🚌 Bordereaux</button>
-                <button class="btn btn-warning btn-lg" onclick="showSection('douane')">🛃 Douane</button>
-                <button class="btn btn-info btn-lg" onclick="showSection('transactions')">💰 Transactions</button>
-                <button class="btn btn-outline btn-lg" onclick="showSection('tracking')"> Suivi</button>
-                <button class="btn btn-outline btn-lg" onclick="showSection('reports')">📊 Rapports</button>
+                <button class="btn btn-primary btn-lg" onclick="showSection('newParcel')">Nouvel Envoi</button>
+                <button class="btn btn-success btn-lg" onclick="showSection('bordereaux')">Bordereaux</button>
+                <button class="btn btn-warning btn-lg" onclick="showSection('douane')">Douane</button>
+                <button class="btn btn-info btn-lg" onclick="showSection('transactions')">Transactions</button>
+                <button class="btn btn-outline btn-lg" onclick="showSection('tracking')">Suivi</button>
+                <button class="btn btn-outline btn-lg" onclick="showSection('reports')">Rapports</button>
             </div>
         </div>
 
         <div class="section" id="sec-newParcel">
-            <h3 style="margin-bottom:16px;"> Nouvel envoi</h3>
+            <h3 style="margin-bottom:16px;">Nouvel envoi</h3>
             <div class="form-group"><label>Expéditeur *</label><input id="senderName"></div>
             <div class="form-group"><label>Téléphone expéditeur *</label><input id="senderPhone"></div>
             <div class="form-group"><label>Destinataire *</label><input id="recipientName"></div>
@@ -221,77 +232,97 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
             <div class="form-group"><label>Ville destination *</label><select id="destCity" onchange="onDestCityChange()"><option value="">-- Choisir --</option></select></div>
             <div class="form-group"><label>Agence</label><select id="destAgency"></select></div>
             <div class="form-group"><label>Description *</label><input id="description"></div>
-            <div class="form-group"><label>📸 Photo *</label><div class="photo-zone" onclick="document.getElementById('parcelPhoto').click()"><div class="icon">📷</div><p id="photoLabel">Cliquez pour photo</p><input type="file" id="parcelPhoto" accept="image/*" capture="environment" style="display:none" onchange="previewParcelPhoto(this)"><img id="photoPreview" class="photo-preview hidden"></div></div>
+            <div class="form-group"><label>Photo *</label><div class="photo-zone" onclick="document.getElementById('parcelPhoto').click()"><div class="icon">📷</div><p id="photoLabel">Cliquez pour photo</p><input type="file" id="parcelPhoto" accept="image/*" capture="environment" style="display:none" onchange="previewParcelPhoto(this)"><img id="photoPreview" class="photo-preview hidden"></div></div>
             <div class="form-group"><label>Poids (kg) *</label><input type="number" id="weightKg" step="0.1" oninput="calcPrice()"></div>
             <div class="form-group"><label>Valeur (FCFA) *</label><input type="number" id="declaredValue" value="0" oninput="calcPrice()"></div>
-            <div class="form-group"><label><input type="checkbox" id="isInsured" onchange="calcPrice()"> 🛡️ Assurance</label></div>
-            <div class="form-group"><label><input type="checkbox" id="isCustoms" onchange="calcPrice()"> 🛃 Douane</label></div>
+            <div class="form-group"><label><input type="checkbox" id="isInsured" onchange="calcPrice()"> Assurance</label></div>
+            <div class="form-group"><label><input type="checkbox" id="isCustoms" onchange="calcPrice()"> Douane</label></div>
             <div id="priceSummary" class="simulator-box"><p style="text-align:center;color:var(--gray)">Entrez poids et valeur</p></div>
-            <div class="form-group" style="margin-top:16px;"><label>Paiement</label><div style="display:flex;gap:10px;"><label style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px;text-align:center;"><input type="radio" name="payment" value="cash" checked> 💵 Espèces</label><label style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px;text-align:center;"><input type="radio" name="payment" value="mobile"> 📱 Mobile</label></div></div>
-            <button class="btn btn-success" onclick="submitParcel()">✅ Valider</button>
+            <div class="form-group" style="margin-top:16px;"><label>Paiement</label><div style="display:flex;gap:10px;"><label style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px;text-align:center;"><input type="radio" name="payment" value="cash" checked> Espèces</label><label style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px;text-align:center;"><input type="radio" name="payment" value="mobile"> Mobile</label></div></div>
+            <button class="btn btn-success" onclick="submitParcel()">Valider</button>
         </div>
 
         <div class="section" id="sec-parcelsList">
-            <h3 style="margin-bottom:16px;">📋 Colis</h3>
-            <div class="search-bar"><input type="text" id="searchParcels" placeholder=" Rechercher..." oninput="filterParcels()"><select id="filterStatus" onchange="filterParcels()"><option value="">Tous</option><option value="paid">Payé</option><option value="loaded">Chargé</option><option value="in_transit">Transit</option><option value="arrived">Arrivé</option><option value="delivered">Livré</option></select></div>
+            <h3 style="margin-bottom:16px;">Colis</h3>
+            <div class="search-bar"><input type="text" id="searchParcels" placeholder="Rechercher..." oninput="filterParcels()"><select id="filterStatus" onchange="filterParcels()"><option value="">Tous</option><option value="paid">Payé</option><option value="loaded">Chargé</option><option value="in_transit">Transit</option><option value="arrived">Arrivé</option><option value="delivered">Livré</option></select></div>
             <div class="filter-tags"><div class="filter-tag active" onclick="setFilter('all')">Tous</div><div class="filter-tag" onclick="setFilter('today')">Aujourd'hui</div><div class="filter-tag" onclick="setFilter('week')">Semaine</div></div>
             <div id="parcelsListContainer"></div>
         </div>
 
         <div class="section" id="sec-bordereaux">
-            <h3 style="margin-bottom:16px;">🚌 Bordereaux</h3>
-            <button class="btn btn-primary" onclick="showSection('createBordereau')" style="margin-bottom:16px;">➕ Créer</button>
+            <h3 style="margin-bottom:16px;">Bordereaux</h3>
+            <button class="btn btn-primary" onclick="showSection('createBordereau')" style="margin-bottom:16px;">+ Créer</button>
             <div id="bordereauxList"></div>
         </div>
 
         <div class="section" id="sec-createBordereau">
-            <button class="btn btn-outline btn-sm" onclick="showSection('bordereaux')" style="margin-bottom:16px;">← Retour</button>
-            <h3 style="margin-bottom:16px;">🚌 Nouveau bordereau</h3>
+            <button class="btn btn-outline btn-sm" onclick="showSection('bordereaux')" style="margin-bottom:16px;">Retour</button>
+            <h3 style="margin-bottom:16px;">Nouveau bordereau</h3>
             <div class="form-group"><label>Ville *</label><select id="bordCity" onchange="filterParcelsByDestination()"><option value="">-- Choisir --</option></select></div>
             <div class="form-group"><label>Chauffeur *</label><input id="bordDriver"></div>
             <div class="form-group"><label>Plaque *</label><input id="bordPlate"></div>
             <div class="form-group"><label>Date</label><input type="date" id="bordDate"></div>
-            <h4 style="margin:20px 0 12px;">📦 Colis</h4>
+            <h4 style="margin:20px 0 12px;">Colis</h4>
             <div id="parcelsToLoad"><p style="text-align:center;color:var(--gray);padding:20px;">Sélectionnez destination</p></div>
             <div style="background:#f8f9fa;padding:16px;border-radius:12px;margin-top:16px;"><div style="display:flex;justify-content:space-between;"><span>Colis:</span><strong id="selectedCount">0</strong></div><div style="display:flex;justify-content:space-between;"><span>Poids:</span><strong id="totalWeight">0 kg</strong></div></div>
-            <button class="btn btn-success" onclick="saveBordereau()" style="margin-top:16px;">✅ Créer & PDF</button>
+            <button class="btn btn-success" onclick="saveBordereau()" style="margin-top:16px;">Créer & PDF</button>
         </div>
 
         <div class="section" id="sec-douane">
-            <h3 style="margin-bottom:16px;">🛃 Douane</h3>
+            <h3 style="margin-bottom:16px;">Douane</h3>
             <div style="display:flex;gap:8px;margin-bottom:16px;"><button class="btn btn-sm btn-primary" onclick="setDouanePeriod('today')">Aujourd'hui</button><button class="btn btn-sm btn-outline" onclick="setDouanePeriod('week')">Semaine</button><button class="btn btn-sm btn-outline" onclick="setDouanePeriod('month')">Mois</button></div>
             <div class="stats-grid" id="douaneStats"></div>
             <div class="douane-table" id="douaneTable"></div>
         </div>
 
         <div class="section" id="sec-transactions">
-            <h3 style="margin-bottom:16px;">💰 Transactions</h3>
+            <h3 style="margin-bottom:16px;">Transactions</h3>
             <div style="display:flex;gap:8px;margin-bottom:16px;"><button class="btn btn-sm btn-primary period-btn active" onclick="setTransactionPeriod('today',this)">Aujourd'hui</button><button class="btn btn-sm btn-outline period-btn" onclick="setTransactionPeriod('week',this)">Semaine</button><button class="btn btn-sm btn-outline period-btn" onclick="setTransactionPeriod('month',this)">Mois</button></div>
             <div class="stats-grid" id="transactionStats"></div>
             <div class="transaction-table" id="transactionTable"></div>
         </div>
 
         <div class="section" id="sec-reports">
-            <h3 style="margin-bottom:16px;"> Rapports</h3>
+            <h3 style="margin-bottom:16px;">Rapports</h3>
             <div style="display:flex;gap:8px;margin-bottom:16px;"><button class="btn btn-sm btn-primary" onclick="generateReport('daily')">Journalier</button><button class="btn btn-sm btn-outline" onclick="generateReport('weekly')">Hebdo</button><button class="btn btn-sm btn-outline" onclick="generateReport('monthly')">Mensuel</button></div>
             <div id="reportContent"></div>
         </div>
 
         <div class="section" id="sec-users">
-            <h3 style="margin-bottom:16px;">👥 Personnel</h3>
-            <button class="btn btn-primary" onclick="showAddUserModal()" style="margin-bottom:16px;">➕ Ajouter</button>
+            <h3 style="margin-bottom:16px;">Personnel</h3>
+            <button class="btn btn-primary" onclick="showAddUserModal()" style="margin-bottom:16px;">+ Ajouter</button>
             <div id="usersList"></div>
         </div>
 
         <div class="section" id="sec-settings">
-            <h3 style="margin-bottom:16px;">⚙️ Paramètres</h3>
-            <div class="settings-card"><h3>🗺️ Destinations</h3><div id="routesList"></div><button class="btn btn-outline btn-sm" onclick="addRouteRow()">+ Ajouter</button><button class="btn btn-success btn-sm" onclick="saveRoutes()" style="margin-top:10px;">💾</button></div>
-            <div class="settings-card"><h3>️ Prix Poids</h3><div id="weightTiersList"></div><button class="btn btn-outline btn-sm" onclick="addWeightTierRow()">+ Ajouter</button><button class="btn btn-success btn-sm" onclick="saveWeightTiers()" style="margin-top:10px;">💾</button></div>
-            <div class="settings-card"><h3>🛣️ Prix Distance</h3><div id="distanceTiersList"></div><button class="btn btn-outline btn-sm" onclick="addDistanceTierRow()">+ Ajouter</button><button class="btn btn-success btn-sm" onclick="saveDistanceTiers()" style="margin-top:10px;">💾</button></div>
+            <h3 style="margin-bottom:16px;">Paramètres de ma compagnie</h3>
+            <div class="settings-card">
+                <h3>Destinations (Routes)</h3>
+                <div id="routesList"></div>
+                <button class="btn btn-outline btn-sm" onclick="addRouteRow()">+ Ajouter une route</button>
+                <button class="btn btn-success btn-sm" onclick="saveRoutes()" style="margin-top:10px;">Enregistrer</button>
+            </div>
+            <div class="settings-card">
+                <h3>Prix par Poids</h3>
+                <div id="weightTiersList"></div>
+                <button class="btn btn-outline btn-sm" onclick="addWeightTierRow()">+ Ajouter une tranche</button>
+                <button class="btn btn-success btn-sm" onclick="saveWeightTiers()" style="margin-top:10px;">Enregistrer</button>
+            </div>
+            <div class="settings-card">
+                <h3>Prix par Distance</h3>
+                <div id="distanceTiersList"></div>
+                <button class="btn btn-outline btn-sm" onclick="addDistanceTierRow()">+ Ajouter une tranche</button>
+                <button class="btn btn-success btn-sm" onclick="saveDistanceTiers()" style="margin-top:10px;">Enregistrer</button>
+            </div>
+            <div class="settings-card">
+                <h3>Frais & Pourcentages</h3>
+                <div id="feeSettingsList"></div>
+                <button class="btn btn-success btn-sm" onclick="saveFeeSettings()">Enregistrer</button>
+            </div>
         </div>
 
         <div class="section" id="sec-tracking">
-            <h3 style="margin-bottom:12px;">🔍 Suivi</h3>
+            <h3 style="margin-bottom:12px;">Suivi</h3>
             <input type="text" id="trackInput" placeholder="Numéro de suivi" style="width:100%;padding:14px;border:2px solid #e0e0e0;border-radius:10px;margin-bottom:12px;">
             <button class="btn btn-primary" onclick="trackParcel()">Rechercher</button>
             <div id="trackResult" style="margin-top:16px;"></div>
@@ -301,11 +332,11 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
     <div class="bottom-nav" id="bottomNav"></div>
 </div>
 
-<div class="modal" id="recuModal"><div class="modal-content"><h3 style="margin-bottom:16px;">🧾 Reçu</h3><div id="recuContent"></div><div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;"><button class="btn btn-success" onclick="downloadRecuPDF()" style="flex:1;min-width:120px;">📄 Reçu PDF</button><button class="btn btn-info" onclick="downloadTicketPDF()" style="flex:1;min-width:120px;">🖨️ Ticket</button><button class="btn btn-outline" onclick="closeRecuModal()" style="flex:1;min-width:120px;">Fermer</button></div></div></div>
-<div class="modal" id="smsModal"><div class="modal-content"><h3 style="margin-bottom:16px;">📱 SMS</h3><div id="smsContent"></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-primary" onclick="simulateSendSMS()">Envoyer</button><button class="btn btn-outline" onclick="closeSmsModal()">Fermer</button></div></div></div>
-<div class="modal" id="ticketModal"><div class="modal-content"><h3 style="margin-bottom:16px;">🖨️ Ticket</h3><div id="ticketContent"></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-success" onclick="printTicket()">Imprimer</button><button class="btn btn-outline" onclick="closeTicketModal()">Fermer</button></div></div></div>
-<div class="modal" id="addCompanyModal"><div class="modal-content"><h3 style="margin-bottom:16px;"> Nouvelle compagnie</h3><div class="form-group"><label>Nom</label><input id="newCompanyName"></div><div class="form-group"><label>Pays</label><input id="newCompanyCountry"></div><div class="form-group"><label>Plan</label><select id="newCompanyPlan"><option value="basic">Basic - 50k</option><option value="pro">Pro - 100k</option><option value="enterprise">Enterprise - 200k</option></select></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-outline" onclick="closeAddCompanyModal()">Annuler</button><button class="btn btn-primary" onclick="saveCompany()">Enregistrer</button></div></div></div>
-<div class="modal" id="addUserModal"><div class="modal-content"><h3 style="margin-bottom:16px;">👤 Utilisateur</h3><div class="form-group"><label>Prénom</label><input id="newUserFirstName"></div><div class="form-group"><label>Nom</label><input id="newUserLastName"></div><div class="form-group"><label>Téléphone</label><input id="newUserPhone"></div><div class="form-group"><label>Mot de passe</label><input id="newUserPassword"></div><div class="form-group"><label>Rôle</label><select id="newUserRole"><option value="admin">Admin</option><option value="clerk">Guichetier</option></select></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-outline" onclick="closeAddUserModal()">Annuler</button><button class="btn btn-primary" onclick="saveUser()">OK</button></div></div></div>
+<div class="modal" id="recuModal"><div class="modal-content"><h3 style="margin-bottom:16px;">Reçu</h3><div id="recuContent"></div><div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;"><button class="btn btn-success" onclick="downloadRecuPDF()" style="flex:1;min-width:120px;">Reçu PDF</button><button class="btn btn-info" onclick="downloadTicketPDF()" style="flex:1;min-width:120px;">Ticket</button><button class="btn btn-outline" onclick="closeRecuModal()" style="flex:1;min-width:120px;">Fermer</button></div></div></div>
+<div class="modal" id="smsModal"><div class="modal-content"><h3 style="margin-bottom:16px;">SMS</h3><div id="smsContent"></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-primary" onclick="simulateSendSMS()">Envoyer</button><button class="btn btn-outline" onclick="closeSmsModal()">Fermer</button></div></div></div>
+<div class="modal" id="ticketModal"><div class="modal-content"><h3 style="margin-bottom:16px;">Ticket</h3><div id="ticketContent"></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-success" onclick="printTicket()">Imprimer</button><button class="btn btn-outline" onclick="closeTicketModal()">Fermer</button></div></div></div>
+<div class="modal" id="addCompanyModal"><div class="modal-content"><h3 style="margin-bottom:16px;">Nouvelle compagnie</h3><div class="form-group"><label>Nom</label><input id="newCompanyName"></div><div class="form-group"><label>Pays</label><input id="newCompanyCountry"></div><div class="form-group"><label>Téléphone de contact</label><input id="newCompanyPhone" placeholder="Ex: +228 70 00 00 00"></div><div class="form-group"><label>Plan</label><select id="newCompanyPlan"><option value="basic">Basic - 50 000 FCFA/mois</option><option value="pro">Pro - 100 000 FCFA/mois</option><option value="enterprise">Enterprise - 200 000 FCFA/mois</option></select></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-outline" onclick="closeAddCompanyModal()">Annuler</button><button class="btn btn-primary" onclick="saveCompany()">Enregistrer</button></div></div></div>
+<div class="modal" id="addUserModal"><div class="modal-content"><h3 style="margin-bottom:16px;">Utilisateur</h3><div class="form-group"><label>Prénom</label><input id="newUserFirstName"></div><div class="form-group"><label>Nom</label><input id="newUserLastName"></div><div class="form-group"><label>Téléphone</label><input id="newUserPhone"></div><div class="form-group"><label>Mot de passe</label><input id="newUserPassword"></div><div class="form-group"><label>Rôle</label><select id="newUserRole"><option value="admin">Admin</option><option value="clerk">Guichetier</option></select></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-outline" onclick="closeAddUserModal()">Annuler</button><button class="btn btn-primary" onclick="saveUser()">OK</button></div></div></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -336,6 +367,8 @@ let transactionPeriod = 'today';
 
 const roundPrice = v => Math.ceil(v / 100) * 100;
 const genCode = () => { let c=''; for(let i=0;i<6;i++) c+='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random()*34)]; return c; };
+const getPlanLabel = p => p === 'basic' ? 'Basic (50 000 F/mois)' : p === 'pro' ? 'Pro (100 000 F/mois)' : 'Enterprise (200 000 F/mois)';
+const getPlanClass = p => p === 'basic' ? 'plan-basic' : p === 'pro' ? 'plan-pro' : 'plan-enterprise';
 
 async function refreshCache() {
     const cols = ['companies','users','parcels','bordereaux','cities','agencies','routes','weight_tiers','distance_tiers','fee_settings'];
@@ -349,10 +382,10 @@ async function loadCompaniesInDropdown() {
     await refreshCache();
     const select = document.getElementById('loginCompany');
     select.innerHTML = '<option value="">-- Sélectionner --</option>';
-    select.innerHTML += '<option value="super">👑 SUPER ADMIN</option>';
+    select.innerHTML += '<option value="super">SUPER ADMIN</option>';
     Cache.companies.forEach(c => {
         if(c.status === 'active') {
-            select.innerHTML += `<option value="${c.id}">🏢 ${c.name} (${c.country})</option>`;
+            select.innerHTML += `<option value="${c.id}">${c.name} (${c.country})</option>`;
         }
     });
 }
@@ -431,9 +464,9 @@ window.logout = function() { signOut(auth); location.reload(); }
 function buildNav() {
     const nav = document.getElementById('bottomNav');
     if(currentUser.isSuperAdmin) {
-        nav.innerHTML = `<div class="bottom-nav-item active" onclick="showSection('superDashboard')"><div class="icon">👑</div>Global</div><div class="bottom-nav-item" onclick="showSection('companies')"><div class="icon">🏢</div>Compagnies</div>`;
+        nav.innerHTML = `<div class="bottom-nav-item active" onclick="showSection('superDashboard')"><div class="icon">👑</div>Global</div><div class="bottom-nav-item" onclick="showSection('companies')"><div class="icon"></div>Compagnies</div>`;
     } else {
-        nav.innerHTML = `<div class="bottom-nav-item active" onclick="showSection('dashboard')"><div class="icon">🏠</div>Accueil</div><div class="bottom-nav-item" onclick="showSection('newParcel')"><div class="icon">📦</div>Envoi</div><div class="bottom-nav-item" onclick="showSection('parcelsList')"><div class="icon"></div>Colis</div><div class="bottom-nav-item" onclick="showSection('transactions')"><div class="icon">💰</div>Finance</div><div class="bottom-nav-item" onclick="showSection('tracking')"><div class="icon"></div>Suivi</div>`;
+        nav.innerHTML = `<div class="bottom-nav-item active" onclick="showSection('dashboard')"><div class="icon">🏠</div>Accueil</div><div class="bottom-nav-item" onclick="showSection('newParcel')"><div class="icon">📦</div>Envoi</div><div class="bottom-nav-item" onclick="showSection('parcelsList')"><div class="icon">📋</div>Colis</div><div class="bottom-nav-item" onclick="showSection('transactions')"><div class="icon">💰</div>Finance</div><div class="bottom-nav-item" onclick="showSection('settings')"><div class="icon">⚙️</div>Param.</div>`;
     }
 }
 
@@ -452,8 +485,10 @@ window.showSection = function(name) {
     if(name==='reports') generateReport('daily');
     if(name==='users') loadUsers();
     if(name==='tracking') showTracking();
+    if(name==='settings') loadSettings();
 };
 
+// ========== SUPER ADMIN DASHBOARD AMÉLIORÉ ==========
 async function loadSuperDashboard() {
     await refreshCache();
     const allParcels = Cache.parcels;
@@ -461,46 +496,72 @@ async function loadSuperDashboard() {
     const todayP = allParcels.filter(p=>p.created_at?.startsWith(today));
     const totalRevenue = allParcels.reduce((s,p)=>s+(p.total_price||0),0);
     
+    // Calcul du CA mensuel des forfaits
+    const totalPlanRevenue = Cache.companies.reduce((s,c) => {
+        const planPrice = c.plan === 'basic' ? 50000 : c.plan === 'pro' ? 100000 : 200000;
+        return s + (c.status === 'active' ? planPrice : 0);
+    }, 0);
+    
     document.getElementById('superStats').innerHTML = `
-        <div class="stat-card"><div class="label">🏢 Compagnies</div><div class="value">${Cache.companies.length}</div></div>
-        <div class="stat-card"><div class="label">📦 Total Colis</div><div class="value">${allParcels.length}</div><div class="sub">Auj: ${todayP.length}</div></div>
-        <div class="stat-card" style="background:linear-gradient(135deg, var(--accent) 0%, #f1c40f 100%);color:var(--primary)"><div class="label">💰 CA Global</div><div class="value">${roundPrice(totalRevenue).toLocaleString()} F</div></div>
+        <div class="stat-card"><div class="label">Compagnies actives</div><div class="value">${Cache.companies.filter(c=>c.status==='active').length}/${Cache.companies.length}</div></div>
+        <div class="stat-card"><div class="label">Total Colis</div><div class="value">${allParcels.length}</div><div class="sub">Auj: ${todayP.length}</div></div>
+        <div class="stat-card" style="background:linear-gradient(135deg, var(--accent) 0%, #f1c40f 100%);color:var(--primary)"><div class="label">CA Global (colis)</div><div class="value">${roundPrice(totalRevenue).toLocaleString()} F</div></div>
+        <div class="stat-card" style="background:linear-gradient(135deg, var(--success) 0%, #229954 100%);color:white"><div class="label">CA Forfaits/mois</div><div class="value">${totalPlanRevenue.toLocaleString()} F</div></div>
     `;
 
+    // Liste détaillée des compagnies avec contact et forfait
     let detailsHTML = '';
     Cache.companies.forEach(c => {
         const cParcels = allParcels.filter(p=>p.company_id===c.id);
         const cToday = cParcels.filter(p=>p.created_at?.startsWith(today));
         const cRev = cParcels.reduce((s,p)=>s+(p.total_price||0),0);
+        
+        // Trouver l'admin de la compagnie
+        const companyAdmin = Cache.users.find(u => u.company_id === c.id && u.role === 'admin');
+        const planLabel = getPlanLabel(c.plan);
+        const planClass = getPlanClass(c.plan);
+        
         detailsHTML += `
         <div class="company-detail-card">
             <div class="company-detail-header">
-                <div><h4 style="color:var(--primary);margin-bottom:4px;">${c.name}</h4><div style="font-size:12px;color:var(--gray)">${c.country} • Plan ${c.plan}</div></div>
-                <span style="background:${c.status==='active'?'var(--success)':'var(--danger)'};color:white;padding:4px 12px;border-radius:12px;font-size:11px;">${c.status==='active'?'✅ Active':'❌ Suspendue'}</span>
+                <div style="flex:1">
+                    <h4 style="color:var(--primary);margin-bottom:4px;">${c.name}</h4>
+                    <div style="font-size:12px;color:var(--gray)">${c.country}</div>
+                    <div class="company-plan-badge ${planClass}">${planLabel}</div>
+                </div>
+                <span style="background:${c.status==='active'?'var(--success)':'var(--danger)'};color:white;padding:4px 12px;border-radius:12px;font-size:11px;">
+                    ${c.status==='active'?'Active':'Suspendue'}
+                </span>
             </div>
+            ${companyAdmin ? `
+            <div class="company-contact-info">
+                <strong>Contact:</strong> ${companyAdmin.first_name} ${companyAdmin.last_name}<br>
+                <strong>Tél:</strong> ${companyAdmin.phone} | <strong>Email:</strong> ${companyAdmin.email || 'N/A'}
+            </div>` : '<div class="company-contact-info" style="color:var(--danger)">⚠️ Aucun administrateur défini</div>'}
             <div class="company-stats-row">
-                <div class="company-stat-item"><div class="num">${cParcels.length}</div><div class="lbl">Total</div></div>
-                <div class="company-stat-item"><div class="num">${cToday.length}</div><div class="lbl">Auj.</div></div>
-                <div class="company-stat-item"><div class="num">${roundPrice(cRev).toLocaleString()}</div><div class="lbl">CA</div></div>
+                <div class="company-stat-item"><div class="num">${cParcels.length}</div><div class="lbl">Total colis</div></div>
+                <div class="company-stat-item"><div class="num">${cToday.length}</div><div class="lbl">Aujourd'hui</div></div>
+                <div class="company-stat-item"><div class="num">${roundPrice(cRev).toLocaleString()}</div><div class="lbl">CA Colis</div></div>
             </div>
         </div>`;
     });
-    document.getElementById('companiesDetails').innerHTML = detailsHTML || '<p style="text-align:center;color:var(--gray)">Aucune compagnie</p>';
+    document.getElementById('companiesDetails').innerHTML = detailsHTML || '<p style="text-align:center;color:var(--gray);padding:40px;">Aucune compagnie</p>';
 }
 
 async function loadCompaniesManagement() {
     await refreshCache();
     let listHTML = '';
     Cache.companies.forEach(c => {
+        const planLabel = getPlanLabel(c.plan);
         listHTML += `
         <div class="user-card" style="border-left: 4px solid var(--primary);">
             <div class="user-info-block">
                 <div style="font-weight:700;">${c.name}</div>
-                <div style="font-size:12px;color:var(--gray);">${c.country} • Plan ${c.plan} • ${c.status==='active'?'✅ Active':' Suspendue'}</div>
+                <div style="font-size:12px;color:var(--gray);">${c.country} • ${planLabel} • ${c.status==='active'?'Active':'Suspendue'}</div>
             </div>
             <div style="display:flex;gap:8px;">
                 <button class="btn btn-sm ${c.status==='active'?'btn-warning':'btn-success'}" onclick="toggleCompanyStatus('${c.id}', '${c.status}')">${c.status==='active'?'Suspendre':'Activer'}</button>
-                <button class="btn btn-sm btn-danger" onclick="deleteCompany('${c.id}', '${c.name}')">🗑️</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteCompany('${c.id}', '${c.name}')">Supprimer</button>
             </div>
         </div>`;
     });
@@ -511,10 +572,12 @@ window.showAddCompanyModal = function() { document.getElementById('addCompanyMod
 window.closeAddCompanyModal = function() { document.getElementById('addCompanyModal').classList.remove('active'); };
 window.saveCompany = async function() {
     const name = document.getElementById('newCompanyName').value.trim();
+    const phone = document.getElementById('newCompanyPhone').value.trim();
     if(!name) { alert('Nom requis'); return; }
     const newId = Date.now().toString();
     await setDoc(doc(db, 'companies', newId), {
-        name, country: document.getElementById('newCompanyCountry').value, plan: document.getElementById('newCompanyPlan').value, status: 'active'
+        name, country: document.getElementById('newCompanyCountry').value, phone, 
+        plan: document.getElementById('newCompanyPlan').value, status: 'active'
     });
     closeAddCompanyModal();
     alert(`✅ ${name} créée !`);
@@ -533,9 +596,9 @@ window.toggleCompanyStatus = async function(id, currentStatus) {
 };
 
 window.deleteCompany = async function(id, name) {
-    if(confirm(`⚠️ Êtes-vous sûr de vouloir SUPPRIMER définitivement "${name}" ?`)) {
+    if(confirm(`Êtes-vous sûr de vouloir SUPPRIMER définitivement "${name}" ?`)) {
         await deleteDoc(doc(db, 'companies', id));
-        alert(`️ ${name} supprimée.`);
+        alert(`${name} supprimée.`);
         loadCompaniesManagement();
         loadSuperDashboard();
         loadCompaniesInDropdown();
@@ -551,10 +614,10 @@ async function loadDashboard() {
     const weekP = parcels.filter(p=>new Date(p.created_at)>=weekAgo);
     
     document.getElementById('statsGrid').innerHTML = `
-        <div class="stat-card"><div class="label">📦 Aujourd'hui</div><div class="value">${todayP.length}</div><div class="sub">Total: ${parcels.length}</div></div>
-        <div class="stat-card"><div class="label">💰 Recettes</div><div class="value">${roundPrice(todayP.reduce((s,p)=>s+(p.total_price||0),0)).toLocaleString()} F</div><div class="sub">Semaine: ${roundPrice(weekP.reduce((s,p)=>s+(p.total_price||0),0)).toLocaleString()} F</div></div>
-        <div class="stat-card"><div class="label">✅ Livrés</div><div class="value">${parcels.filter(p=>p.status==='delivered').length}</div></div>
-        <div class="stat-card"><div class="label">🚚 Transit</div><div class="value">${parcels.filter(p=>p.status==='in_transit').length}</div></div>
+        <div class="stat-card"><div class="label">Aujourd'hui</div><div class="value">${todayP.length}</div><div class="sub">Total: ${parcels.length}</div></div>
+        <div class="stat-card"><div class="label">Recettes</div><div class="value">${roundPrice(todayP.reduce((s,p)=>s+(p.total_price||0),0)).toLocaleString()} F</div><div class="sub">Semaine: ${roundPrice(weekP.reduce((s,p)=>s+(p.total_price||0),0)).toLocaleString()} F</div></div>
+        <div class="stat-card"><div class="label">Livrés</div><div class="value">${parcels.filter(p=>p.status==='delivered').length}</div></div>
+        <div class="stat-card"><div class="label">Transit</div><div class="value">${parcels.filter(p=>p.status==='in_transit').length}</div></div>
     `;
     
     const days=[], counts=[];
@@ -563,11 +626,241 @@ async function loadDashboard() {
     charts.parcels = new Chart(document.getElementById('chartParcels'),{type:'line',data:{labels:days,datasets:[{label:'Colis',data:counts,borderColor:'#1e3a5f',backgroundColor:'rgba(30,58,95,0.1)',fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
 }
 
+// ========== PARAMÈTRES PAR COMPAGNIE ==========
+async function loadSettings() {
+    await refreshCache();
+    const companyId = currentUser.company_id;
+    
+    const companyRoutes = Cache.routes.filter(r => r.company_id === companyId);
+    const companyWeightTiers = Cache.weight_tiers.filter(w => w.company_id === companyId);
+    const companyDistanceTiers = Cache.distance_tiers.filter(d => d.company_id === companyId);
+    const companyFeeSettings = Cache.fee_settings.filter(f => f.company_id === companyId)[0];
+    
+    let routesHTML = '';
+    companyRoutes.forEach((r, idx) => {
+        const fromCity = Cache.cities.find(c => c.id === r.from_city_id)?.name || r.from_name || 'Inconnu';
+        const toCity = Cache.cities.find(c => c.id === r.to_city_id)?.name || r.to_name || 'Inconnu';
+        routesHTML += `
+        <div class="route-row" data-idx="${idx}">
+            <input type="text" value="${fromCity}" placeholder="Ville départ" class="route-from">
+            <input type="text" value="${toCity}" placeholder="Ville arrivée" class="route-to">
+            <input type="number" value="${r.distance_km}" placeholder="Distance (km)" class="route-dist">
+            <button class="btn btn-sm btn-danger" onclick="this.closest('.route-row').remove()">Suppr</button>
+        </div>`;
+    });
+    document.getElementById('routesList').innerHTML = routesHTML || '<p style="color:var(--gray);margin-bottom:12px;">Aucune route configurée</p>';
+    
+    let weightHTML = '';
+    companyWeightTiers.forEach((w, idx) => {
+        weightHTML += `
+        <div class="tier-row" data-idx="${idx}">
+            <input type="number" value="${w.min}" placeholder="Min (kg)" class="weight-min">
+            <input type="number" value="${w.max}" placeholder="Max (kg)" class="weight-max">
+            <input type="number" value="${w.price}" placeholder="Prix (FCFA)" class="weight-price">
+            <button class="btn btn-sm btn-danger" onclick="this.closest('.tier-row').remove()">Suppr</button>
+        </div>`;
+    });
+    document.getElementById('weightTiersList').innerHTML = weightHTML || '<p style="color:var(--gray);margin-bottom:12px;">Aucune tranche configurée</p>';
+    
+    let distanceHTML = '';
+    companyDistanceTiers.forEach((d, idx) => {
+        distanceHTML += `
+        <div class="tier-row" data-idx="${idx}">
+            <input type="number" value="${d.min}" placeholder="Min (km)" class="dist-min">
+            <input type="number" value="${d.max}" placeholder="Max (km)" class="dist-max">
+            <input type="number" value="${d.price_per_km}" placeholder="Prix/km (FCFA)" class="dist-price">
+            <button class="btn btn-sm btn-danger" onclick="this.closest('.tier-row').remove()">Suppr</button>
+        </div>`;
+    });
+    document.getElementById('distanceTiersList').innerHTML = distanceHTML || '<p style="color:var(--gray);margin-bottom:12px;">Aucune tranche configurée</p>';
+    
+    const fees = companyFeeSettings || { value_percent: 1, customs_flat: 2000, insurance_percent: 1 };
+    document.getElementById('feeSettingsList').innerHTML = `
+        <div class="form-group">
+            <label>Frais de gestion (% de la valeur du colis)</label>
+            <input type="number" id="feeValuePercent" value="${fees.value_percent}" step="0.1">
+        </div>
+        <div class="form-group">
+            <label>Frais de douane fixe (FCFA)</label>
+            <input type="number" id="feeCustomsFlat" value="${fees.customs_flat}">
+        </div>
+        <div class="form-group">
+            <label>Assurance (% de la valeur)</label>
+            <input type="number" id="feeInsurancePercent" value="${fees.insurance_percent}" step="0.1">
+        </div>
+    `;
+}
+
+window.addRouteRow = function() {
+    const html = `
+    <div class="route-row">
+        <input type="text" placeholder="Ville départ (ex: Lomé)" class="route-from">
+        <input type="text" placeholder="Ville arrivée (ex: Niamey)" class="route-to">
+        <input type="number" placeholder="Distance (km)" class="route-dist">
+        <button class="btn btn-sm btn-danger" onclick="this.closest('.route-row').remove()">Suppr</button>
+    </div>`;
+    document.getElementById('routesList').insertAdjacentHTML('beforeend', html);
+};
+
+window.addWeightTierRow = function() {
+    const html = `
+    <div class="tier-row">
+        <input type="number" placeholder="Min (kg)" class="weight-min">
+        <input type="number" placeholder="Max (kg)" class="weight-max">
+        <input type="number" placeholder="Prix (FCFA)" class="weight-price">
+        <button class="btn btn-sm btn-danger" onclick="this.closest('.tier-row').remove()">Suppr</button>
+    </div>`;
+    document.getElementById('weightTiersList').insertAdjacentHTML('beforeend', html);
+};
+
+window.addDistanceTierRow = function() {
+    const html = `
+    <div class="tier-row">
+        <input type="number" placeholder="Min (km)" class="dist-min">
+        <input type="number" placeholder="Max (km)" class="dist-max">
+        <input type="number" placeholder="Prix/km (FCFA)" class="dist-price">
+        <button class="btn btn-sm btn-danger" onclick="this.closest('.tier-row').remove()">Suppr</button>
+    </div>`;
+    document.getElementById('distanceTiersList').insertAdjacentHTML('beforeend', html);
+};
+
+window.saveRoutes = async function() {
+    const rows = document.querySelectorAll('.route-row');
+    const companyId = currentUser.company_id;
+    
+    const oldRoutes = Cache.routes.filter(r => r.company_id === companyId);
+    for(const route of oldRoutes) {
+        await deleteDoc(doc(db, 'routes', route.id));
+    }
+    
+    for(const row of rows) {
+        const from = row.querySelector('.route-from').value;
+        const to = row.querySelector('.route-to').value;
+        const dist = parseFloat(row.querySelector('.route-dist').value) || 0;
+        
+        if(from && to && dist > 0) {
+            let fromCity = Cache.cities.find(c => c.name.toLowerCase() === from.toLowerCase());
+            let toCity = Cache.cities.find(c => c.name.toLowerCase() === to.toLowerCase());
+            
+            if(!fromCity) {
+                const ref = await addDoc(collection(db, 'cities'), { name: from });
+                fromCity = { id: ref.id, name: from };
+                Cache.cities.push(fromCity);
+            }
+            if(!toCity) {
+                const ref = await addDoc(collection(db, 'cities'), { name: to });
+                toCity = { id: ref.id, name: to };
+                Cache.cities.push(toCity);
+            }
+            
+            await addDoc(collection(db, 'routes'), {
+                company_id: companyId,
+                from_city_id: fromCity.id,
+                to_city_id: toCity.id,
+                distance_km: dist,
+                from_name: from,
+                to_name: to
+            });
+        }
+    }
+    
+    alert('Routes enregistrées !');
+    await refreshCache();
+    loadSettings();
+};
+
+window.saveWeightTiers = async function() {
+    const rows = document.querySelectorAll('#weightTiersList .tier-row');
+    const companyId = currentUser.company_id;
+    
+    const oldTiers = Cache.weight_tiers.filter(w => w.company_id === companyId);
+    for(const tier of oldTiers) {
+        await deleteDoc(doc(db, 'weight_tiers', tier.id));
+    }
+    
+    for(const row of rows) {
+        const min = parseFloat(row.querySelector('.weight-min').value) || 0;
+        const max = parseFloat(row.querySelector('.weight-max').value) || 0;
+        const price = parseFloat(row.querySelector('.weight-price').value) || 0;
+        
+        if(min >= 0 && max > 0 && price > 0) {
+            await addDoc(collection(db, 'weight_tiers'), {
+                company_id: companyId,
+                min, max, price
+            });
+        }
+    }
+    
+    alert('Tranches de poids enregistrées !');
+    await refreshCache();
+    loadSettings();
+};
+
+window.saveDistanceTiers = async function() {
+    const rows = document.querySelectorAll('#distanceTiersList .tier-row');
+    const companyId = currentUser.company_id;
+    
+    const oldTiers = Cache.distance_tiers.filter(d => d.company_id === companyId);
+    for(const tier of oldTiers) {
+        await deleteDoc(doc(db, 'distance_tiers', tier.id));
+    }
+    
+    for(const row of rows) {
+        const min = parseFloat(row.querySelector('.dist-min').value) || 0;
+        const max = parseFloat(row.querySelector('.dist-max').value) || 0;
+        const price = parseFloat(row.querySelector('.dist-price').value) || 0;
+        
+        if(min >= 0 && max > 0 && price > 0) {
+            await addDoc(collection(db, 'distance_tiers'), {
+                company_id: companyId,
+                min, max, price_per_km: price
+            });
+        }
+    }
+    
+    alert('Tranches de distance enregistrées !');
+    await refreshCache();
+    loadSettings();
+};
+
+window.saveFeeSettings = async function() {
+    const companyId = currentUser.company_id;
+    const feeDoc = Cache.fee_settings.find(f => f.company_id === companyId);
+    
+    const feeData = {
+        company_id: companyId,
+        value_percent: parseFloat(document.getElementById('feeValuePercent').value) || 0,
+        customs_flat: parseFloat(document.getElementById('feeCustomsFlat').value) || 0,
+        customs_percent: 2,
+        insurance_percent: parseFloat(document.getElementById('feeInsurancePercent').value) || 0
+    };
+    
+    if(feeDoc) {
+        await updateDoc(doc(db, 'fee_settings', feeDoc.id), feeData);
+    } else {
+        await addDoc(collection(db, 'fee_settings'), feeData);
+    }
+    
+    alert('Frais enregistrés !');
+    await refreshCache();
+    loadSettings();
+};
+
 window.initNewParcel = async function() {
     await refreshCache();
     const agencies = Cache.agencies.filter(a=>a.company_id===currentUser.company_id);
     const routes = Cache.routes.filter(r=>r.company_id===currentUser.company_id);
-    document.getElementById('destCity').innerHTML = '<option value="">-- Choisir --</option>'+routes.map(r=>{const city=Cache.cities.find(c=>c.id===r.to_city_id);return `<option value="${r.to_city_id}" data-dist="${r.distance_km}">${city?.name||'?' } (${r.distance_km}km)</option>`}).join('');
+    
+    if(routes.length === 0) {
+        alert('Aucune destination configurée ! Allez dans Paramètres pour ajouter des routes.');
+        document.getElementById('destCity').innerHTML = '<option value="">-- Aucune destination --</option>';
+    } else {
+        document.getElementById('destCity').innerHTML = '<option value="">-- Choisir --</option>'+routes.map(r=>{
+            const city=Cache.cities.find(c=>c.id===r.to_city_id);
+            return `<option value="${r.to_city_id}" data-dist="${r.distance_km}">${city?.name||r.to_name||'?'} (${r.distance_km}km)</option>`;
+        }).join('');
+    }
+    
     document.getElementById('destAgency').innerHTML = agencies.map(a=>`<option value="${a.id}">${a.name}</option>`).join('');
     currentParcelPhoto = null;
     document.getElementById('photoPreview').classList.add('hidden');
@@ -601,13 +894,13 @@ window.calcPrice = function() {
     const cFee = document.getElementById('isCustoms').checked?roundPrice(fees.customs_flat):0;
     const total = wPrice+dPrice+hFee+iFee+cFee;
     
-    document.getElementById('priceSummary').innerHTML = `<div style="display:flex;justify-content:space-between;padding:6px"><span>📦 Poids</span><span>${wPrice.toLocaleString()} F</span></div><div style="display:flex;justify-content:space-between;padding:6px"><span>🛣️ Distance (${dist}km)</span><span>${dPrice.toLocaleString()} F</span></div>${hFee?'<div style="display:flex;justify-content:space-between;padding:6px;color:#f39c12"><span>🔹 Gestion</span><span>'+hFee.toLocaleString()+' F</span></div>':''}${iFee?'<div style="display:flex;justify-content:space-between;padding:6px"><span>🛡️ Assurance</span><span>'+iFee.toLocaleString()+' F</span></div>':''}${cFee?'<div style="display:flex;justify-content:space-between;padding:6px;color:#e67e22"><span>🛃 Douane</span><span>'+cFee.toLocaleString()+' F</span></div>':''}<div style="display:flex;justify-content:space-between;padding:10px;border-top:2px solid var(--primary);margin-top:8px;font-weight:700;font-size:18px;color:var(--primary)"><span>TOTAL</span><span>${total.toLocaleString()} FCFA</span></div>`;
+    document.getElementById('priceSummary').innerHTML = `<div style="display:flex;justify-content:space-between;padding:6px"><span>Poids</span><span>${wPrice.toLocaleString()} F</span></div><div style="display:flex;justify-content:space-between;padding:6px"><span>Distance (${dist}km)</span><span>${dPrice.toLocaleString()} F</span></div>${hFee?'<div style="display:flex;justify-content:space-between;padding:6px;color:#f39c12"><span>Gestion</span><span>'+hFee.toLocaleString()+' F</span></div>':''}${iFee?'<div style="display:flex;justify-content:space-between;padding:6px"><span>Assurance</span><span>'+iFee.toLocaleString()+' F</span></div>':''}${cFee?'<div style="display:flex;justify-content:space-between;padding:6px;color:#e67e22"><span>Douane</span><span>'+cFee.toLocaleString()+' F</span></div>':''}<div style="display:flex;justify-content:space-between;padding:10px;border-top:2px solid var(--primary);margin-top:8px;font-weight:700;font-size:18px;color:var(--primary)"><span>TOTAL</span><span>${total.toLocaleString()} FCFA</span></div>`;
 };
 
 window.previewParcelPhoto = function(input) {
     if(input.files&&input.files[0]) {
         const reader = new FileReader();
-        reader.onload = e => { currentParcelPhoto = e.target.result; document.getElementById('photoPreview').src=e.target.result; document.getElementById('photoPreview').classList.remove('hidden'); document.getElementById('photoLabel').textContent='✅ Photo prise'; };
+        reader.onload = e => { currentParcelPhoto = e.target.result; document.getElementById('photoPreview').src=e.target.result; document.getElementById('photoPreview').classList.remove('hidden'); document.getElementById('photoLabel').textContent='Photo prise'; };
         reader.readAsDataURL(input.files[0]);
     }
 };
@@ -626,7 +919,7 @@ window.submitParcel = async function() {
     if(!desc) { alert('Description requise'); return; }
     if(!weight||weight<=0) { alert('Poids valide'); return; }
     if(!cityId) { alert('Ville requise'); return; }
-    if(!currentParcelPhoto) { alert('📸 Photo obligatoire!'); return; }
+    if(!currentParcelPhoto) { alert('Photo obligatoire!'); return; }
     
     const count = Cache.parcels.filter(p=>p.company_id===currentUser.company_id).length;
     const tracking = `HMiG-${new Date().getFullYear()}-${String(count+1).padStart(6,'0')}`;
@@ -660,7 +953,7 @@ window.submitParcel = async function() {
     
     await addDoc(collection(db,'parcels'), parcel);
     await refreshCache();
-    alert('✅ Colis créé! Code: '+code);
+    alert('Colis créé! Code: '+code);
     currentRecuParcel = parcel;
     showRecuModalTemp(parcel);
 };
@@ -675,10 +968,8 @@ function showRecuModalTemp(parcel) {
 }
 window.closeRecuModal = function() { document.getElementById('recuModal').classList.remove('active'); };
 
-// ========== GÉNÉRATION PDF RÉEL - REÇU A4 ==========
 window.downloadRecuPDF = function() {
     if(!currentRecuParcel) { alert('Aucun reçu à générer'); return; }
-    
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('p', 'mm', 'a4');
     const p = currentRecuParcel;
@@ -686,99 +977,79 @@ window.downloadRecuPDF = function() {
     const dest = Cache.cities.find(c=>c.id===p.destination_city_id);
     const company = Cache.companies.find(c=>c.id===p.company_id);
     
-    // En-tête avec bande colorée
     doc.setFillColor(30, 58, 95);
     doc.rect(0, 0, 210, 40, 'F');
-    
-    // Logo (texte stylisé)
     doc.setTextColor(243, 156, 18);
     doc.setFontSize(28);
     doc.setFont('helvetica', 'bold');
     doc.text('HMi-Gest-Co', 105, 20, {align: 'center'});
-    
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
     doc.text('Solution digitale de gestion des colis', 105, 28, {align: 'center'});
     doc.text(company?.name || 'HMi-Gest-Co', 105, 35, {align: 'center'});
     
-    // Titre du reçu
     doc.setTextColor(30, 58, 95);
     doc.setFontSize(22);
     doc.setFont('helvetica', 'bold');
-    doc.text('REÇU DE COLIS', 105, 55, {align: 'center'});
+    doc.text('RECU DE COLIS', 105, 55, {align: 'center'});
     
-    // Numéro de suivi en grand
     doc.setFillColor(243, 156, 18);
     doc.roundedRect(40, 62, 130, 15, 3, 3, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(16);
     doc.text(p.tracking_number, 105, 72, {align: 'center'});
     
-    // Date
     doc.setTextColor(108, 117, 125);
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
-    doc.text(`Date: ${new Date(p.created_at).toLocaleString('fr-FR')}`, 105, 85, {align: 'center'});
+    doc.text('Date: ' + new Date(p.created_at).toLocaleString('fr-FR'), 105, 85, {align: 'center'});
     
-    // Ligne séparatrice
     doc.setDrawColor(243, 156, 18);
     doc.setLineWidth(0.5);
     doc.line(20, 92, 190, 92);
     
-    // Section Expéditeur
     doc.setTextColor(30, 58, 95);
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
-    doc.text('EXPÉDITEUR', 20, 102);
+    doc.text('EXPEDITEUR', 20, 102);
     doc.setDrawColor(243, 156, 18);
     doc.line(20, 104, 100, 104);
-    
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(11);
     doc.setTextColor(26, 26, 46);
     doc.text(p.sender_name, 20, 112);
     doc.text(p.sender_phone, 20, 119);
     
-    // Section Destinataire
     doc.setTextColor(30, 58, 95);
     doc.setFont('helvetica', 'bold');
     doc.text('DESTINATAIRE', 110, 102);
     doc.setDrawColor(243, 156, 18);
     doc.line(110, 104, 190, 104);
-    
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(26, 26, 46);
     doc.text(p.recipient_name, 110, 112);
     doc.text(p.recipient_phone, 110, 119);
     
-    // Section Trajet
     doc.setFillColor(248, 249, 250);
     doc.roundedRect(20, 128, 170, 25, 2, 2, 'F');
-    
     doc.setTextColor(30, 58, 95);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(11);
     doc.text('TRAJET', 25, 137);
-    
     doc.setTextColor(26, 26, 46);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(10);
-    doc.text(`De: ${origin?.name || '?'}`, 25, 145);
-    doc.text(`À: ${dest?.name || '?'}`, 110, 145);
-    doc.text(`Distance: ${p.distance_km} km`, 25, 151);
-    doc.text(`Poids: ${p.weight_kg} kg`, 110, 151);
+    doc.text('De: ' + (origin?.name || '?'), 25, 145);
+    doc.text('A: ' + (dest?.name || '?'), 110, 145);
+    doc.text('Distance: ' + p.distance_km + ' km', 25, 151);
+    doc.text('Poids: ' + p.weight_kg + ' kg', 110, 151);
+    if(p.description) doc.text('Description: ' + p.description, 25, 157);
     
-    // Description
-    if(p.description) {
-        doc.text(`Description: ${p.description}`, 25, 157);
-    }
-    
-    // Section Détail des frais
     doc.setTextColor(30, 58, 95);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(12);
-    doc.text('DÉTAIL DES FRAIS', 20, 172);
+    doc.text('DETAIL DES FRAIS', 20, 172);
     doc.setDrawColor(243, 156, 18);
     doc.line(20, 174, 190, 174);
     
@@ -786,61 +1057,51 @@ window.downloadRecuPDF = function() {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(11);
     doc.setTextColor(26, 26, 46);
-    
     const transport = roundPrice(p.weight_price + p.distance_price);
     doc.text('Transport (poids + distance)', 25, y);
-    doc.text(`${transport.toLocaleString()} FCFA`, 185, y, {align: 'right'});
+    doc.text(transport.toLocaleString() + ' FCFA', 185, y, {align: 'right'});
     y += 8;
-    
     if(p.handling_fee) {
         doc.setTextColor(243, 156, 18);
         doc.text('Frais de gestion', 25, y);
-        doc.text(`${roundPrice(p.handling_fee).toLocaleString()} FCFA`, 185, y, {align: 'right'});
+        doc.text(roundPrice(p.handling_fee).toLocaleString() + ' FCFA', 185, y, {align: 'right'});
         y += 8;
         doc.setTextColor(26, 26, 46);
     }
-    
     if(p.insurance_fee) {
         doc.text('Assurance', 25, y);
-        doc.text(`${roundPrice(p.insurance_fee).toLocaleString()} FCFA`, 185, y, {align: 'right'});
+        doc.text(roundPrice(p.insurance_fee).toLocaleString() + ' FCFA', 185, y, {align: 'right'});
         y += 8;
     }
-    
     if(p.customs_fee) {
         doc.setTextColor(230, 126, 34);
         doc.text('Douane', 25, y);
-        doc.text(`${roundPrice(p.customs_fee).toLocaleString()} FCFA`, 185, y, {align: 'right'});
+        doc.text(roundPrice(p.customs_fee).toLocaleString() + ' FCFA', 185, y, {align: 'right'});
         y += 8;
         doc.setTextColor(26, 26, 46);
     }
-    
-    // Mode de paiement
-    doc.text(`Paiement: ${p.payment_method === 'cash' ? 'Espèces' : 'Mobile Money'}`, 25, y);
+    doc.text('Paiement: ' + (p.payment_method === 'cash' ? 'Espèces' : 'Mobile Money'), 25, y);
     y += 10;
     
-    // Total
     doc.setFillColor(30, 58, 95);
     doc.roundedRect(20, y-3, 170, 15, 2, 2, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(14);
-    doc.text('TOTAL PAYÉ', 25, y+7);
-    doc.text(`${roundPrice(p.total_price).toLocaleString()} FCFA`, 185, y+7, {align: 'right'});
+    doc.text('TOTAL PAYE', 25, y+7);
+    doc.text(roundPrice(p.total_price).toLocaleString() + ' FCFA', 185, y+7, {align: 'right'});
     y += 25;
     
-    // Code de confirmation
     if(p.confirmation_code) {
         doc.setDrawColor(243, 156, 18);
         doc.setLineWidth(1);
         doc.setLineDashPattern([2, 2], 0);
         doc.roundedRect(40, y, 130, 25, 3, 3, 'S');
         doc.setLineDashPattern([], 0);
-        
         doc.setTextColor(108, 117, 125);
         doc.setFontSize(9);
         doc.setFont('helvetica', 'normal');
-        doc.text('CODE DE CONFIRMATION (à donner au destinataire)', 105, y+8, {align: 'center'});
-        
+        doc.text('CODE DE CONFIRMATION (a donner au destinataire)', 105, y+8, {align: 'center'});
         doc.setTextColor(30, 58, 95);
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(22);
@@ -848,135 +1109,94 @@ window.downloadRecuPDF = function() {
         y += 35;
     }
     
-    // Footer
     doc.setDrawColor(243, 156, 18);
     doc.setLineWidth(0.5);
     doc.line(20, y+5, 190, y+5);
-    
     doc.setTextColor(108, 117, 125);
     doc.setFontSize(9);
     doc.setFont('helvetica', 'italic');
-    doc.text('Ce reçu fait foi de paiement. Conservez-le précieusement.', 105, y+12, {align: 'center'});
-    doc.text('Le destinataire doit présenter le code de confirmation pour retirer son colis.', 105, y+18, {align: 'center'});
+    doc.text('Ce recu fait foi de paiement. Conservez-le precieusement.', 105, y+12, {align: 'center'});
+    doc.text('Le destinataire doit presenter le code de confirmation pour retirer son colis.', 105, y+18, {align: 'center'});
     doc.text('www.hmigestco.com | support@hmigestco.com', 105, y+24, {align: 'center'});
     
-    // Sauvegarde
-    doc.save(`Recu_${p.tracking_number}.pdf`);
+    doc.save('Recu_' + p.tracking_number + '.pdf');
 };
 
-// ========== GÉNÉRATION PDF RÉEL - TICKET THERMIQUE 80mm ==========
 window.downloadTicketPDF = function() {
     if(!currentRecuParcel) { alert('Aucun ticket à générer'); return; }
-    
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('p', 'mm', [80, 200]);
     const p = currentRecuParcel;
     const origin = Cache.cities.find(c=>c.id===p.origin_city_id);
     const dest = Cache.cities.find(c=>c.id===p.destination_city_id);
     
-    // En-tête
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(0, 0, 0);
     doc.text('HMi-Gest-Co', 40, 8, {align: 'center'});
-    
     doc.setFontSize(8);
     doc.setFont('helvetica', 'normal');
-    doc.text('REÇU COLIS', 40, 14, {align: 'center'});
-    
-    // Ligne pointillée
+    doc.text('RECU COLIS', 40, 14, {align: 'center'});
     doc.setLineDashPattern([1, 1], 0);
     doc.line(5, 17, 75, 17);
     doc.setLineDashPattern([], 0);
-    
-    // Numéro de suivi
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
     doc.text(p.tracking_number, 40, 23, {align: 'center'});
-    
     doc.setFontSize(7);
     doc.setFont('helvetica', 'normal');
     doc.text(new Date(p.created_at).toLocaleString('fr-FR'), 40, 28, {align: 'center'});
-    
     doc.setLineDashPattern([1, 1], 0);
     doc.line(5, 31, 75, 31);
     doc.setLineDashPattern([], 0);
-    
-    // Expéditeur
     doc.setFontSize(8);
     doc.setFont('helvetica', 'bold');
     doc.text('EXP:', 5, 36);
     doc.setFont('helvetica', 'normal');
     doc.text(p.sender_name.substring(0, 20), 15, 36);
     doc.text(p.sender_phone, 5, 41);
-    
-    // Destinataire
     doc.setFont('helvetica', 'bold');
     doc.text('DEST:', 5, 47);
     doc.setFont('helvetica', 'normal');
     doc.text(p.recipient_name.substring(0, 20), 15, 47);
     doc.text(p.recipient_phone, 5, 52);
-    
     doc.setLineDashPattern([1, 1], 0);
     doc.line(5, 55, 75, 55);
     doc.setLineDashPattern([], 0);
-    
-    // Trajet
     doc.setFont('helvetica', 'bold');
     doc.text('TRAJET:', 5, 60);
     doc.setFont('helvetica', 'normal');
-    doc.text(`${origin?.name || '?'} -> ${dest?.name || '?'}`, 5, 65);
-    doc.text(`${p.distance_km} km | ${p.weight_kg} kg`, 5, 70);
-    
+    doc.text((origin?.name || '?') + ' -> ' + (dest?.name || '?'), 5, 65);
+    doc.text(p.distance_km + ' km | ' + p.weight_kg + ' kg', 5, 70);
     doc.setLineDashPattern([1, 1], 0);
     doc.line(5, 73, 75, 73);
     doc.setLineDashPattern([], 0);
-    
-    // Frais
     doc.setFont('helvetica', 'bold');
     doc.text('FRAIS:', 5, 78);
     doc.setFont('helvetica', 'normal');
-    
     let y = 83;
     const transport = roundPrice(p.weight_price + p.distance_price);
-    doc.text(`Transport: ${transport.toLocaleString()} F`, 5, y);
+    doc.text('Transport: ' + transport.toLocaleString() + ' F', 5, y);
     y += 5;
-    
-    if(p.handling_fee) {
-        doc.text(`Gestion: ${roundPrice(p.handling_fee).toLocaleString()} F`, 5, y);
-        y += 5;
-    }
-    if(p.insurance_fee) {
-        doc.text(`Assurance: ${roundPrice(p.insurance_fee).toLocaleString()} F`, 5, y);
-        y += 5;
-    }
-    if(p.customs_fee) {
-        doc.text(`Douane: ${roundPrice(p.customs_fee).toLocaleString()} F`, 5, y);
-        y += 5;
-    }
-    
+    if(p.handling_fee) { doc.text('Gestion: ' + roundPrice(p.handling_fee).toLocaleString() + ' F', 5, y); y += 5; }
+    if(p.insurance_fee) { doc.text('Assurance: ' + roundPrice(p.insurance_fee).toLocaleString() + ' F', 5, y); y += 5; }
+    if(p.customs_fee) { doc.text('Douane: ' + roundPrice(p.customs_fee).toLocaleString() + ' F', 5, y); y += 5; }
     doc.setLineDashPattern([1, 1], 0);
     doc.line(5, y+2, 75, y+2);
     doc.setLineDashPattern([], 0);
     y += 6;
-    
-    // Total
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(11);
     doc.text('TOTAL:', 5, y);
-    doc.text(`${roundPrice(p.total_price).toLocaleString()} F`, 75, y, {align: 'right'});
+    doc.text(roundPrice(p.total_price).toLocaleString() + ' F', 75, y, {align: 'right'});
     y += 8;
-    
     doc.setFontSize(8);
-    doc.text(`(${p.payment_method === 'cash' ? 'ESPECES' : 'MOBILE'})`, 40, y, {align: 'center'});
+    doc.text('(' + (p.payment_method === 'cash' ? 'ESPECES' : 'MOBILE') + ')', 40, y, {align: 'center'});
     y += 10;
-    
     doc.setLineDashPattern([1, 1], 0);
     doc.line(5, y, 75, y);
     doc.setLineDashPattern([], 0);
     y += 5;
-    
-    // Code confirmation
     if(p.confirmation_code) {
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(9);
@@ -986,36 +1206,29 @@ window.downloadTicketPDF = function() {
         doc.text(p.confirmation_code, 40, y, {align: 'center'});
         y += 10;
     }
-    
-    // Footer
     doc.setFontSize(7);
     doc.setFont('helvetica', 'normal');
     doc.text('Merci de votre confiance!', 40, y, {align: 'center'});
     y += 4;
     doc.text('www.hmigestco.com', 40, y, {align: 'center'});
-    
-    // Sauvegarde
-    doc.save(`Ticket_${p.tracking_number}.pdf`);
+    doc.save('Ticket_' + p.tracking_number + '.pdf');
 };
 
 window.loadParcelsList = async function() {
     await refreshCache();
     const container = document.getElementById('parcelsListContainer');
     let parcels = Cache.parcels.filter(p=>p.company_id===currentUser.company_id);
-    
     const search = document.getElementById('searchParcels').value.toLowerCase();
     if(search) parcels = parcels.filter(p=>p.tracking_number.toLowerCase().includes(search)||p.sender_name.toLowerCase().includes(search));
     const status = document.getElementById('filterStatus').value;
     if(status) parcels = parcels.filter(p=>p.status===status);
     if(currentFilter==='today') { const today=new Date().toISOString().split('T')[0]; parcels=parcels.filter(p=>p.created_at?.startsWith(today)); }
     else if(currentFilter==='week') { const week=new Date(Date.now()-7*86400000); parcels=parcels.filter(p=>new Date(p.created_at)>=week); }
-    
     parcels.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
     if(!parcels.length) { container.innerHTML='<div class="empty-state"><div style="font-size:48px">📦</div><p>Aucun colis</p></div>'; return; }
-    
     container.innerHTML = parcels.map(p=>{
         const dest = Cache.cities.find(c=>c.id===p.destination_city_id);
-        return `<div class="user-card" onclick="showParcelActions('${p.id}')"><div class="user-info-block"><div style="font-weight:700">${p.tracking_number} ${p.confirmed_by_recipient?'<span style="background:#27ae60;color:white;padding:2px 6px;border-radius:8px;font-size:10px">✅</span>':''}</div><div style="font-size:12px;color:var(--gray);margin-top:4px">${p.sender_name} → ${p.recipient_name}</div><div style="font-size:12px;color:var(--gray);margin-top:2px">📍 ${dest?.name||'?'} • ${p.weight_kg}kg • ${p.status}</div></div><div style="text-align:right"><div style="font-weight:700;color:var(--primary)">${roundPrice(p.total_price).toLocaleString()} F</div></div></div>`;
+        return `<div class="user-card" onclick="showParcelActions('${p.id}')"><div class="user-info-block"><div style="font-weight:700">${p.tracking_number} ${p.confirmed_by_recipient?'<span style="background:#27ae60;color:white;padding:2px 6px;border-radius:8px;font-size:10px">OK</span>':''}</div><div style="font-size:12px;color:var(--gray);margin-top:4px">${p.sender_name} -> ${p.recipient_name}</div><div style="font-size:12px;color:var(--gray);margin-top:2px">${dest?.name||'?'} - ${p.weight_kg}kg - ${p.status}</div></div><div style="text-align:right"><div style="font-weight:700;color:var(--primary)">${roundPrice(p.total_price).toLocaleString()} F</div></div></div>`;
     }).join('');
 };
 window.setFilter = function(f) { currentFilter=f; document.querySelectorAll('.filter-tag').forEach(t=>t.classList.remove('active')); event.target.classList.add('active'); loadParcelsList(); };
@@ -1032,17 +1245,14 @@ window.loadTransactions = async function() {
     if(transactionPeriod==='today') { const today=new Date().toISOString().split('T')[0]; parcels=parcels.filter(p=>p.created_at?.startsWith(today)); }
     else if(transactionPeriod==='week') { const week=new Date(Date.now()-7*86400000); parcels=parcels.filter(p=>new Date(p.created_at)>=week); }
     else if(transactionPeriod==='month') { const month=new Date();month.setDate(1); parcels=parcels.filter(p=>new Date(p.created_at)>=month); }
-    
     const total = parcels.reduce((s,p)=>s+(p.total_price||0),0);
     const cash = parcels.filter(p=>p.payment_method==='cash').reduce((s,p)=>s+(p.total_price||0),0);
     const mobile = parcels.filter(p=>p.payment_method==='mobile').reduce((s,p)=>s+(p.total_price||0),0);
-    
-    document.getElementById('transactionStats').innerHTML = `<div class="stat-card"><div class="label">Transactions</div><div class="value">${parcels.length}</div></div><div class="stat-card" style="background:var(--success);color:white"><div class="label">Total</div><div class="value">${roundPrice(total).toLocaleString()} F</div></div><div class="stat-card"><div class="label">💵 Espèces</div><div class="value">${roundPrice(cash).toLocaleString()} F</div></div><div class="stat-card"><div class="label">📱 Mobile</div><div class="value">${roundPrice(mobile).toLocaleString()} F</div></div>`;
-    
-    let table = `<table><thead><tr><th>N°</th><th>Date</th><th>Expéditeur</th><th>Destination</th><th>Total</th><th>Paiement</th><th>Photo</th></tr></thead><tbody>`;
+    document.getElementById('transactionStats').innerHTML = `<div class="stat-card"><div class="label">Transactions</div><div class="value">${parcels.length}</div></div><div class="stat-card" style="background:var(--success);color:white"><div class="label">Total</div><div class="value">${roundPrice(total).toLocaleString()} F</div></div><div class="stat-card"><div class="label">Especes</div><div class="value">${roundPrice(cash).toLocaleString()} F</div></div><div class="stat-card"><div class="label">Mobile</div><div class="value">${roundPrice(mobile).toLocaleString()} F</div></div>`;
+    let table = `<table><thead><tr><th>N°</th><th>Date</th><th>Expediteur</th><th>Destination</th><th>Total</th><th>Paiement</th><th>Photo</th></tr></thead><tbody>`;
     parcels.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).forEach(p=>{
         const dest = Cache.cities.find(c=>c.id===p.destination_city_id);
-        table += `<tr><td><strong>${p.tracking_number}</strong></td><td>${new Date(p.created_at).toLocaleDateString('fr-FR')}</td><td>${p.sender_name}</td><td>${dest?.name||'?'}</td><td><strong>${roundPrice(p.total_price).toLocaleString()} F</strong></td><td>${p.payment_method==='cash'?'💵':'📱'}</td><td>${p.photo?'<button class="btn btn-sm btn-info" onclick="showPhoto(\''+p.id+'\')">👁️ Voir</button>':'-'}</td></tr>`;
+        table += `<tr><td><strong>${p.tracking_number}</strong></td><td>${new Date(p.created_at).toLocaleDateString('fr-FR')}</td><td>${p.sender_name}</td><td>${dest?.name||'?'}</td><td><strong>${roundPrice(p.total_price).toLocaleString()} F</strong></td><td>${p.payment_method==='cash'?'Especes':'Mobile'}</td><td>${p.photo?'<button class="btn btn-sm btn-info" onclick="showPhoto(\''+p.id+'\')">Voir</button>':'-'}</td></tr>`;
     });
     table += `</tbody><tfoot><tr class="total-row"><td colspan="4">TOTAL (${parcels.length})</td><td colspan="3">${roundPrice(total).toLocaleString()} FCFA</td></tr></tfoot></table>`;
     document.getElementById('transactionTable').innerHTML = parcels.length?table:'<p style="text-align:center;padding:40px;color:var(--gray)">Aucune transaction</p>';
@@ -1060,7 +1270,7 @@ window.setTransactionPeriod = function(p,btn) { transactionPeriod=p; document.qu
 
 window.showTracking = function() {
     document.getElementById('trackInput').value = '';
-    document.getElementById('trackResult').innerHTML = '<div style="background:white;padding:30px;border-radius:12px;text-align:center"><div style="font-size:64px"></div><h3>Suivre un colis</h3><p style="color:var(--gray);margin:12px 0">Entrez le numéro</p><div style="display:flex;gap:10px;max-width:500px;margin:0 auto"><input type="text" id="trackInputMain" placeholder="Ex: HMiG-2026-000001" style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px"><button class="btn btn-primary" onclick="trackSpecificParcel()" style="width:auto"></button></div></div>';
+    document.getElementById('trackResult').innerHTML = '<div style="background:white;padding:30px;border-radius:12px;text-align:center"><div style="font-size:64px">🔍</div><h3>Suivre un colis</h3><p style="color:var(--gray);margin:12px 0">Entrez le numéro</p><div style="display:flex;gap:10px;max-width:500px;margin:0 auto"><input type="text" id="trackInputMain" placeholder="Ex: HMiG-2026-000001" style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px"><button class="btn btn-primary" onclick="trackSpecificParcel()" style="width:auto">Rechercher</button></div></div>';
 };
 window.trackSpecificParcel = async function() {
     const num = document.getElementById('trackInputMain').value.trim();
@@ -1069,14 +1279,14 @@ window.trackSpecificParcel = async function() {
     await refreshCache();
     const p = Cache.parcels.find(x=>x.tracking_number===num);
     const el = document.getElementById('trackResult');
-    if(!p) { el.innerHTML='<p style="color:#e74c3c;text-align:center">❌ Non trouvé</p>'; return; }
+    if(!p) { el.innerHTML='<p style="color:#e74c3c;text-align:center">Non trouvé</p>'; return; }
     const origin = Cache.cities.find(c=>c.id===p.origin_city_id);
     const dest = Cache.cities.find(c=>c.id===p.destination_city_id);
-    let html = `<div style="background:white;padding:20px;border-radius:12px;margin-top:16px"><h3>📦 ${p.tracking_number}</h3><p><strong>Trajet:</strong> ${origin?.name||'?'} → ${dest?.name||'?'}</p><p><strong>Statut:</strong> ${p.status}</p>`;
+    let html = `<div style="background:white;padding:20px;border-radius:12px;margin-top:16px"><h3>${p.tracking_number}</h3><p><strong>Trajet:</strong> ${origin?.name||'?'} -> ${dest?.name||'?'}</p><p><strong>Statut:</strong> ${p.status}</p>`;
     if(p.trajet) {
-        html += '<div class="trajet-timeline" style="margin-top:20px"><h4>️ Historique</h4>';
-        const icons = {created:'📝',paid:'',loaded:'🚌',in_transit:'',arrived:'📍',delivered:'✅'};
-        p.trajet.forEach((step,i)=>{ html += `<div class="trajet-step ${i===p.trajet.length-1?'current':'done'}"><div class="trajet-icon">${icons[step.status]||''}</div><div class="trajet-content"><div class="trajet-title">${step.label}</div><div class="trajet-subtitle">📍 ${step.location}</div><div class="trajet-date">${new Date(step.date).toLocaleString('fr-FR')}</div></div></div>`; });
+        html += '<div class="trajet-timeline" style="margin-top:20px"><h4>Historique</h4>';
+        const icons = {created:'📝',paid:'💰',loaded:'🚌',in_transit:'',arrived:'📍',delivered:'✅'};
+        p.trajet.forEach((step,i)=>{ html += `<div class="trajet-step ${i===p.trajet.length-1?'current':'done'}"><div class="trajet-icon">${icons[step.status]||''}</div><div class="trajet-content"><div class="trajet-title">${step.label}</div><div class="trajet-subtitle">${step.location}</div><div class="trajet-date">${new Date(step.date).toLocaleString('fr-FR')}</div></div></div>`; });
         html += '</div>';
     }
     html += '</div>';
@@ -1095,10 +1305,10 @@ window.publicTrackParcel = async function() {
     await refreshCache();
     const p = Cache.parcels.find(x=>x.tracking_number===num);
     const el = document.getElementById('publicTrackResult');
-    if(!p) { el.innerHTML='<p style="color:#e74c3c;text-align:center">❌ Non trouvé</p>'; return; }
+    if(!p) { el.innerHTML='<p style="color:#e74c3c;text-align:center">Non trouvé</p>'; return; }
     const origin = Cache.cities.find(c=>c.id===p.origin_city_id);
     const dest = Cache.cities.find(c=>c.id===p.destination_city_id);
-    let html = `<div style="background:white;padding:20px;border-radius:12px"><h3 style="color:var(--primary)">📦 ${p.tracking_number}</h3><p><strong>Trajet:</strong> ${origin?.name||'?'} → ${dest?.name||'?'}</p><p><strong>Statut:</strong> ${p.status}</p>`;
+    let html = `<div style="background:white;padding:20px;border-radius:12px"><h3 style="color:var(--primary)">${p.tracking_number}</h3><p><strong>Trajet:</strong> ${origin?.name||'?'} -> ${dest?.name||'?'}</p><p><strong>Statut:</strong> ${p.status}</p>`;
     if(p.confirmation_code&&p.status!=='delivered') html += `<div class="confirmation-code"><p style="font-size:12px;color:#666">Code</p><div class="code">${p.confirmation_code}</div></div>`;
     html += '</div>';
     el.innerHTML = html;
@@ -1110,34 +1320,31 @@ window.confirmReception = async function() {
     await refreshCache();
     const p = Cache.parcels.find(x=>x.confirmation_code===code);
     const el = document.getElementById('confirmationResult');
-    if(!p) { el.innerHTML='<div style="background:#fee;color:#c33;padding:20px;border-radius:12px;text-align:center"> Code invalide</div>'; return; }
-    if(p.status==='delivered') { el.innerHTML='<div style="background:#e8f5e9;color:#2e7d32;padding:20px;border-radius:12px;text-align:center">✅ Déjà confirmé</div>'; return; }
+    if(!p) { el.innerHTML='<div style="background:#fee;color:#c33;padding:20px;border-radius:12px;text-align:center">Code invalide</div>'; return; }
+    if(p.status==='delivered') { el.innerHTML='<div style="background:#e8f5e9;color:#2e7d32;padding:20px;border-radius:12px;text-align:center">Déjà confirmé</div>'; return; }
     p.status = 'delivered'; p.confirmed_by_recipient = true;
     if(!p.trajet) p.trajet = [];
     p.trajet.push({status:'delivered',label:'Livré et confirmé',location:'Confirmé par destinataire',date:new Date().toISOString()});
     await setDoc(doc(db,'parcels',p.id),p);
     await refreshCache();
-    el.innerHTML = `<div style="background:#e8f5e9;color:#2e7d32;padding:20px;border-radius:12px;text-align:center">✅ Confirmé!<br>N°: ${p.tracking_number}</div>`;
+    el.innerHTML = `<div style="background:#e8f5e9;color:#2e7d32;padding:20px;border-radius:12px;text-align:center">Confirmé!<br>N°: ${p.tracking_number}</div>`;
     document.getElementById('confirmationCodeInput').value = '';
 };
 
 window.loadBordereaux = async function() { await refreshCache(); document.getElementById('bordereauxList').innerHTML = '<div class="empty-state"><p>Fonctionnalité bordereaux disponible</p></div>'; };
-window.initCreateBordereau = function() { document.getElementById('bordCity').innerHTML = '<option>Lomé</option><option>Niamey</option>'; };
+window.initCreateBordereau = function() { 
+    const cities = Cache.cities;
+    document.getElementById('bordCity').innerHTML = '<option value="">-- Choisir --</option>'+cities.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+};
 window.filterParcelsByDestination = function() {};
 window.saveBordereau = function() { alert('Fonctionnalité en cours de développement'); };
 window.loadDouane = async function() { await refreshCache(); document.getElementById('douaneStats').innerHTML = '<div class="stat-card"><div class="label">Douane</div><div class="value">0</div></div>'; document.getElementById('douaneTable').innerHTML = '<p style="text-align:center;padding:20px">Aucun</p>'; };
 window.setDouanePeriod = function() {};
-window.generateReport = function() { document.getElementById('reportContent').innerHTML = '<div class="report-card"><h4>📊 Rapport</h4><p>Fonctionnalité disponible</p></div>'; };
+window.generateReport = function() { document.getElementById('reportContent').innerHTML = '<div class="report-card"><h4>Rapport</h4><p>Fonctionnalité disponible</p></div>'; };
 window.loadUsers = async function() { await refreshCache(); document.getElementById('usersList').innerHTML = Cache.users.filter(u=>u.company_id===currentUser.company_id).map(u=>`<div class="user-card"><div class="user-info-block"><div style="font-weight:700">${u.first_name} ${u.last_name}</div><div style="font-size:12px;color:var(--gray)">${u.phone}</div></div></div>`).join(''); };
 window.showAddUserModal = function() { document.getElementById('addUserModal').classList.add('active'); };
 window.closeAddUserModal = function() { document.getElementById('addUserModal').classList.remove('active'); };
 window.saveUser = function() { alert('Utilisateur ajouté (simulation)'); closeAddUserModal(); };
-window.addRouteRow = function() {};
-window.saveRoutes = function() { alert('Routes enregistrées'); };
-window.addWeightTierRow = function() {};
-window.saveWeightTiers = function() { alert('Poids enregistrés'); };
-window.addDistanceTierRow = function() {};
-window.saveDistanceTiers = function() { alert('Distances enregistrées'); };
 window.simulateSendSMS = function() { alert('SMS envoyé'); closeSmsModal(); };
 window.closeSmsModal = function() { document.getElementById('smsModal').classList.remove('active'); };
 window.printTicket = function() { downloadTicketPDF(); closeTicketModal(); };
