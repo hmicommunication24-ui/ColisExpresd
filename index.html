@@ -202,9 +202,13 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
             <div class="stats-grid" id="superStats"></div>
             <h3 style="margin:20px 0 12px;"> Situation par compagnie</h3>
             <div id="companiesDetails"></div>
-            <h3 style="margin:20px 0 12px;">🏢 Gestion des compagnies</h3>
+        </div>
+
+        <!-- SECTION COMPAGNIES (GESTION) -->
+        <div class="section" id="sec-companies">
+            <h3 style="margin-bottom:16px;">🏢 Gestion des compagnies</h3>
             <button class="btn btn-primary" onclick="showAddCompanyModal()" style="margin-bottom:16px;">➕ Ajouter une compagnie</button>
-            <div id="companiesList"></div>
+            <div id="companiesListFull"></div>
         </div>
 
         <!-- DASHBOARD COMPAGNIE -->
@@ -213,7 +217,7 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
             <div class="stats-grid" id="statsGrid"></div>
             <div class="chart-container"><h4>📈 Évolution (7 jours)</h4><div class="chart-wrapper"><canvas id="chartParcels"></canvas></div></div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                <button class="btn btn-primary btn-lg" onclick="showSection('newParcel')">📦 Nouvel Envoi</button>
+                <button class="btn btn-primary btn-lg" onclick="showSection('newParcel')"> Nouvel Envoi</button>
                 <button class="btn btn-success btn-lg" onclick="showSection('bordereaux')">🚌 Bordereaux</button>
                 <button class="btn btn-warning btn-lg" onclick="showSection('douane')">🛃 Douane</button>
                 <button class="btn btn-info btn-lg" onclick="showSection('transactions')">💰 Transactions</button>
@@ -232,7 +236,7 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
             <div class="form-group"><label>Ville destination *</label><select id="destCity" onchange="onDestCityChange()"><option value="">-- Choisir --</option></select></div>
             <div class="form-group"><label>Agence</label><select id="destAgency"></select></div>
             <div class="form-group"><label>Description *</label><input id="description"></div>
-            <div class="form-group"><label>📸 Photo *</label><div class="photo-zone" onclick="document.getElementById('parcelPhoto').click()"><div class="icon">📷</div><p id="photoLabel">Cliquez pour photo</p><input type="file" id="parcelPhoto" accept="image/*" capture="environment" style="display:none" onchange="previewParcelPhoto(this)"><img id="photoPreview" class="photo-preview hidden"></div></div>
+            <div class="form-group"><label> Photo *</label><div class="photo-zone" onclick="document.getElementById('parcelPhoto').click()"><div class="icon">📷</div><p id="photoLabel">Cliquez pour photo</p><input type="file" id="parcelPhoto" accept="image/*" capture="environment" style="display:none" onchange="previewParcelPhoto(this)"><img id="photoPreview" class="photo-preview hidden"></div></div>
             <div class="form-group"><label>Poids (kg) *</label><input type="number" id="weightKg" step="0.1" oninput="calcPrice()"></div>
             <div class="form-group"><label>Valeur (FCFA) *</label><input type="number" id="declaredValue" value="0" oninput="calcPrice()"></div>
             <div class="form-group"><label><input type="checkbox" id="isInsured" onchange="calcPrice()"> ️ Assurance</label></div>
@@ -259,7 +263,7 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
 
         <div class="section" id="sec-createBordereau">
             <button class="btn btn-outline btn-sm" onclick="showSection('bordereaux')" style="margin-bottom:16px;">← Retour</button>
-            <h3 style="margin-bottom:16px;">🚌 Nouveau bordereau</h3>
+            <h3 style="margin-bottom:16px;"> Nouveau bordereau</h3>
             <div class="form-group"><label>Ville *</label><select id="bordCity" onchange="filterParcelsByDestination()"><option value="">-- Choisir --</option></select></div>
             <div class="form-group"><label>Chauffeur *</label><input id="bordDriver"></div>
             <div class="form-group"><label>Plaque *</label><input id="bordPlate"></div>
@@ -303,7 +307,7 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
         <!-- PARAMÈTRES -->
         <div class="section" id="sec-settings">
             <h3 style="margin-bottom:16px;">⚙️ Paramètres</h3>
-            <div class="settings-card"><h3>🗺️ Destinations</h3><div id="routesList"></div><button class="btn btn-outline btn-sm" onclick="addRouteRow()">+ Ajouter</button><button class="btn btn-success btn-sm" onclick="saveRoutes()" style="margin-top:10px;">💾</button></div>
+            <div class="settings-card"><h3>️ Destinations</h3><div id="routesList"></div><button class="btn btn-outline btn-sm" onclick="addRouteRow()">+ Ajouter</button><button class="btn btn-success btn-sm" onclick="saveRoutes()" style="margin-top:10px;"></button></div>
             <div class="settings-card"><h3>⚖️ Prix Poids</h3><div id="weightTiersList"></div><button class="btn btn-outline btn-sm" onclick="addWeightTierRow()">+ Ajouter</button><button class="btn btn-success btn-sm" onclick="saveWeightTiers()" style="margin-top:10px;">💾</button></div>
             <div class="settings-card"><h3>🛣️ Prix Distance</h3><div id="distanceTiersList"></div><button class="btn btn-outline btn-sm" onclick="addDistanceTierRow()">+ Ajouter</button><button class="btn btn-success btn-sm" onclick="saveDistanceTiers()" style="margin-top:10px;"></button></div>
         </div>
@@ -324,7 +328,7 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
 <div class="modal" id="recuModal"><div class="modal-content"><h3 style="margin-bottom:16px;">🧾 Reçu</h3><div id="recuContent"></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-success" onclick="downloadRecuPDF()">📄 PDF</button><button class="btn btn-outline" onclick="closeRecuModal()">Fermer</button></div></div></div>
 <div class="modal" id="smsModal"><div class="modal-content"><h3 style="margin-bottom:16px;">📱 SMS</h3><div id="smsContent"></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-primary" onclick="simulateSendSMS()">Envoyer</button><button class="btn btn-outline" onclick="closeSmsModal()">Fermer</button></div></div></div>
 <div class="modal" id="ticketModal"><div class="modal-content"><h3 style="margin-bottom:16px;">🖨️ Ticket</h3><div id="ticketContent"></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-success" onclick="printTicket()">Imprimer</button><button class="btn btn-outline" onclick="closeTicketModal()">Fermer</button></div></div></div>
-<div class="modal" id="addCompanyModal"><div class="modal-content"><h3 style="margin-bottom:16px;">🏢 Nouvelle compagnie</h3><div class="form-group"><label>Nom</label><input id="newCompanyName"></div><div class="form-group"><label>Pays</label><input id="newCompanyCountry"></div><div class="form-group"><label>Plan</label><select id="newCompanyPlan"><option value="basic">Basic - 50k</option><option value="pro">Pro - 100k</option><option value="enterprise">Enterprise - 200k</option></select></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-outline" onclick="closeAddCompanyModal()">Annuler</button><button class="btn btn-primary" onclick="saveCompany()">Enregistrer</button></div></div></div>
+<div class="modal" id="addCompanyModal"><div class="modal-content"><h3 style="margin-bottom:16px;"> Nouvelle compagnie</h3><div class="form-group"><label>Nom</label><input id="newCompanyName"></div><div class="form-group"><label>Pays</label><input id="newCompanyCountry"></div><div class="form-group"><label>Plan</label><select id="newCompanyPlan"><option value="basic">Basic - 50k</option><option value="pro">Pro - 100k</option><option value="enterprise">Enterprise - 200k</option></select></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-outline" onclick="closeAddCompanyModal()">Annuler</button><button class="btn btn-primary" onclick="saveCompany()">Enregistrer</button></div></div></div>
 <div class="modal" id="addUserModal"><div class="modal-content"><h3 style="margin-bottom:16px;">👤 Utilisateur</h3><div class="form-group"><label>Prénom</label><input id="newUserFirstName"></div><div class="form-group"><label>Nom</label><input id="newUserLastName"></div><div class="form-group"><label>Téléphone</label><input id="newUserPhone"></div><div class="form-group"><label>Mot de passe</label><input id="newUserPassword"></div><div class="form-group"><label>Rôle</label><select id="newUserRole"><option value="admin">Admin</option><option value="clerk">Guichetier</option></select></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-outline" onclick="closeAddUserModal()">Annuler</button><button class="btn btn-primary" onclick="saveUser()">OK</button></div></div></div>
 
 <script type="module">
@@ -449,7 +453,8 @@ window.showSection = function(name) {
     document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
     document.getElementById('sec-'+name)?.classList.add('active');
     if(name==='dashboard') loadDashboard();
-    if(name==='superDashboard' || name==='companies') loadSuperDashboard();
+    if(name==='superDashboard') loadSuperDashboard();
+    if(name==='companies') loadCompaniesManagement(); // Nouvelle fonction dédiée
     if(name==='newParcel') initNewParcel();
     if(name==='parcelsList') loadParcelsList();
     if(name==='bordereaux') loadBordereaux();
@@ -470,12 +475,12 @@ async function loadSuperDashboard() {
     const totalRevenue = allParcels.reduce((s,p)=>s+(p.total_price||0),0);
     
     document.getElementById('superStats').innerHTML = `
-        <div class="stat-card"><div class="label">🏢 Compagnies</div><div class="value">${Cache.companies.length}</div></div>
+        <div class="stat-card"><div class="label"> Compagnies</div><div class="value">${Cache.companies.length}</div></div>
         <div class="stat-card"><div class="label"> Total Colis</div><div class="value">${allParcels.length}</div><div class="sub">Auj: ${todayP.length}</div></div>
         <div class="stat-card" style="background:linear-gradient(135deg, var(--accent) 0%, #f1c40f 100%);color:var(--primary)"><div class="label">💰 CA Global</div><div class="value">${roundPrice(totalRevenue).toLocaleString()} F</div></div>
     `;
 
-    // Liste détaillée des compagnies
+    // Liste détaillée des compagnies (Vue Globale)
     let detailsHTML = '';
     Cache.companies.forEach(c => {
         const cParcels = allParcels.filter(p=>p.company_id===c.id);
@@ -495,14 +500,26 @@ async function loadSuperDashboard() {
         </div>`;
     });
     document.getElementById('companiesDetails').innerHTML = detailsHTML || '<p style="text-align:center;color:var(--gray)">Aucune compagnie</p>';
-    
-    // Liste simple pour gestion
-    document.getElementById('companiesList').innerHTML = Cache.companies.map(c => `
+}
+
+// Fonction dédiée pour la gestion des compagnies (Ajout/Suppression)
+async function loadCompaniesManagement() {
+    await refreshCache();
+    let listHTML = '';
+    Cache.companies.forEach(c => {
+        listHTML += `
         <div class="user-card" style="border-left: 4px solid var(--primary);">
-            <div class="user-info-block"><div style="font-weight:700;">${c.name}</div><div style="font-size:12px;color:var(--gray);">${c.country} • Plan ${c.plan}</div></div>
-            <button class="btn btn-sm btn-danger" onclick="toggleCompanyStatus('${c.id}', '${c.status}')">${c.status==='active'?'Suspendre':'Activer'}</button>
-        </div>
-    `).join('');
+            <div class="user-info-block">
+                <div style="font-weight:700;">${c.name}</div>
+                <div style="font-size:12px;color:var(--gray);">${c.country} • Plan ${c.plan} • ${c.status==='active'?'✅ Active':'❌ Suspendue'}</div>
+            </div>
+            <div style="display:flex;gap:8px;">
+                <button class="btn btn-sm ${c.status==='active'?'btn-warning':'btn-success'}" onclick="toggleCompanyStatus('${c.id}', '${c.status}')">${c.status==='active'?'Suspendre':'Activer'}</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteCompany('${c.id}', '${c.name}')">🗑️</button>
+            </div>
+        </div>`;
+    });
+    document.getElementById('companiesListFull').innerHTML = listHTML || '<div class="empty-state"><p>Aucune compagnie à gérer</p></div>';
 }
 
 window.showAddCompanyModal = function() { document.getElementById('addCompanyModal').classList.add('active'); };
@@ -516,14 +533,26 @@ window.saveCompany = async function() {
     });
     closeAddCompanyModal();
     alert(`✅ ${name} créée !`);
-    loadSuperDashboard();
+    loadCompaniesManagement(); // Rafraîchir la vue gestion
+    loadSuperDashboard(); // Rafraîchir la vue globale
 };
 
 window.toggleCompanyStatus = async function(id, currentStatus) {
     const newStatus = currentStatus === 'active' ? 'suspended' : 'active';
     await updateDoc(doc(db, 'companies', id), { status: newStatus });
     alert(`Compagnie ${newStatus === 'active' ? 'activée' : 'suspendue'}`);
+    loadCompaniesManagement();
     loadSuperDashboard();
+};
+
+window.deleteCompany = async function(id, name) {
+    if(confirm(`⚠️ Êtes-vous sûr de vouloir SUPPRIMER définitivement "${name}" ?\nCette action est irréversible.`)) {
+        await deleteDoc(doc(db, 'companies', id));
+        // Optionnel : Supprimer aussi les utilisateurs et colis liés (à implémenter si besoin)
+        alert(`️ ${name} a été supprimée.`);
+        loadCompaniesManagement();
+        loadSuperDashboard();
+    }
 };
 
 // --- COMPANY DASHBOARD LOGIC ---
@@ -539,7 +568,7 @@ async function loadDashboard() {
         <div class="stat-card"><div class="label">📦 Aujourd'hui</div><div class="value">${todayP.length}</div><div class="sub">Total: ${parcels.length}</div></div>
         <div class="stat-card"><div class="label">💰 Recettes</div><div class="value">${roundPrice(todayP.reduce((s,p)=>s+(p.total_price||0),0)).toLocaleString()} F</div><div class="sub">Semaine: ${roundPrice(weekP.reduce((s,p)=>s+(p.total_price||0),0)).toLocaleString()} F</div></div>
         <div class="stat-card"><div class="label">✅ Livrés</div><div class="value">${parcels.filter(p=>p.status==='delivered').length}</div></div>
-        <div class="stat-card"><div class="label">🚚 Transit</div><div class="value">${parcels.filter(p=>p.status==='in_transit').length}</div></div>
+        <div class="stat-card"><div class="label"> Transit</div><div class="value">${parcels.filter(p=>p.status==='in_transit').length}</div></div>
     `;
     
     const days=[], counts=[];
@@ -674,7 +703,7 @@ window.loadParcelsList = async function() {
     else if(currentFilter==='week') { const week=new Date(Date.now()-7*86400000); parcels=parcels.filter(p=>new Date(p.created_at)>=week); }
     
     parcels.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
-    if(!parcels.length) { container.innerHTML='<div class="empty-state"><div style="font-size:48px">📦</div><p>Aucun colis</p></div>'; return; }
+    if(!parcels.length) { container.innerHTML='<div class="empty-state"><div style="font-size:48px"></div><p>Aucun colis</p></div>'; return; }
     
     container.innerHTML = parcels.map(p=>{
         const dest = Cache.cities.find(c=>c.id===p.destination_city_id);
@@ -700,7 +729,7 @@ window.loadTransactions = async function() {
     const cash = parcels.filter(p=>p.payment_method==='cash').reduce((s,p)=>s+(p.total_price||0),0);
     const mobile = parcels.filter(p=>p.payment_method==='mobile').reduce((s,p)=>s+(p.total_price||0),0);
     
-    document.getElementById('transactionStats').innerHTML = `<div class="stat-card"><div class="label">Transactions</div><div class="value">${parcels.length}</div></div><div class="stat-card" style="background:var(--success);color:white"><div class="label">Total</div><div class="value">${roundPrice(total).toLocaleString()} F</div></div><div class="stat-card"><div class="label">💵 Espèces</div><div class="value">${roundPrice(cash).toLocaleString()} F</div></div><div class="stat-card"><div class="label">📱 Mobile</div><div class="value">${roundPrice(mobile).toLocaleString()} F</div></div>`;
+    document.getElementById('transactionStats').innerHTML = `<div class="stat-card"><div class="label">Transactions</div><div class="value">${parcels.length}</div></div><div class="stat-card" style="background:var(--success);color:white"><div class="label">Total</div><div class="value">${roundPrice(total).toLocaleString()} F</div></div><div class="stat-card"><div class="label"> Espèces</div><div class="value">${roundPrice(cash).toLocaleString()} F</div></div><div class="stat-card"><div class="label">📱 Mobile</div><div class="value">${roundPrice(mobile).toLocaleString()} F</div></div>`;
     
     let table = `<table><thead><tr><th>N°</th><th>Date</th><th>Expéditeur</th><th>Destination</th><th>Total</th><th>Paiement</th><th>Photo</th></tr></thead><tbody>`;
     parcels.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).forEach(p=>{
@@ -724,7 +753,7 @@ window.setTransactionPeriod = function(p,btn) { transactionPeriod=p; document.qu
 // --- TRACKING & PUBLIC FEATURES ---
 window.showTracking = function() {
     document.getElementById('trackInput').value = '';
-    document.getElementById('trackResult').innerHTML = '<div style="background:white;padding:30px;border-radius:12px;text-align:center"><div style="font-size:64px">🔍</div><h3>Suivre un colis</h3><p style="color:var(--gray);margin:12px 0">Entrez le numéro</p><div style="display:flex;gap:10px;max-width:500px;margin:0 auto"><input type="text" id="trackInputMain" placeholder="Ex: HMiG-2026-000001" style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px"><button class="btn btn-primary" onclick="trackSpecificParcel()" style="width:auto">🔍</button></div></div>';
+    document.getElementById('trackResult').innerHTML = '<div style="background:white;padding:30px;border-radius:12px;text-align:center"><div style="font-size:64px"></div><h3>Suivre un colis</h3><p style="color:var(--gray);margin:12px 0">Entrez le numéro</p><div style="display:flex;gap:10px;max-width:500px;margin:0 auto"><input type="text" id="trackInputMain" placeholder="Ex: HMiG-2026-000001" style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px"><button class="btn btn-primary" onclick="trackSpecificParcel()" style="width:auto"></button></div></div>';
 };
 window.trackSpecificParcel = async function() {
     const num = document.getElementById('trackInputMain').value.trim();
@@ -812,4 +841,4 @@ window.closeTicketModal = function() { document.getElementById('ticketModal').cl
 refreshCache();
 </script>
 </body>
-    </html>
+</html>
