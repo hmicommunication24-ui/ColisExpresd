@@ -147,7 +147,7 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
         <input type="password" id="loginPassword" placeholder="Mot de passe">
         <button onclick="login()">Se connecter</button>
         <div class="login-error" id="loginError">❌ Identifiants incorrects</div>
-        <button class="btn btn-outline" onclick="showPublicTracking()"> Suivi client</button>
+        <button class="btn btn-outline" onclick="showPublicTracking()">🔍 Suivi client</button>
         <button class="btn btn-outline" onclick="showClientConfirmation()">✅ Confirmer réception</button>
     </div>
 </div>
@@ -188,7 +188,7 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
         <div class="section" id="sec-superDashboard">
             <h3 style="margin-bottom:16px;">👑 Tableau de bord global</h3>
             <div class="stats-grid" id="superStats"></div>
-            <h3 style="margin:20px 0 12px;">📊 Situation par compagnie</h3>
+            <h3 style="margin:20px 0 12px;"> Situation par compagnie</h3>
             <div id="companiesDetails"></div>
         </div>
 
@@ -199,7 +199,7 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
         </div>
 
         <div class="section" id="sec-dashboard">
-            <h3 style="margin-bottom:16px;">🏠 Vue d'ensemble</h3>
+            <h3 style="margin-bottom:16px;"> Vue d'ensemble</h3>
             <div class="stats-grid" id="statsGrid"></div>
             <div class="chart-container"><h4>📈 Évolution (7 jours)</h4><div class="chart-wrapper"><canvas id="chartParcels"></canvas></div></div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
@@ -207,13 +207,13 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
                 <button class="btn btn-success btn-lg" onclick="showSection('bordereaux')">🚌 Bordereaux</button>
                 <button class="btn btn-warning btn-lg" onclick="showSection('douane')">🛃 Douane</button>
                 <button class="btn btn-info btn-lg" onclick="showSection('transactions')">💰 Transactions</button>
-                <button class="btn btn-outline btn-lg" onclick="showSection('tracking')">🔍 Suivi</button>
+                <button class="btn btn-outline btn-lg" onclick="showSection('tracking')"> Suivi</button>
                 <button class="btn btn-outline btn-lg" onclick="showSection('reports')">📊 Rapports</button>
             </div>
         </div>
 
         <div class="section" id="sec-newParcel">
-            <h3 style="margin-bottom:16px;">📦 Nouvel envoi</h3>
+            <h3 style="margin-bottom:16px;"> Nouvel envoi</h3>
             <div class="form-group"><label>Expéditeur *</label><input id="senderName"></div>
             <div class="form-group"><label>Téléphone expéditeur *</label><input id="senderPhone"></div>
             <div class="form-group"><label>Destinataire *</label><input id="recipientName"></div>
@@ -224,16 +224,16 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
             <div class="form-group"><label>📸 Photo *</label><div class="photo-zone" onclick="document.getElementById('parcelPhoto').click()"><div class="icon">📷</div><p id="photoLabel">Cliquez pour photo</p><input type="file" id="parcelPhoto" accept="image/*" capture="environment" style="display:none" onchange="previewParcelPhoto(this)"><img id="photoPreview" class="photo-preview hidden"></div></div>
             <div class="form-group"><label>Poids (kg) *</label><input type="number" id="weightKg" step="0.1" oninput="calcPrice()"></div>
             <div class="form-group"><label>Valeur (FCFA) *</label><input type="number" id="declaredValue" value="0" oninput="calcPrice()"></div>
-            <div class="form-group"><label><input type="checkbox" id="isInsured" onchange="calcPrice()"> ️ Assurance</label></div>
-            <div class="form-group"><label><input type="checkbox" id="isCustoms" onchange="calcPrice()">  Douane</label></div>
+            <div class="form-group"><label><input type="checkbox" id="isInsured" onchange="calcPrice()"> 🛡️ Assurance</label></div>
+            <div class="form-group"><label><input type="checkbox" id="isCustoms" onchange="calcPrice()"> 🛃 Douane</label></div>
             <div id="priceSummary" class="simulator-box"><p style="text-align:center;color:var(--gray)">Entrez poids et valeur</p></div>
-            <div class="form-group" style="margin-top:16px;"><label>Paiement</label><div style="display:flex;gap:10px;"><label style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px;text-align:center;"><input type="radio" name="payment" value="cash" checked>  Espèces</label><label style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px;text-align:center;"><input type="radio" name="payment" value="mobile"> 📱 Mobile</label></div></div>
+            <div class="form-group" style="margin-top:16px;"><label>Paiement</label><div style="display:flex;gap:10px;"><label style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px;text-align:center;"><input type="radio" name="payment" value="cash" checked> 💵 Espèces</label><label style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px;text-align:center;"><input type="radio" name="payment" value="mobile"> 📱 Mobile</label></div></div>
             <button class="btn btn-success" onclick="submitParcel()">✅ Valider</button>
         </div>
 
         <div class="section" id="sec-parcelsList">
-            <h3 style="margin-bottom:16px;"> Colis</h3>
-            <div class="search-bar"><input type="text" id="searchParcels" placeholder="🔍 Rechercher..." oninput="filterParcels()"><select id="filterStatus" onchange="filterParcels()"><option value="">Tous</option><option value="paid">Payé</option><option value="loaded">Chargé</option><option value="in_transit">Transit</option><option value="arrived">Arrivé</option><option value="delivered">Livré</option></select></div>
+            <h3 style="margin-bottom:16px;">📋 Colis</h3>
+            <div class="search-bar"><input type="text" id="searchParcels" placeholder=" Rechercher..." oninput="filterParcels()"><select id="filterStatus" onchange="filterParcels()"><option value="">Tous</option><option value="paid">Payé</option><option value="loaded">Chargé</option><option value="in_transit">Transit</option><option value="arrived">Arrivé</option><option value="delivered">Livré</option></select></div>
             <div class="filter-tags"><div class="filter-tag active" onclick="setFilter('all')">Tous</div><div class="filter-tag" onclick="setFilter('today')">Aujourd'hui</div><div class="filter-tag" onclick="setFilter('week')">Semaine</div></div>
             <div id="parcelsListContainer"></div>
         </div>
@@ -272,7 +272,7 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
         </div>
 
         <div class="section" id="sec-reports">
-            <h3 style="margin-bottom:16px;">📊 Rapports</h3>
+            <h3 style="margin-bottom:16px;"> Rapports</h3>
             <div style="display:flex;gap:8px;margin-bottom:16px;"><button class="btn btn-sm btn-primary" onclick="generateReport('daily')">Journalier</button><button class="btn btn-sm btn-outline" onclick="generateReport('weekly')">Hebdo</button><button class="btn btn-sm btn-outline" onclick="generateReport('monthly')">Mensuel</button></div>
             <div id="reportContent"></div>
         </div>
@@ -285,8 +285,8 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
 
         <div class="section" id="sec-settings">
             <h3 style="margin-bottom:16px;">⚙️ Paramètres</h3>
-            <div class="settings-card"><h3>️ Destinations</h3><div id="routesList"></div><button class="btn btn-outline btn-sm" onclick="addRouteRow()">+ Ajouter</button><button class="btn btn-success btn-sm" onclick="saveRoutes()" style="margin-top:10px;">💾</button></div>
-            <div class="settings-card"><h3>⚖️ Prix Poids</h3><div id="weightTiersList"></div><button class="btn btn-outline btn-sm" onclick="addWeightTierRow()">+ Ajouter</button><button class="btn btn-success btn-sm" onclick="saveWeightTiers()" style="margin-top:10px;">💾</button></div>
+            <div class="settings-card"><h3>🗺️ Destinations</h3><div id="routesList"></div><button class="btn btn-outline btn-sm" onclick="addRouteRow()">+ Ajouter</button><button class="btn btn-success btn-sm" onclick="saveRoutes()" style="margin-top:10px;">💾</button></div>
+            <div class="settings-card"><h3>️ Prix Poids</h3><div id="weightTiersList"></div><button class="btn btn-outline btn-sm" onclick="addWeightTierRow()">+ Ajouter</button><button class="btn btn-success btn-sm" onclick="saveWeightTiers()" style="margin-top:10px;">💾</button></div>
             <div class="settings-card"><h3>🛣️ Prix Distance</h3><div id="distanceTiersList"></div><button class="btn btn-outline btn-sm" onclick="addDistanceTierRow()">+ Ajouter</button><button class="btn btn-success btn-sm" onclick="saveDistanceTiers()" style="margin-top:10px;">💾</button></div>
         </div>
 
@@ -301,10 +301,10 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
     <div class="bottom-nav" id="bottomNav"></div>
 </div>
 
-<div class="modal" id="recuModal"><div class="modal-content"><h3 style="margin-bottom:16px;">🧾 Reçu</h3><div id="recuContent"></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-success" onclick="downloadRecuPDF()">📄 PDF</button><button class="btn btn-outline" onclick="closeRecuModal()">Fermer</button></div></div></div>
+<div class="modal" id="recuModal"><div class="modal-content"><h3 style="margin-bottom:16px;">🧾 Reçu</h3><div id="recuContent"></div><div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;"><button class="btn btn-success" onclick="downloadRecuPDF()" style="flex:1;min-width:120px;">📄 Reçu PDF</button><button class="btn btn-info" onclick="downloadTicketPDF()" style="flex:1;min-width:120px;">🖨️ Ticket</button><button class="btn btn-outline" onclick="closeRecuModal()" style="flex:1;min-width:120px;">Fermer</button></div></div></div>
 <div class="modal" id="smsModal"><div class="modal-content"><h3 style="margin-bottom:16px;">📱 SMS</h3><div id="smsContent"></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-primary" onclick="simulateSendSMS()">Envoyer</button><button class="btn btn-outline" onclick="closeSmsModal()">Fermer</button></div></div></div>
 <div class="modal" id="ticketModal"><div class="modal-content"><h3 style="margin-bottom:16px;">🖨️ Ticket</h3><div id="ticketContent"></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-success" onclick="printTicket()">Imprimer</button><button class="btn btn-outline" onclick="closeTicketModal()">Fermer</button></div></div></div>
-<div class="modal" id="addCompanyModal"><div class="modal-content"><h3 style="margin-bottom:16px;">🏢 Nouvelle compagnie</h3><div class="form-group"><label>Nom</label><input id="newCompanyName"></div><div class="form-group"><label>Pays</label><input id="newCompanyCountry"></div><div class="form-group"><label>Plan</label><select id="newCompanyPlan"><option value="basic">Basic - 50k</option><option value="pro">Pro - 100k</option><option value="enterprise">Enterprise - 200k</option></select></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-outline" onclick="closeAddCompanyModal()">Annuler</button><button class="btn btn-primary" onclick="saveCompany()">Enregistrer</button></div></div></div>
+<div class="modal" id="addCompanyModal"><div class="modal-content"><h3 style="margin-bottom:16px;"> Nouvelle compagnie</h3><div class="form-group"><label>Nom</label><input id="newCompanyName"></div><div class="form-group"><label>Pays</label><input id="newCompanyCountry"></div><div class="form-group"><label>Plan</label><select id="newCompanyPlan"><option value="basic">Basic - 50k</option><option value="pro">Pro - 100k</option><option value="enterprise">Enterprise - 200k</option></select></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-outline" onclick="closeAddCompanyModal()">Annuler</button><button class="btn btn-primary" onclick="saveCompany()">Enregistrer</button></div></div></div>
 <div class="modal" id="addUserModal"><div class="modal-content"><h3 style="margin-bottom:16px;">👤 Utilisateur</h3><div class="form-group"><label>Prénom</label><input id="newUserFirstName"></div><div class="form-group"><label>Nom</label><input id="newUserLastName"></div><div class="form-group"><label>Téléphone</label><input id="newUserPhone"></div><div class="form-group"><label>Mot de passe</label><input id="newUserPassword"></div><div class="form-group"><label>Rôle</label><select id="newUserRole"><option value="admin">Admin</option><option value="clerk">Guichetier</option></select></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-outline" onclick="closeAddUserModal()">Annuler</button><button class="btn btn-primary" onclick="saveUser()">OK</button></div></div></div>
 
 <script type="module">
@@ -330,6 +330,7 @@ let currentUser = null;
 let Cache = { companies: [], users: [], parcels: [], bordereaux: [], cities: [], agencies: [], routes: [], weight_tiers: [], distance_tiers: [], fee_settings: [] };
 let charts = {};
 let currentParcelPhoto = null;
+let currentRecuParcel = null;
 let currentFilter = 'all';
 let transactionPeriod = 'today';
 
@@ -344,13 +345,11 @@ async function refreshCache() {
     }
 }
 
-// Charger les compagnies dans le dropdown au démarrage
 async function loadCompaniesInDropdown() {
     await refreshCache();
     const select = document.getElementById('loginCompany');
     select.innerHTML = '<option value="">-- Sélectionner --</option>';
     select.innerHTML += '<option value="super">👑 SUPER ADMIN</option>';
-    
     Cache.companies.forEach(c => {
         if(c.status === 'active') {
             select.innerHTML += `<option value="${c.id}">🏢 ${c.name} (${c.country})</option>`;
@@ -432,9 +431,9 @@ window.logout = function() { signOut(auth); location.reload(); }
 function buildNav() {
     const nav = document.getElementById('bottomNav');
     if(currentUser.isSuperAdmin) {
-        nav.innerHTML = `<div class="bottom-nav-item active" onclick="showSection('superDashboard')"><div class="icon">👑</div>Global</div><div class="bottom-nav-item" onclick="showSection('companies')"><div class="icon"></div>Compagnies</div>`;
+        nav.innerHTML = `<div class="bottom-nav-item active" onclick="showSection('superDashboard')"><div class="icon">👑</div>Global</div><div class="bottom-nav-item" onclick="showSection('companies')"><div class="icon">🏢</div>Compagnies</div>`;
     } else {
-        nav.innerHTML = `<div class="bottom-nav-item active" onclick="showSection('dashboard')"><div class="icon">🏠</div>Accueil</div><div class="bottom-nav-item" onclick="showSection('newParcel')"><div class="icon">📦</div>Envoi</div><div class="bottom-nav-item" onclick="showSection('parcelsList')"><div class="icon">📋</div>Colis</div><div class="bottom-nav-item" onclick="showSection('transactions')"><div class="icon">💰</div>Finance</div><div class="bottom-nav-item" onclick="showSection('tracking')"><div class="icon">🔍</div>Suivi</div>`;
+        nav.innerHTML = `<div class="bottom-nav-item active" onclick="showSection('dashboard')"><div class="icon">🏠</div>Accueil</div><div class="bottom-nav-item" onclick="showSection('newParcel')"><div class="icon">📦</div>Envoi</div><div class="bottom-nav-item" onclick="showSection('parcelsList')"><div class="icon"></div>Colis</div><div class="bottom-nav-item" onclick="showSection('transactions')"><div class="icon">💰</div>Finance</div><div class="bottom-nav-item" onclick="showSection('tracking')"><div class="icon"></div>Suivi</div>`;
     }
 }
 
@@ -463,8 +462,8 @@ async function loadSuperDashboard() {
     const totalRevenue = allParcels.reduce((s,p)=>s+(p.total_price||0),0);
     
     document.getElementById('superStats').innerHTML = `
-        <div class="stat-card"><div class="label"> Compagnies</div><div class="value">${Cache.companies.length}</div></div>
-        <div class="stat-card"><div class="label"> Total Colis</div><div class="value">${allParcels.length}</div><div class="sub">Auj: ${todayP.length}</div></div>
+        <div class="stat-card"><div class="label">🏢 Compagnies</div><div class="value">${Cache.companies.length}</div></div>
+        <div class="stat-card"><div class="label">📦 Total Colis</div><div class="value">${allParcels.length}</div><div class="sub">Auj: ${todayP.length}</div></div>
         <div class="stat-card" style="background:linear-gradient(135deg, var(--accent) 0%, #f1c40f 100%);color:var(--primary)"><div class="label">💰 CA Global</div><div class="value">${roundPrice(totalRevenue).toLocaleString()} F</div></div>
     `;
 
@@ -497,7 +496,7 @@ async function loadCompaniesManagement() {
         <div class="user-card" style="border-left: 4px solid var(--primary);">
             <div class="user-info-block">
                 <div style="font-weight:700;">${c.name}</div>
-                <div style="font-size:12px;color:var(--gray);">${c.country} • Plan ${c.plan} • ${c.status==='active'?'✅ Active':'❌ Suspendue'}</div>
+                <div style="font-size:12px;color:var(--gray);">${c.country} • Plan ${c.plan} • ${c.status==='active'?'✅ Active':' Suspendue'}</div>
             </div>
             <div style="display:flex;gap:8px;">
                 <button class="btn btn-sm ${c.status==='active'?'btn-warning':'btn-success'}" onclick="toggleCompanyStatus('${c.id}', '${c.status}')">${c.status==='active'?'Suspendre':'Activer'}</button>
@@ -534,9 +533,9 @@ window.toggleCompanyStatus = async function(id, currentStatus) {
 };
 
 window.deleteCompany = async function(id, name) {
-    if(confirm(`⚠️ Êtes-vous sûr de vouloir SUPPRIMER définitivement "${name}" ?\nCette action est irréversible.`)) {
+    if(confirm(`⚠️ Êtes-vous sûr de vouloir SUPPRIMER définitivement "${name}" ?`)) {
         await deleteDoc(doc(db, 'companies', id));
-        alert(`🗑️ ${name} a été supprimée.`);
+        alert(`️ ${name} supprimée.`);
         loadCompaniesManagement();
         loadSuperDashboard();
         loadCompaniesInDropdown();
@@ -676,6 +675,329 @@ function showRecuModalTemp(parcel) {
 }
 window.closeRecuModal = function() { document.getElementById('recuModal').classList.remove('active'); };
 
+// ========== GÉNÉRATION PDF RÉEL - REÇU A4 ==========
+window.downloadRecuPDF = function() {
+    if(!currentRecuParcel) { alert('Aucun reçu à générer'); return; }
+    
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'mm', 'a4');
+    const p = currentRecuParcel;
+    const origin = Cache.cities.find(c=>c.id===p.origin_city_id);
+    const dest = Cache.cities.find(c=>c.id===p.destination_city_id);
+    const company = Cache.companies.find(c=>c.id===p.company_id);
+    
+    // En-tête avec bande colorée
+    doc.setFillColor(30, 58, 95);
+    doc.rect(0, 0, 210, 40, 'F');
+    
+    // Logo (texte stylisé)
+    doc.setTextColor(243, 156, 18);
+    doc.setFontSize(28);
+    doc.setFont('helvetica', 'bold');
+    doc.text('HMi-Gest-Co', 105, 20, {align: 'center'});
+    
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Solution digitale de gestion des colis', 105, 28, {align: 'center'});
+    doc.text(company?.name || 'HMi-Gest-Co', 105, 35, {align: 'center'});
+    
+    // Titre du reçu
+    doc.setTextColor(30, 58, 95);
+    doc.setFontSize(22);
+    doc.setFont('helvetica', 'bold');
+    doc.text('REÇU DE COLIS', 105, 55, {align: 'center'});
+    
+    // Numéro de suivi en grand
+    doc.setFillColor(243, 156, 18);
+    doc.roundedRect(40, 62, 130, 15, 3, 3, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(16);
+    doc.text(p.tracking_number, 105, 72, {align: 'center'});
+    
+    // Date
+    doc.setTextColor(108, 117, 125);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Date: ${new Date(p.created_at).toLocaleString('fr-FR')}`, 105, 85, {align: 'center'});
+    
+    // Ligne séparatrice
+    doc.setDrawColor(243, 156, 18);
+    doc.setLineWidth(0.5);
+    doc.line(20, 92, 190, 92);
+    
+    // Section Expéditeur
+    doc.setTextColor(30, 58, 95);
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('EXPÉDITEUR', 20, 102);
+    doc.setDrawColor(243, 156, 18);
+    doc.line(20, 104, 100, 104);
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.setTextColor(26, 26, 46);
+    doc.text(p.sender_name, 20, 112);
+    doc.text(p.sender_phone, 20, 119);
+    
+    // Section Destinataire
+    doc.setTextColor(30, 58, 95);
+    doc.setFont('helvetica', 'bold');
+    doc.text('DESTINATAIRE', 110, 102);
+    doc.setDrawColor(243, 156, 18);
+    doc.line(110, 104, 190, 104);
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(26, 26, 46);
+    doc.text(p.recipient_name, 110, 112);
+    doc.text(p.recipient_phone, 110, 119);
+    
+    // Section Trajet
+    doc.setFillColor(248, 249, 250);
+    doc.roundedRect(20, 128, 170, 25, 2, 2, 'F');
+    
+    doc.setTextColor(30, 58, 95);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.text('TRAJET', 25, 137);
+    
+    doc.setTextColor(26, 26, 46);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.text(`De: ${origin?.name || '?'}`, 25, 145);
+    doc.text(`À: ${dest?.name || '?'}`, 110, 145);
+    doc.text(`Distance: ${p.distance_km} km`, 25, 151);
+    doc.text(`Poids: ${p.weight_kg} kg`, 110, 151);
+    
+    // Description
+    if(p.description) {
+        doc.text(`Description: ${p.description}`, 25, 157);
+    }
+    
+    // Section Détail des frais
+    doc.setTextColor(30, 58, 95);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.text('DÉTAIL DES FRAIS', 20, 172);
+    doc.setDrawColor(243, 156, 18);
+    doc.line(20, 174, 190, 174);
+    
+    let y = 182;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.setTextColor(26, 26, 46);
+    
+    const transport = roundPrice(p.weight_price + p.distance_price);
+    doc.text('Transport (poids + distance)', 25, y);
+    doc.text(`${transport.toLocaleString()} FCFA`, 185, y, {align: 'right'});
+    y += 8;
+    
+    if(p.handling_fee) {
+        doc.setTextColor(243, 156, 18);
+        doc.text('Frais de gestion', 25, y);
+        doc.text(`${roundPrice(p.handling_fee).toLocaleString()} FCFA`, 185, y, {align: 'right'});
+        y += 8;
+        doc.setTextColor(26, 26, 46);
+    }
+    
+    if(p.insurance_fee) {
+        doc.text('Assurance', 25, y);
+        doc.text(`${roundPrice(p.insurance_fee).toLocaleString()} FCFA`, 185, y, {align: 'right'});
+        y += 8;
+    }
+    
+    if(p.customs_fee) {
+        doc.setTextColor(230, 126, 34);
+        doc.text('Douane', 25, y);
+        doc.text(`${roundPrice(p.customs_fee).toLocaleString()} FCFA`, 185, y, {align: 'right'});
+        y += 8;
+        doc.setTextColor(26, 26, 46);
+    }
+    
+    // Mode de paiement
+    doc.text(`Paiement: ${p.payment_method === 'cash' ? 'Espèces' : 'Mobile Money'}`, 25, y);
+    y += 10;
+    
+    // Total
+    doc.setFillColor(30, 58, 95);
+    doc.roundedRect(20, y-3, 170, 15, 2, 2, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.text('TOTAL PAYÉ', 25, y+7);
+    doc.text(`${roundPrice(p.total_price).toLocaleString()} FCFA`, 185, y+7, {align: 'right'});
+    y += 25;
+    
+    // Code de confirmation
+    if(p.confirmation_code) {
+        doc.setDrawColor(243, 156, 18);
+        doc.setLineWidth(1);
+        doc.setLineDashPattern([2, 2], 0);
+        doc.roundedRect(40, y, 130, 25, 3, 3, 'S');
+        doc.setLineDashPattern([], 0);
+        
+        doc.setTextColor(108, 117, 125);
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'normal');
+        doc.text('CODE DE CONFIRMATION (à donner au destinataire)', 105, y+8, {align: 'center'});
+        
+        doc.setTextColor(30, 58, 95);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(22);
+        doc.text(p.confirmation_code, 105, y+20, {align: 'center'});
+        y += 35;
+    }
+    
+    // Footer
+    doc.setDrawColor(243, 156, 18);
+    doc.setLineWidth(0.5);
+    doc.line(20, y+5, 190, y+5);
+    
+    doc.setTextColor(108, 117, 125);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'italic');
+    doc.text('Ce reçu fait foi de paiement. Conservez-le précieusement.', 105, y+12, {align: 'center'});
+    doc.text('Le destinataire doit présenter le code de confirmation pour retirer son colis.', 105, y+18, {align: 'center'});
+    doc.text('www.hmigestco.com | support@hmigestco.com', 105, y+24, {align: 'center'});
+    
+    // Sauvegarde
+    doc.save(`Recu_${p.tracking_number}.pdf`);
+};
+
+// ========== GÉNÉRATION PDF RÉEL - TICKET THERMIQUE 80mm ==========
+window.downloadTicketPDF = function() {
+    if(!currentRecuParcel) { alert('Aucun ticket à générer'); return; }
+    
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'mm', [80, 200]);
+    const p = currentRecuParcel;
+    const origin = Cache.cities.find(c=>c.id===p.origin_city_id);
+    const dest = Cache.cities.find(c=>c.id===p.destination_city_id);
+    
+    // En-tête
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(0, 0, 0);
+    doc.text('HMi-Gest-Co', 40, 8, {align: 'center'});
+    
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.text('REÇU COLIS', 40, 14, {align: 'center'});
+    
+    // Ligne pointillée
+    doc.setLineDashPattern([1, 1], 0);
+    doc.line(5, 17, 75, 17);
+    doc.setLineDashPattern([], 0);
+    
+    // Numéro de suivi
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text(p.tracking_number, 40, 23, {align: 'center'});
+    
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'normal');
+    doc.text(new Date(p.created_at).toLocaleString('fr-FR'), 40, 28, {align: 'center'});
+    
+    doc.setLineDashPattern([1, 1], 0);
+    doc.line(5, 31, 75, 31);
+    doc.setLineDashPattern([], 0);
+    
+    // Expéditeur
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'bold');
+    doc.text('EXP:', 5, 36);
+    doc.setFont('helvetica', 'normal');
+    doc.text(p.sender_name.substring(0, 20), 15, 36);
+    doc.text(p.sender_phone, 5, 41);
+    
+    // Destinataire
+    doc.setFont('helvetica', 'bold');
+    doc.text('DEST:', 5, 47);
+    doc.setFont('helvetica', 'normal');
+    doc.text(p.recipient_name.substring(0, 20), 15, 47);
+    doc.text(p.recipient_phone, 5, 52);
+    
+    doc.setLineDashPattern([1, 1], 0);
+    doc.line(5, 55, 75, 55);
+    doc.setLineDashPattern([], 0);
+    
+    // Trajet
+    doc.setFont('helvetica', 'bold');
+    doc.text('TRAJET:', 5, 60);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`${origin?.name || '?'} -> ${dest?.name || '?'}`, 5, 65);
+    doc.text(`${p.distance_km} km | ${p.weight_kg} kg`, 5, 70);
+    
+    doc.setLineDashPattern([1, 1], 0);
+    doc.line(5, 73, 75, 73);
+    doc.setLineDashPattern([], 0);
+    
+    // Frais
+    doc.setFont('helvetica', 'bold');
+    doc.text('FRAIS:', 5, 78);
+    doc.setFont('helvetica', 'normal');
+    
+    let y = 83;
+    const transport = roundPrice(p.weight_price + p.distance_price);
+    doc.text(`Transport: ${transport.toLocaleString()} F`, 5, y);
+    y += 5;
+    
+    if(p.handling_fee) {
+        doc.text(`Gestion: ${roundPrice(p.handling_fee).toLocaleString()} F`, 5, y);
+        y += 5;
+    }
+    if(p.insurance_fee) {
+        doc.text(`Assurance: ${roundPrice(p.insurance_fee).toLocaleString()} F`, 5, y);
+        y += 5;
+    }
+    if(p.customs_fee) {
+        doc.text(`Douane: ${roundPrice(p.customs_fee).toLocaleString()} F`, 5, y);
+        y += 5;
+    }
+    
+    doc.setLineDashPattern([1, 1], 0);
+    doc.line(5, y+2, 75, y+2);
+    doc.setLineDashPattern([], 0);
+    y += 6;
+    
+    // Total
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.text('TOTAL:', 5, y);
+    doc.text(`${roundPrice(p.total_price).toLocaleString()} F`, 75, y, {align: 'right'});
+    y += 8;
+    
+    doc.setFontSize(8);
+    doc.text(`(${p.payment_method === 'cash' ? 'ESPECES' : 'MOBILE'})`, 40, y, {align: 'center'});
+    y += 10;
+    
+    doc.setLineDashPattern([1, 1], 0);
+    doc.line(5, y, 75, y);
+    doc.setLineDashPattern([], 0);
+    y += 5;
+    
+    // Code confirmation
+    if(p.confirmation_code) {
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.text('CODE CONFIRMATION:', 40, y, {align: 'center'});
+        y += 6;
+        doc.setFontSize(14);
+        doc.text(p.confirmation_code, 40, y, {align: 'center'});
+        y += 10;
+    }
+    
+    // Footer
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Merci de votre confiance!', 40, y, {align: 'center'});
+    y += 4;
+    doc.text('www.hmigestco.com', 40, y, {align: 'center'});
+    
+    // Sauvegarde
+    doc.save(`Ticket_${p.tracking_number}.pdf`);
+};
+
 window.loadParcelsList = async function() {
     await refreshCache();
     const container = document.getElementById('parcelsListContainer');
@@ -700,7 +1022,8 @@ window.setFilter = function(f) { currentFilter=f; document.querySelectorAll('.fi
 window.showParcelActions = function(id) {
     const p = Cache.parcels.find(x=>x.id===id);
     if(!p) return;
-    alert(`Colis: ${p.tracking_number}\nStatut: ${p.status}\nTotal: ${roundPrice(p.total_price).toLocaleString()} F\nCode: ${p.confirmation_code||'N/A'}`);
+    currentRecuParcel = p;
+    showRecuModalTemp(p);
 };
 
 window.loadTransactions = async function() {
@@ -737,7 +1060,7 @@ window.setTransactionPeriod = function(p,btn) { transactionPeriod=p; document.qu
 
 window.showTracking = function() {
     document.getElementById('trackInput').value = '';
-    document.getElementById('trackResult').innerHTML = '<div style="background:white;padding:30px;border-radius:12px;text-align:center"><div style="font-size:64px">🔍</div><h3>Suivre un colis</h3><p style="color:var(--gray);margin:12px 0">Entrez le numéro</p><div style="display:flex;gap:10px;max-width:500px;margin:0 auto"><input type="text" id="trackInputMain" placeholder="Ex: HMiG-2026-000001" style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px"><button class="btn btn-primary" onclick="trackSpecificParcel()" style="width:auto">🔍</button></div></div>';
+    document.getElementById('trackResult').innerHTML = '<div style="background:white;padding:30px;border-radius:12px;text-align:center"><div style="font-size:64px"></div><h3>Suivre un colis</h3><p style="color:var(--gray);margin:12px 0">Entrez le numéro</p><div style="display:flex;gap:10px;max-width:500px;margin:0 auto"><input type="text" id="trackInputMain" placeholder="Ex: HMiG-2026-000001" style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px"><button class="btn btn-primary" onclick="trackSpecificParcel()" style="width:auto"></button></div></div>';
 };
 window.trackSpecificParcel = async function() {
     const num = document.getElementById('trackInputMain').value.trim();
@@ -746,14 +1069,14 @@ window.trackSpecificParcel = async function() {
     await refreshCache();
     const p = Cache.parcels.find(x=>x.tracking_number===num);
     const el = document.getElementById('trackResult');
-    if(!p) { el.innerHTML='<p style="color:#e74c3c;text-align:center"> Non trouvé</p>'; return; }
+    if(!p) { el.innerHTML='<p style="color:#e74c3c;text-align:center">❌ Non trouvé</p>'; return; }
     const origin = Cache.cities.find(c=>c.id===p.origin_city_id);
     const dest = Cache.cities.find(c=>c.id===p.destination_city_id);
     let html = `<div style="background:white;padding:20px;border-radius:12px;margin-top:16px"><h3>📦 ${p.tracking_number}</h3><p><strong>Trajet:</strong> ${origin?.name||'?'} → ${dest?.name||'?'}</p><p><strong>Statut:</strong> ${p.status}</p>`;
     if(p.trajet) {
-        html += '<div class="trajet-timeline" style="margin-top:20px"><h4>🗺️ Historique</h4>';
-        const icons = {created:'📝',paid:'💰',loaded:'🚌',in_transit:'🚚',arrived:'📍',delivered:'✅'};
-        p.trajet.forEach((step,i)=>{ html += `<div class="trajet-step ${i===p.trajet.length-1?'current':'done'}"><div class="trajet-icon">${icons[step.status]||'📦'}</div><div class="trajet-content"><div class="trajet-title">${step.label}</div><div class="trajet-subtitle">📍 ${step.location}</div><div class="trajet-date">${new Date(step.date).toLocaleString('fr-FR')}</div></div></div>`; });
+        html += '<div class="trajet-timeline" style="margin-top:20px"><h4>️ Historique</h4>';
+        const icons = {created:'📝',paid:'',loaded:'🚌',in_transit:'',arrived:'📍',delivered:'✅'};
+        p.trajet.forEach((step,i)=>{ html += `<div class="trajet-step ${i===p.trajet.length-1?'current':'done'}"><div class="trajet-icon">${icons[step.status]||''}</div><div class="trajet-content"><div class="trajet-title">${step.label}</div><div class="trajet-subtitle">📍 ${step.location}</div><div class="trajet-date">${new Date(step.date).toLocaleString('fr-FR')}</div></div></div>`; });
         html += '</div>';
     }
     html += '</div>';
@@ -787,7 +1110,7 @@ window.confirmReception = async function() {
     await refreshCache();
     const p = Cache.parcels.find(x=>x.confirmation_code===code);
     const el = document.getElementById('confirmationResult');
-    if(!p) { el.innerHTML='<div style="background:#fee;color:#c33;padding:20px;border-radius:12px;text-align:center">❌ Code invalide</div>'; return; }
+    if(!p) { el.innerHTML='<div style="background:#fee;color:#c33;padding:20px;border-radius:12px;text-align:center"> Code invalide</div>'; return; }
     if(p.status==='delivered') { el.innerHTML='<div style="background:#e8f5e9;color:#2e7d32;padding:20px;border-radius:12px;text-align:center">✅ Déjà confirmé</div>'; return; }
     p.status = 'delivered'; p.confirmed_by_recipient = true;
     if(!p.trajet) p.trajet = [];
@@ -815,13 +1138,11 @@ window.addWeightTierRow = function() {};
 window.saveWeightTiers = function() { alert('Poids enregistrés'); };
 window.addDistanceTierRow = function() {};
 window.saveDistanceTiers = function() { alert('Distances enregistrées'); };
-window.downloadRecuPDF = function() { alert('PDF téléchargé'); closeRecuModal(); };
 window.simulateSendSMS = function() { alert('SMS envoyé'); closeSmsModal(); };
 window.closeSmsModal = function() { document.getElementById('smsModal').classList.remove('active'); };
-window.printTicket = function() { alert('Impression...'); closeTicketModal(); };
+window.printTicket = function() { downloadTicketPDF(); closeTicketModal(); };
 window.closeTicketModal = function() { document.getElementById('ticketModal').classList.remove('active'); };
 
-// Initialisation
 loadCompaniesInDropdown();
 refreshCache();
 </script>
