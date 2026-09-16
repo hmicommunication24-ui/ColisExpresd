@@ -11,7 +11,6 @@
 body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0a1628 0%, #1e3a5f 100%); color: #1a1a2e; min-height: 100vh; }
 :root { --primary: #1e3a5f; --primary-light: #2e5984; --accent: #f39c12; --success: #27ae60; --danger: #e74c3c; --white: #fff; --gray: #6c757d; }
 
-/* LOGIN & PUBLIC */
 .login-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; background: linear-gradient(135deg, #0a1628 0%, #1e3a5f 50%, #2e5984 100%); }
 .login-box { background: var(--white); padding: 40px 30px; border-radius: 24px; width: 100%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); border-top: 6px solid var(--accent); }
 .login-box .logo-container { text-align: center; margin-bottom: 24px; }
@@ -29,7 +28,6 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
 .public-box h2 { text-align: center; color: var(--primary); margin-bottom: 12px; }
 .public-box .subtitle { text-align: center; color: var(--gray); margin-bottom: 24px; }
 
-/* APP LAYOUT */
 .topbar { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 3px solid var(--accent); }
 .topbar h2 { font-size: 18px; display: flex; align-items: center; gap: 8px; }
 .topbar h2 img { width: 32px; height: 32px; border-radius: 6px; }
@@ -44,7 +42,6 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
 
 .main-content { padding: 20px; padding-bottom: 100px; max-width: 900px; margin: 0 auto; background: #f8f9fa; min-height: 100vh; }
 
-/* DASHBOARD & STATS */
 .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 24px; }
 .stat-card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-left: 5px solid var(--accent); }
 .stat-card .label { font-size: 12px; color: var(--gray); margin-bottom: 6px; }
@@ -55,7 +52,6 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
 .chart-container h4 { margin-bottom: 16px; color: var(--primary); }
 .chart-wrapper { position: relative; height: 220px; }
 
-/* BUTTONS & FORMS */
 .btn { padding: 14px 24px; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; margin-bottom: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
 .btn-primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; }
 .btn-success { background: linear-gradient(135deg, var(--success) 0%, #229954 100%); color: white; }
@@ -71,7 +67,6 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
 .form-group input, .form-group select { width: 100%; padding: 14px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 15px; }
 .form-group input:focus, .form-group select:focus { border-color: var(--accent); outline: none; }
 
-/* SECTIONS & MODALS */
 .section { display: none; }
 .section.active { display: block; }
 .settings-card { background: white; padding: 24px; border-radius: 16px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
@@ -84,7 +79,6 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
 .empty-state { text-align: center; padding: 60px 20px; color: var(--gray); }
 .hidden { display: none !important; }
 
-/* SPECIFIC COMPONENTS */
 .photo-zone { border: 3px dashed var(--primary-light); border-radius: 16px; padding: 30px; text-align: center; cursor: pointer; background: #f8f9fa; }
 .photo-zone:hover { border-color: var(--accent); background: #fff9e6; }
 .photo-zone .icon { font-size: 48px; margin-bottom: 12px; }
@@ -139,7 +133,6 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
 </head>
 <body>
 
-<!-- LOGIN -->
 <div class="login-screen" id="loginScreen">
     <div class="login-box">
         <div class="logo-container">
@@ -148,19 +141,17 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
             <p class="subtitle">Votre solution digitale pour la gestion des colis</p>
         </div>
         <select id="loginCompany">
-            <option value="">-- Sélectionner --</option>
-            <option value="super">👑 SUPER ADMIN</option>
+            <option value="">-- Chargement... --</option>
         </select>
         <input type="text" id="loginPhone" placeholder="Téléphone / Identifiant">
         <input type="password" id="loginPassword" placeholder="Mot de passe">
         <button onclick="login()">Se connecter</button>
         <div class="login-error" id="loginError">❌ Identifiants incorrects</div>
-        <button class="btn btn-outline" onclick="showPublicTracking()">🔍 Suivi client</button>
+        <button class="btn btn-outline" onclick="showPublicTracking()"> Suivi client</button>
         <button class="btn btn-outline" onclick="showClientConfirmation()">✅ Confirmer réception</button>
     </div>
 </div>
 
-<!-- SUIVI PUBLIC -->
 <div class="public-screen" id="publicTrackingScreen" style="display:none;">
     <div class="public-box">
         <h2>🔍 Suivre votre colis</h2>
@@ -172,7 +163,6 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
     </div>
 </div>
 
-<!-- CONFIRMATION CLIENT -->
 <div class="public-screen" id="clientConfirmationScreen" style="display:none;">
     <div class="public-box">
         <h2>✅ Confirmer la réception</h2>
@@ -184,7 +174,6 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
     </div>
 </div>
 
-<!-- APP -->
 <div id="appLayout" style="display:none;">
     <div class="topbar">
         <h2><img src="https://raw.githubusercontent.com/hmicommunication24-ui/HMi-Gest-Co/main/Logo.png" alt="Logo"><span id="companyName"></span></h2>
@@ -196,28 +185,25 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
     </div>
 
     <div class="main-content">
-        <!-- DASHBOARD GLOBAL (SUPER ADMIN) -->
         <div class="section" id="sec-superDashboard">
             <h3 style="margin-bottom:16px;">👑 Tableau de bord global</h3>
             <div class="stats-grid" id="superStats"></div>
-            <h3 style="margin:20px 0 12px;"> Situation par compagnie</h3>
+            <h3 style="margin:20px 0 12px;">📊 Situation par compagnie</h3>
             <div id="companiesDetails"></div>
         </div>
 
-        <!-- SECTION COMPAGNIES (GESTION) -->
         <div class="section" id="sec-companies">
             <h3 style="margin-bottom:16px;">🏢 Gestion des compagnies</h3>
             <button class="btn btn-primary" onclick="showAddCompanyModal()" style="margin-bottom:16px;">➕ Ajouter une compagnie</button>
             <div id="companiesListFull"></div>
         </div>
 
-        <!-- DASHBOARD COMPAGNIE -->
         <div class="section" id="sec-dashboard">
             <h3 style="margin-bottom:16px;">🏠 Vue d'ensemble</h3>
             <div class="stats-grid" id="statsGrid"></div>
             <div class="chart-container"><h4>📈 Évolution (7 jours)</h4><div class="chart-wrapper"><canvas id="chartParcels"></canvas></div></div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                <button class="btn btn-primary btn-lg" onclick="showSection('newParcel')"> Nouvel Envoi</button>
+                <button class="btn btn-primary btn-lg" onclick="showSection('newParcel')">📦 Nouvel Envoi</button>
                 <button class="btn btn-success btn-lg" onclick="showSection('bordereaux')">🚌 Bordereaux</button>
                 <button class="btn btn-warning btn-lg" onclick="showSection('douane')">🛃 Douane</button>
                 <button class="btn btn-info btn-lg" onclick="showSection('transactions')">💰 Transactions</button>
@@ -226,7 +212,6 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
             </div>
         </div>
 
-        <!-- NOUVEL ENVOI -->
         <div class="section" id="sec-newParcel">
             <h3 style="margin-bottom:16px;">📦 Nouvel envoi</h3>
             <div class="form-group"><label>Expéditeur *</label><input id="senderName"></div>
@@ -236,17 +221,16 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
             <div class="form-group"><label>Ville destination *</label><select id="destCity" onchange="onDestCityChange()"><option value="">-- Choisir --</option></select></div>
             <div class="form-group"><label>Agence</label><select id="destAgency"></select></div>
             <div class="form-group"><label>Description *</label><input id="description"></div>
-            <div class="form-group"><label> Photo *</label><div class="photo-zone" onclick="document.getElementById('parcelPhoto').click()"><div class="icon">📷</div><p id="photoLabel">Cliquez pour photo</p><input type="file" id="parcelPhoto" accept="image/*" capture="environment" style="display:none" onchange="previewParcelPhoto(this)"><img id="photoPreview" class="photo-preview hidden"></div></div>
+            <div class="form-group"><label>📸 Photo *</label><div class="photo-zone" onclick="document.getElementById('parcelPhoto').click()"><div class="icon">📷</div><p id="photoLabel">Cliquez pour photo</p><input type="file" id="parcelPhoto" accept="image/*" capture="environment" style="display:none" onchange="previewParcelPhoto(this)"><img id="photoPreview" class="photo-preview hidden"></div></div>
             <div class="form-group"><label>Poids (kg) *</label><input type="number" id="weightKg" step="0.1" oninput="calcPrice()"></div>
             <div class="form-group"><label>Valeur (FCFA) *</label><input type="number" id="declaredValue" value="0" oninput="calcPrice()"></div>
             <div class="form-group"><label><input type="checkbox" id="isInsured" onchange="calcPrice()"> ️ Assurance</label></div>
-            <div class="form-group"><label><input type="checkbox" id="isCustoms" onchange="calcPrice()"> 🛃 Douane</label></div>
+            <div class="form-group"><label><input type="checkbox" id="isCustoms" onchange="calcPrice()">  Douane</label></div>
             <div id="priceSummary" class="simulator-box"><p style="text-align:center;color:var(--gray)">Entrez poids et valeur</p></div>
-            <div class="form-group" style="margin-top:16px;"><label>Paiement</label><div style="display:flex;gap:10px;"><label style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px;text-align:center;"><input type="radio" name="payment" value="cash" checked> 💵 Espèces</label><label style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px;text-align:center;"><input type="radio" name="payment" value="mobile"> 📱 Mobile</label></div></div>
+            <div class="form-group" style="margin-top:16px;"><label>Paiement</label><div style="display:flex;gap:10px;"><label style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px;text-align:center;"><input type="radio" name="payment" value="cash" checked>  Espèces</label><label style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px;text-align:center;"><input type="radio" name="payment" value="mobile"> 📱 Mobile</label></div></div>
             <button class="btn btn-success" onclick="submitParcel()">✅ Valider</button>
         </div>
 
-        <!-- LISTE COLIS -->
         <div class="section" id="sec-parcelsList">
             <h3 style="margin-bottom:16px;"> Colis</h3>
             <div class="search-bar"><input type="text" id="searchParcels" placeholder="🔍 Rechercher..." oninput="filterParcels()"><select id="filterStatus" onchange="filterParcels()"><option value="">Tous</option><option value="paid">Payé</option><option value="loaded">Chargé</option><option value="in_transit">Transit</option><option value="arrived">Arrivé</option><option value="delivered">Livré</option></select></div>
@@ -254,7 +238,6 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
             <div id="parcelsListContainer"></div>
         </div>
 
-        <!-- BORDEREAUX -->
         <div class="section" id="sec-bordereaux">
             <h3 style="margin-bottom:16px;">🚌 Bordereaux</h3>
             <button class="btn btn-primary" onclick="showSection('createBordereau')" style="margin-bottom:16px;">➕ Créer</button>
@@ -263,7 +246,7 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
 
         <div class="section" id="sec-createBordereau">
             <button class="btn btn-outline btn-sm" onclick="showSection('bordereaux')" style="margin-bottom:16px;">← Retour</button>
-            <h3 style="margin-bottom:16px;"> Nouveau bordereau</h3>
+            <h3 style="margin-bottom:16px;">🚌 Nouveau bordereau</h3>
             <div class="form-group"><label>Ville *</label><select id="bordCity" onchange="filterParcelsByDestination()"><option value="">-- Choisir --</option></select></div>
             <div class="form-group"><label>Chauffeur *</label><input id="bordDriver"></div>
             <div class="form-group"><label>Plaque *</label><input id="bordPlate"></div>
@@ -274,7 +257,6 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
             <button class="btn btn-success" onclick="saveBordereau()" style="margin-top:16px;">✅ Créer & PDF</button>
         </div>
 
-        <!-- DOUANE -->
         <div class="section" id="sec-douane">
             <h3 style="margin-bottom:16px;">🛃 Douane</h3>
             <div style="display:flex;gap:8px;margin-bottom:16px;"><button class="btn btn-sm btn-primary" onclick="setDouanePeriod('today')">Aujourd'hui</button><button class="btn btn-sm btn-outline" onclick="setDouanePeriod('week')">Semaine</button><button class="btn btn-sm btn-outline" onclick="setDouanePeriod('month')">Mois</button></div>
@@ -282,7 +264,6 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
             <div class="douane-table" id="douaneTable"></div>
         </div>
 
-        <!-- TRANSACTIONS -->
         <div class="section" id="sec-transactions">
             <h3 style="margin-bottom:16px;">💰 Transactions</h3>
             <div style="display:flex;gap:8px;margin-bottom:16px;"><button class="btn btn-sm btn-primary period-btn active" onclick="setTransactionPeriod('today',this)">Aujourd'hui</button><button class="btn btn-sm btn-outline period-btn" onclick="setTransactionPeriod('week',this)">Semaine</button><button class="btn btn-sm btn-outline period-btn" onclick="setTransactionPeriod('month',this)">Mois</button></div>
@@ -290,29 +271,25 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
             <div class="transaction-table" id="transactionTable"></div>
         </div>
 
-        <!-- RAPPORTS -->
         <div class="section" id="sec-reports">
             <h3 style="margin-bottom:16px;">📊 Rapports</h3>
             <div style="display:flex;gap:8px;margin-bottom:16px;"><button class="btn btn-sm btn-primary" onclick="generateReport('daily')">Journalier</button><button class="btn btn-sm btn-outline" onclick="generateReport('weekly')">Hebdo</button><button class="btn btn-sm btn-outline" onclick="generateReport('monthly')">Mensuel</button></div>
             <div id="reportContent"></div>
         </div>
 
-        <!-- UTILISATEURS -->
         <div class="section" id="sec-users">
-            <h3 style="margin-bottom:16px;"> Personnel</h3>
+            <h3 style="margin-bottom:16px;">👥 Personnel</h3>
             <button class="btn btn-primary" onclick="showAddUserModal()" style="margin-bottom:16px;">➕ Ajouter</button>
             <div id="usersList"></div>
         </div>
 
-        <!-- PARAMÈTRES -->
         <div class="section" id="sec-settings">
             <h3 style="margin-bottom:16px;">⚙️ Paramètres</h3>
-            <div class="settings-card"><h3>️ Destinations</h3><div id="routesList"></div><button class="btn btn-outline btn-sm" onclick="addRouteRow()">+ Ajouter</button><button class="btn btn-success btn-sm" onclick="saveRoutes()" style="margin-top:10px;"></button></div>
+            <div class="settings-card"><h3>️ Destinations</h3><div id="routesList"></div><button class="btn btn-outline btn-sm" onclick="addRouteRow()">+ Ajouter</button><button class="btn btn-success btn-sm" onclick="saveRoutes()" style="margin-top:10px;">💾</button></div>
             <div class="settings-card"><h3>⚖️ Prix Poids</h3><div id="weightTiersList"></div><button class="btn btn-outline btn-sm" onclick="addWeightTierRow()">+ Ajouter</button><button class="btn btn-success btn-sm" onclick="saveWeightTiers()" style="margin-top:10px;">💾</button></div>
-            <div class="settings-card"><h3>🛣️ Prix Distance</h3><div id="distanceTiersList"></div><button class="btn btn-outline btn-sm" onclick="addDistanceTierRow()">+ Ajouter</button><button class="btn btn-success btn-sm" onclick="saveDistanceTiers()" style="margin-top:10px;"></button></div>
+            <div class="settings-card"><h3>🛣️ Prix Distance</h3><div id="distanceTiersList"></div><button class="btn btn-outline btn-sm" onclick="addDistanceTierRow()">+ Ajouter</button><button class="btn btn-success btn-sm" onclick="saveDistanceTiers()" style="margin-top:10px;">💾</button></div>
         </div>
 
-        <!-- SUIVI -->
         <div class="section" id="sec-tracking">
             <h3 style="margin-bottom:12px;">🔍 Suivi</h3>
             <input type="text" id="trackInput" placeholder="Numéro de suivi" style="width:100%;padding:14px;border:2px solid #e0e0e0;border-radius:10px;margin-bottom:12px;">
@@ -324,11 +301,10 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
     <div class="bottom-nav" id="bottomNav"></div>
 </div>
 
-<!-- MODALS -->
 <div class="modal" id="recuModal"><div class="modal-content"><h3 style="margin-bottom:16px;">🧾 Reçu</h3><div id="recuContent"></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-success" onclick="downloadRecuPDF()">📄 PDF</button><button class="btn btn-outline" onclick="closeRecuModal()">Fermer</button></div></div></div>
 <div class="modal" id="smsModal"><div class="modal-content"><h3 style="margin-bottom:16px;">📱 SMS</h3><div id="smsContent"></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-primary" onclick="simulateSendSMS()">Envoyer</button><button class="btn btn-outline" onclick="closeSmsModal()">Fermer</button></div></div></div>
 <div class="modal" id="ticketModal"><div class="modal-content"><h3 style="margin-bottom:16px;">🖨️ Ticket</h3><div id="ticketContent"></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-success" onclick="printTicket()">Imprimer</button><button class="btn btn-outline" onclick="closeTicketModal()">Fermer</button></div></div></div>
-<div class="modal" id="addCompanyModal"><div class="modal-content"><h3 style="margin-bottom:16px;"> Nouvelle compagnie</h3><div class="form-group"><label>Nom</label><input id="newCompanyName"></div><div class="form-group"><label>Pays</label><input id="newCompanyCountry"></div><div class="form-group"><label>Plan</label><select id="newCompanyPlan"><option value="basic">Basic - 50k</option><option value="pro">Pro - 100k</option><option value="enterprise">Enterprise - 200k</option></select></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-outline" onclick="closeAddCompanyModal()">Annuler</button><button class="btn btn-primary" onclick="saveCompany()">Enregistrer</button></div></div></div>
+<div class="modal" id="addCompanyModal"><div class="modal-content"><h3 style="margin-bottom:16px;">🏢 Nouvelle compagnie</h3><div class="form-group"><label>Nom</label><input id="newCompanyName"></div><div class="form-group"><label>Pays</label><input id="newCompanyCountry"></div><div class="form-group"><label>Plan</label><select id="newCompanyPlan"><option value="basic">Basic - 50k</option><option value="pro">Pro - 100k</option><option value="enterprise">Enterprise - 200k</option></select></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-outline" onclick="closeAddCompanyModal()">Annuler</button><button class="btn btn-primary" onclick="saveCompany()">Enregistrer</button></div></div></div>
 <div class="modal" id="addUserModal"><div class="modal-content"><h3 style="margin-bottom:16px;">👤 Utilisateur</h3><div class="form-group"><label>Prénom</label><input id="newUserFirstName"></div><div class="form-group"><label>Nom</label><input id="newUserLastName"></div><div class="form-group"><label>Téléphone</label><input id="newUserPhone"></div><div class="form-group"><label>Mot de passe</label><input id="newUserPassword"></div><div class="form-group"><label>Rôle</label><select id="newUserRole"><option value="admin">Admin</option><option value="clerk">Guichetier</option></select></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-outline" onclick="closeAddUserModal()">Annuler</button><button class="btn btn-primary" onclick="saveUser()">OK</button></div></div></div>
 
 <script type="module">
@@ -368,6 +344,20 @@ async function refreshCache() {
     }
 }
 
+// Charger les compagnies dans le dropdown au démarrage
+async function loadCompaniesInDropdown() {
+    await refreshCache();
+    const select = document.getElementById('loginCompany');
+    select.innerHTML = '<option value="">-- Sélectionner --</option>';
+    select.innerHTML += '<option value="super">👑 SUPER ADMIN</option>';
+    
+    Cache.companies.forEach(c => {
+        if(c.status === 'active') {
+            select.innerHTML += `<option value="${c.id}">🏢 ${c.name} (${c.country})</option>`;
+        }
+    });
+}
+
 window.login = async function() {
     const companyId = document.getElementById('loginCompany').value;
     const phone = document.getElementById('loginPhone').value.trim();
@@ -389,7 +379,6 @@ window.login = async function() {
         }
         
         if(!user) {
-            // Création automatique si inexistant dans Firestore
             const newUser = { role: companyId==='super'?'super_admin':'admin', first_name: phone.split('@')[0], last_name: '', phone, email, password, company_id: companyId==='super'?null:companyId, agency_id: companyId==='super'?null:'1' };
             const ref = await addDoc(collection(db, 'users'), newUser);
             user = { id: ref.id, ...newUser };
@@ -443,9 +432,9 @@ window.logout = function() { signOut(auth); location.reload(); }
 function buildNav() {
     const nav = document.getElementById('bottomNav');
     if(currentUser.isSuperAdmin) {
-        nav.innerHTML = `<div class="bottom-nav-item active" onclick="showSection('superDashboard')"><div class="icon">👑</div>Global</div><div class="bottom-nav-item" onclick="showSection('companies')"><div class="icon">🏢</div>Compagnies</div>`;
+        nav.innerHTML = `<div class="bottom-nav-item active" onclick="showSection('superDashboard')"><div class="icon">👑</div>Global</div><div class="bottom-nav-item" onclick="showSection('companies')"><div class="icon"></div>Compagnies</div>`;
     } else {
-        nav.innerHTML = `<div class="bottom-nav-item active" onclick="showSection('dashboard')"><div class="icon">🏠</div>Accueil</div><div class="bottom-nav-item" onclick="showSection('newParcel')"><div class="icon">📦</div>Envoi</div><div class="bottom-nav-item" onclick="showSection('parcelsList')"><div class="icon"></div>Colis</div><div class="bottom-nav-item" onclick="showSection('transactions')"><div class="icon">💰</div>Finance</div><div class="bottom-nav-item" onclick="showSection('tracking')"><div class="icon"></div>Suivi</div>`;
+        nav.innerHTML = `<div class="bottom-nav-item active" onclick="showSection('dashboard')"><div class="icon">🏠</div>Accueil</div><div class="bottom-nav-item" onclick="showSection('newParcel')"><div class="icon">📦</div>Envoi</div><div class="bottom-nav-item" onclick="showSection('parcelsList')"><div class="icon">📋</div>Colis</div><div class="bottom-nav-item" onclick="showSection('transactions')"><div class="icon">💰</div>Finance</div><div class="bottom-nav-item" onclick="showSection('tracking')"><div class="icon">🔍</div>Suivi</div>`;
     }
 }
 
@@ -454,7 +443,7 @@ window.showSection = function(name) {
     document.getElementById('sec-'+name)?.classList.add('active');
     if(name==='dashboard') loadDashboard();
     if(name==='superDashboard') loadSuperDashboard();
-    if(name==='companies') loadCompaniesManagement(); // Nouvelle fonction dédiée
+    if(name==='companies') loadCompaniesManagement();
     if(name==='newParcel') initNewParcel();
     if(name==='parcelsList') loadParcelsList();
     if(name==='bordereaux') loadBordereaux();
@@ -466,7 +455,6 @@ window.showSection = function(name) {
     if(name==='tracking') showTracking();
 };
 
-// --- SUPER ADMIN LOGIC ---
 async function loadSuperDashboard() {
     await refreshCache();
     const allParcels = Cache.parcels;
@@ -480,7 +468,6 @@ async function loadSuperDashboard() {
         <div class="stat-card" style="background:linear-gradient(135deg, var(--accent) 0%, #f1c40f 100%);color:var(--primary)"><div class="label">💰 CA Global</div><div class="value">${roundPrice(totalRevenue).toLocaleString()} F</div></div>
     `;
 
-    // Liste détaillée des compagnies (Vue Globale)
     let detailsHTML = '';
     Cache.companies.forEach(c => {
         const cParcels = allParcels.filter(p=>p.company_id===c.id);
@@ -502,7 +489,6 @@ async function loadSuperDashboard() {
     document.getElementById('companiesDetails').innerHTML = detailsHTML || '<p style="text-align:center;color:var(--gray)">Aucune compagnie</p>';
 }
 
-// Fonction dédiée pour la gestion des compagnies (Ajout/Suppression)
 async function loadCompaniesManagement() {
     await refreshCache();
     let listHTML = '';
@@ -533,8 +519,9 @@ window.saveCompany = async function() {
     });
     closeAddCompanyModal();
     alert(`✅ ${name} créée !`);
-    loadCompaniesManagement(); // Rafraîchir la vue gestion
-    loadSuperDashboard(); // Rafraîchir la vue globale
+    loadCompaniesManagement();
+    loadSuperDashboard();
+    loadCompaniesInDropdown();
 };
 
 window.toggleCompanyStatus = async function(id, currentStatus) {
@@ -543,19 +530,19 @@ window.toggleCompanyStatus = async function(id, currentStatus) {
     alert(`Compagnie ${newStatus === 'active' ? 'activée' : 'suspendue'}`);
     loadCompaniesManagement();
     loadSuperDashboard();
+    loadCompaniesInDropdown();
 };
 
 window.deleteCompany = async function(id, name) {
     if(confirm(`⚠️ Êtes-vous sûr de vouloir SUPPRIMER définitivement "${name}" ?\nCette action est irréversible.`)) {
         await deleteDoc(doc(db, 'companies', id));
-        // Optionnel : Supprimer aussi les utilisateurs et colis liés (à implémenter si besoin)
-        alert(`️ ${name} a été supprimée.`);
+        alert(`🗑️ ${name} a été supprimée.`);
         loadCompaniesManagement();
         loadSuperDashboard();
+        loadCompaniesInDropdown();
     }
 };
 
-// --- COMPANY DASHBOARD LOGIC ---
 async function loadDashboard() {
     await refreshCache();
     const parcels = Cache.parcels.filter(p=>p.company_id===currentUser.company_id);
@@ -568,7 +555,7 @@ async function loadDashboard() {
         <div class="stat-card"><div class="label">📦 Aujourd'hui</div><div class="value">${todayP.length}</div><div class="sub">Total: ${parcels.length}</div></div>
         <div class="stat-card"><div class="label">💰 Recettes</div><div class="value">${roundPrice(todayP.reduce((s,p)=>s+(p.total_price||0),0)).toLocaleString()} F</div><div class="sub">Semaine: ${roundPrice(weekP.reduce((s,p)=>s+(p.total_price||0),0)).toLocaleString()} F</div></div>
         <div class="stat-card"><div class="label">✅ Livrés</div><div class="value">${parcels.filter(p=>p.status==='delivered').length}</div></div>
-        <div class="stat-card"><div class="label"> Transit</div><div class="value">${parcels.filter(p=>p.status==='in_transit').length}</div></div>
+        <div class="stat-card"><div class="label">🚚 Transit</div><div class="value">${parcels.filter(p=>p.status==='in_transit').length}</div></div>
     `;
     
     const days=[], counts=[];
@@ -577,7 +564,6 @@ async function loadDashboard() {
     charts.parcels = new Chart(document.getElementById('chartParcels'),{type:'line',data:{labels:days,datasets:[{label:'Colis',data:counts,borderColor:'#1e3a5f',backgroundColor:'rgba(30,58,95,0.1)',fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
 }
 
-// --- PARCEL CREATION & MANAGEMENT ---
 window.initNewParcel = async function() {
     await refreshCache();
     const agencies = Cache.agencies.filter(a=>a.company_id===currentUser.company_id);
@@ -616,7 +602,7 @@ window.calcPrice = function() {
     const cFee = document.getElementById('isCustoms').checked?roundPrice(fees.customs_flat):0;
     const total = wPrice+dPrice+hFee+iFee+cFee;
     
-    document.getElementById('priceSummary').innerHTML = `<div style="display:flex;justify-content:space-between;padding:6px"><span>📦 Poids</span><span>${wPrice.toLocaleString()} F</span></div><div style="display:flex;justify-content:space-between;padding:6px"><span>🛣️ Distance (${dist}km)</span><span>${dPrice.toLocaleString()} F</span></div>${hFee?'<div style="display:flex;justify-content:space-between;padding:6px;color:#f39c12"><span> Gestion</span><span>'+hFee.toLocaleString()+' F</span></div>':''}${iFee?'<div style="display:flex;justify-content:space-between;padding:6px"><span>🛡️ Assurance</span><span>'+iFee.toLocaleString()+' F</span></div>':''}${cFee?'<div style="display:flex;justify-content:space-between;padding:6px;color:#e67e22"><span>🛃 Douane</span><span>'+cFee.toLocaleString()+' F</span></div>':''}<div style="display:flex;justify-content:space-between;padding:10px;border-top:2px solid var(--primary);margin-top:8px;font-weight:700;font-size:18px;color:var(--primary)"><span>TOTAL</span><span>${total.toLocaleString()} FCFA</span></div>`;
+    document.getElementById('priceSummary').innerHTML = `<div style="display:flex;justify-content:space-between;padding:6px"><span>📦 Poids</span><span>${wPrice.toLocaleString()} F</span></div><div style="display:flex;justify-content:space-between;padding:6px"><span>🛣️ Distance (${dist}km)</span><span>${dPrice.toLocaleString()} F</span></div>${hFee?'<div style="display:flex;justify-content:space-between;padding:6px;color:#f39c12"><span>🔹 Gestion</span><span>'+hFee.toLocaleString()+' F</span></div>':''}${iFee?'<div style="display:flex;justify-content:space-between;padding:6px"><span>🛡️ Assurance</span><span>'+iFee.toLocaleString()+' F</span></div>':''}${cFee?'<div style="display:flex;justify-content:space-between;padding:6px;color:#e67e22"><span>🛃 Douane</span><span>'+cFee.toLocaleString()+' F</span></div>':''}<div style="display:flex;justify-content:space-between;padding:10px;border-top:2px solid var(--primary);margin-top:8px;font-weight:700;font-size:18px;color:var(--primary)"><span>TOTAL</span><span>${total.toLocaleString()} FCFA</span></div>`;
 };
 
 window.previewParcelPhoto = function(input) {
@@ -703,7 +689,7 @@ window.loadParcelsList = async function() {
     else if(currentFilter==='week') { const week=new Date(Date.now()-7*86400000); parcels=parcels.filter(p=>new Date(p.created_at)>=week); }
     
     parcels.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
-    if(!parcels.length) { container.innerHTML='<div class="empty-state"><div style="font-size:48px"></div><p>Aucun colis</p></div>'; return; }
+    if(!parcels.length) { container.innerHTML='<div class="empty-state"><div style="font-size:48px">📦</div><p>Aucun colis</p></div>'; return; }
     
     container.innerHTML = parcels.map(p=>{
         const dest = Cache.cities.find(c=>c.id===p.destination_city_id);
@@ -717,7 +703,6 @@ window.showParcelActions = function(id) {
     alert(`Colis: ${p.tracking_number}\nStatut: ${p.status}\nTotal: ${roundPrice(p.total_price).toLocaleString()} F\nCode: ${p.confirmation_code||'N/A'}`);
 };
 
-// --- TRANSACTIONS WITH PHOTO COLUMN ---
 window.loadTransactions = async function() {
     await refreshCache();
     let parcels = Cache.parcels.filter(p=>p.company_id===currentUser.company_id);
@@ -729,7 +714,7 @@ window.loadTransactions = async function() {
     const cash = parcels.filter(p=>p.payment_method==='cash').reduce((s,p)=>s+(p.total_price||0),0);
     const mobile = parcels.filter(p=>p.payment_method==='mobile').reduce((s,p)=>s+(p.total_price||0),0);
     
-    document.getElementById('transactionStats').innerHTML = `<div class="stat-card"><div class="label">Transactions</div><div class="value">${parcels.length}</div></div><div class="stat-card" style="background:var(--success);color:white"><div class="label">Total</div><div class="value">${roundPrice(total).toLocaleString()} F</div></div><div class="stat-card"><div class="label"> Espèces</div><div class="value">${roundPrice(cash).toLocaleString()} F</div></div><div class="stat-card"><div class="label">📱 Mobile</div><div class="value">${roundPrice(mobile).toLocaleString()} F</div></div>`;
+    document.getElementById('transactionStats').innerHTML = `<div class="stat-card"><div class="label">Transactions</div><div class="value">${parcels.length}</div></div><div class="stat-card" style="background:var(--success);color:white"><div class="label">Total</div><div class="value">${roundPrice(total).toLocaleString()} F</div></div><div class="stat-card"><div class="label">💵 Espèces</div><div class="value">${roundPrice(cash).toLocaleString()} F</div></div><div class="stat-card"><div class="label">📱 Mobile</div><div class="value">${roundPrice(mobile).toLocaleString()} F</div></div>`;
     
     let table = `<table><thead><tr><th>N°</th><th>Date</th><th>Expéditeur</th><th>Destination</th><th>Total</th><th>Paiement</th><th>Photo</th></tr></thead><tbody>`;
     parcels.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).forEach(p=>{
@@ -750,10 +735,9 @@ window.showPhoto = function(id) {
 };
 window.setTransactionPeriod = function(p,btn) { transactionPeriod=p; document.querySelectorAll('.period-btn').forEach(b=>{b.classList.remove('btn-primary','active');b.classList.add('btn-outline')}); btn.classList.remove('btn-outline'); btn.classList.add('btn-primary','active'); loadTransactions(); };
 
-// --- TRACKING & PUBLIC FEATURES ---
 window.showTracking = function() {
     document.getElementById('trackInput').value = '';
-    document.getElementById('trackResult').innerHTML = '<div style="background:white;padding:30px;border-radius:12px;text-align:center"><div style="font-size:64px"></div><h3>Suivre un colis</h3><p style="color:var(--gray);margin:12px 0">Entrez le numéro</p><div style="display:flex;gap:10px;max-width:500px;margin:0 auto"><input type="text" id="trackInputMain" placeholder="Ex: HMiG-2026-000001" style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px"><button class="btn btn-primary" onclick="trackSpecificParcel()" style="width:auto"></button></div></div>';
+    document.getElementById('trackResult').innerHTML = '<div style="background:white;padding:30px;border-radius:12px;text-align:center"><div style="font-size:64px">🔍</div><h3>Suivre un colis</h3><p style="color:var(--gray);margin:12px 0">Entrez le numéro</p><div style="display:flex;gap:10px;max-width:500px;margin:0 auto"><input type="text" id="trackInputMain" placeholder="Ex: HMiG-2026-000001" style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px"><button class="btn btn-primary" onclick="trackSpecificParcel()" style="width:auto">🔍</button></div></div>';
 };
 window.trackSpecificParcel = async function() {
     const num = document.getElementById('trackInputMain').value.trim();
@@ -762,13 +746,13 @@ window.trackSpecificParcel = async function() {
     await refreshCache();
     const p = Cache.parcels.find(x=>x.tracking_number===num);
     const el = document.getElementById('trackResult');
-    if(!p) { el.innerHTML='<p style="color:#e74c3c;text-align:center">❌ Non trouvé</p>'; return; }
+    if(!p) { el.innerHTML='<p style="color:#e74c3c;text-align:center"> Non trouvé</p>'; return; }
     const origin = Cache.cities.find(c=>c.id===p.origin_city_id);
     const dest = Cache.cities.find(c=>c.id===p.destination_city_id);
     let html = `<div style="background:white;padding:20px;border-radius:12px;margin-top:16px"><h3>📦 ${p.tracking_number}</h3><p><strong>Trajet:</strong> ${origin?.name||'?'} → ${dest?.name||'?'}</p><p><strong>Statut:</strong> ${p.status}</p>`;
     if(p.trajet) {
         html += '<div class="trajet-timeline" style="margin-top:20px"><h4>🗺️ Historique</h4>';
-        const icons = {created:'📝',paid:'💰',loaded:'',in_transit:'🚚',arrived:'📍',delivered:'✅'};
+        const icons = {created:'📝',paid:'💰',loaded:'🚌',in_transit:'🚚',arrived:'📍',delivered:'✅'};
         p.trajet.forEach((step,i)=>{ html += `<div class="trajet-step ${i===p.trajet.length-1?'current':'done'}"><div class="trajet-icon">${icons[step.status]||'📦'}</div><div class="trajet-content"><div class="trajet-title">${step.label}</div><div class="trajet-subtitle">📍 ${step.location}</div><div class="trajet-date">${new Date(step.date).toLocaleString('fr-FR')}</div></div></div>`; });
         html += '</div>';
     }
@@ -814,7 +798,6 @@ window.confirmReception = async function() {
     document.getElementById('confirmationCodeInput').value = '';
 };
 
-// --- PLACEHOLDER FUNCTIONS FOR OTHER SECTIONS ---
 window.loadBordereaux = async function() { await refreshCache(); document.getElementById('bordereauxList').innerHTML = '<div class="empty-state"><p>Fonctionnalité bordereaux disponible</p></div>'; };
 window.initCreateBordereau = function() { document.getElementById('bordCity').innerHTML = '<option>Lomé</option><option>Niamey</option>'; };
 window.filterParcelsByDestination = function() {};
@@ -838,6 +821,8 @@ window.closeSmsModal = function() { document.getElementById('smsModal').classLis
 window.printTicket = function() { alert('Impression...'); closeTicketModal(); };
 window.closeTicketModal = function() { document.getElementById('ticketModal').classList.remove('active'); };
 
+// Initialisation
+loadCompaniesInDropdown();
 refreshCache();
 </script>
 </body>
