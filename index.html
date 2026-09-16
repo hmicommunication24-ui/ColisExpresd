@@ -3,13 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HMi-Gest-Co - Solution digitale</title>
+<title>HMi-Gest-Co - Solution digitale de gestion des colis</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0a1628 0%, #1e3a5f 100%); color: #1a1a2e; min-height: 100vh; }
 :root { --primary: #1e3a5f; --primary-light: #2e5984; --accent: #f39c12; --success: #27ae60; --danger: #e74c3c; --white: #fff; --gray: #6c757d; }
+
+/* LOGIN & PUBLIC */
 .login-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; background: linear-gradient(135deg, #0a1628 0%, #1e3a5f 50%, #2e5984 100%); }
 .login-box { background: var(--white); padding: 40px 30px; border-radius: 24px; width: 100%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); border-top: 6px solid var(--accent); }
 .login-box .logo-container { text-align: center; margin-bottom: 24px; }
@@ -21,29 +23,39 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
 .login-box button { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-bottom: 12px; }
 .login-box .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
 .login-error { color: var(--danger); text-align: center; margin-top: 12px; display: none; padding: 12px; background: rgba(231,76,60,0.1); border-radius: 8px; font-weight: 600; }
+
 .public-screen { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); min-height: 100vh; padding: 20px; }
 .public-box { background: white; padding: 40px; border-radius: 24px; max-width: 500px; margin: 0 auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); border-top: 6px solid var(--accent); }
 .public-box h2 { text-align: center; color: var(--primary); margin-bottom: 12px; }
 .public-box .subtitle { text-align: center; color: var(--gray); margin-bottom: 24px; }
+
+/* APP LAYOUT */
 .topbar { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 3px solid var(--accent); }
 .topbar h2 { font-size: 18px; display: flex; align-items: center; gap: 8px; }
 .topbar h2 img { width: 32px; height: 32px; border-radius: 6px; }
 .topbar .user-info { display: flex; align-items: center; gap: 10px; font-size: 13px; }
 .topbar .badge { background: linear-gradient(135deg, var(--accent) 0%, #f1c40f 100%); color: var(--primary); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
 .btn-logout { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 14px; border-radius: 8px; cursor: pointer; }
+
 .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -4px 12px rgba(0,0,0,0.1); z-index: 100; border-top: 3px solid var(--accent); }
 .bottom-nav-item { display: flex; flex-direction: column; align-items: center; padding: 8px 6px; font-size: 11px; color: var(--gray); cursor: pointer; }
 .bottom-nav-item.active { color: var(--primary); }
 .bottom-nav-item .icon { font-size: 24px; margin-bottom: 4px; }
+
 .main-content { padding: 20px; padding-bottom: 100px; max-width: 900px; margin: 0 auto; background: #f8f9fa; min-height: 100vh; }
+
+/* DASHBOARD & STATS */
 .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 24px; }
 .stat-card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-left: 5px solid var(--accent); }
 .stat-card .label { font-size: 12px; color: var(--gray); margin-bottom: 6px; }
 .stat-card .value { font-size: 24px; font-weight: 700; color: var(--primary); }
 .stat-card .sub { font-size: 12px; color: var(--gray); margin-top: 4px; }
+
 .chart-container { background: white; padding: 20px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
 .chart-container h4 { margin-bottom: 16px; color: var(--primary); }
 .chart-wrapper { position: relative; height: 220px; }
+
+/* BUTTONS & FORMS */
 .btn { padding: 14px 24px; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; margin-bottom: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
 .btn-primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; }
 .btn-success { background: linear-gradient(135deg, var(--success) 0%, #229954 100%); color: white; }
@@ -53,49 +65,37 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
 .btn-lg { padding: 18px; font-size: 17px; }
 .btn-sm { padding: 10px 14px; font-size: 13px; width: auto; }
 .btn-danger { background: var(--danger); color: white; }
+
 .form-group { margin-bottom: 16px; }
 .form-group label { display: block; font-size: 14px; font-weight: 600; color: var(--primary); margin-bottom: 8px; }
 .form-group input, .form-group select { width: 100%; padding: 14px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 15px; }
 .form-group input:focus, .form-group select:focus { border-color: var(--accent); outline: none; }
+
+/* SECTIONS & MODALS */
 .section { display: none; }
 .section.active { display: block; }
 .settings-card { background: white; padding: 24px; border-radius: 16px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
 .settings-card h3 { margin-bottom: 20px; color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 12px; }
-.tier-row, .route-row { display: grid; gap: 12px; align-items: end; margin-bottom: 12px; padding: 12px; background: #f8f9fa; border-radius: 12px; border-left: 4px solid var(--accent); }
-.tier-row { grid-template-columns: 1fr 1fr 1fr auto; }
-.route-row { grid-template-columns: 2fr 2fr 1fr auto; }
-.tier-row input, .route-row input, .route-row select { padding: 10px; border: 2px solid #ddd; border-radius: 8px; }
+
 .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
 .modal.active { display: flex; }
 .modal-content { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; max-height: 90vh; overflow-y: auto; border-top: 5px solid var(--accent); }
+
 .empty-state { text-align: center; padding: 60px 20px; color: var(--gray); }
 .hidden { display: none !important; }
+
+/* SPECIFIC COMPONENTS */
 .photo-zone { border: 3px dashed var(--primary-light); border-radius: 16px; padding: 30px; text-align: center; cursor: pointer; background: #f8f9fa; }
 .photo-zone:hover { border-color: var(--accent); background: #fff9e6; }
 .photo-zone .icon { font-size: 48px; margin-bottom: 12px; }
 .photo-preview { max-width: 100%; max-height: 220px; border-radius: 12px; margin-top: 16px; }
-.bordereau-card { background: white; padding: 20px; border-radius: 16px; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-left: 5px solid var(--success); }
-.bordereau-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px; }
-.bordereau-number { font-weight: 700; font-size: 18px; color: var(--primary); }
-.bordereau-info { font-size: 13px; color: var(--gray); margin-top: 6px; }
-.parcel-checkbox { display: flex; align-items: center; padding: 16px; background: #f8f9fa; border-radius: 12px; margin-bottom: 10px; cursor: pointer; }
-.parcel-checkbox input { margin-right: 14px; width: 22px; height: 22px; }
-.parcel-checkbox .info { flex: 1; }
-.parcel-checkbox .tracking { font-weight: 700; color: var(--primary); }
-.parcel-checkbox .details { font-size: 13px; color: var(--gray); margin-top: 4px; }
-.douane-table, .transaction-table { background: white; border-radius: 16px; overflow-x: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px; }
-.douane-table table, .transaction-table table { width: 100%; border-collapse: collapse; min-width: 600px; }
-.douane-table th, .transaction-table th { background: linear-gradient(135deg, var(--accent) 0%, #e67e22 100%); color: white; padding: 14px; text-align: left; font-size: 12px; font-weight: 700; }
-.douane-table td, .transaction-table td { padding: 12px 14px; border-top: 1px solid #f0f0f0; font-size: 13px; }
-.douane-table tr.total-row, .transaction-table tr.total-row { background: #fff3cd; font-weight: 700; }
+
 .user-card { background: white; padding: 20px; border-radius: 16px; margin-bottom: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-left: 5px solid var(--primary); }
 .user-card:hover { transform: translateX(4px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
 .user-info-block { flex: 1; }
+
 .simulator-box { background: #e8f4fd; padding: 20px; border-radius: 16px; margin-top: 20px; border: 2px solid #b6d4fe; }
-.simulator-result { font-weight: 700; color: var(--primary); font-size: 20px; margin-top: 12px; }
-.role-badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; color: white; }
-.role-admin { background: #e94560; }
-.role-clerk { background: var(--primary); }
+
 .trajet-timeline { background: white; padding: 24px; border-radius: 16px; margin-top: 20px; }
 .trajet-timeline h4 { margin-bottom: 20px; color: var(--primary); }
 .trajet-step { display: flex; align-items: flex-start; margin-bottom: 24px; position: relative; }
@@ -109,37 +109,37 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
 .trajet-title { font-weight: 700; margin-bottom: 4px; }
 .trajet-subtitle { font-size: 13px; color: var(--gray); }
 .trajet-date { font-size: 12px; color: var(--gray); margin-top: 4px; }
+
 .search-bar { display: flex; gap: 12px; margin-bottom: 20px; }
 .search-bar input { flex: 1; padding: 14px; border: 2px solid #e0e0e0; border-radius: 12px; }
 .filter-tags { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
 .filter-tag { padding: 8px 16px; background: #f0f2f5; border-radius: 24px; font-size: 13px; cursor: pointer; }
 .filter-tag.active { background: var(--primary); color: white; }
-.sms-preview { background: #f8f9fa; padding: 20px; border-radius: 16px; margin-top: 16px; border-left: 5px solid var(--success); }
-.sms-preview .phone { font-weight: 700; color: var(--primary); margin-bottom: 10px; }
-.sms-preview .message { font-size: 14px; background: white; padding: 14px; border-radius: 12px; }
-.ticket-thermal { width: 80mm; padding: 10px; font-family: 'Courier New', monospace; font-size: 12px; background: white; border: 2px dashed #ccc; margin: 20px auto; }
-.ticket-thermal .header { text-align: center; border-bottom: 2px dashed #000; padding-bottom: 10px; }
-.ticket-thermal .line { display: flex; justify-content: space-between; margin: 6px 0; }
-.ticket-thermal .total { border-top: 2px dashed #000; padding-top: 10px; font-weight: 700; font-size: 15px; }
-.report-card { background: white; padding: 24px; border-radius: 16px; margin-bottom: 20px; }
-.report-card h4 { color: var(--primary); margin-bottom: 16px; }
-.report-stat { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
-.report-stat:last-child { border-bottom: none; font-weight: 700; }
+
+.douane-table, .transaction-table { background: white; border-radius: 16px; overflow-x: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px; }
+.douane-table table, .transaction-table table { width: 100%; border-collapse: collapse; min-width: 600px; }
+.douane-table th, .transaction-table th { background: linear-gradient(135deg, var(--accent) 0%, #e67e22 100%); color: white; padding: 14px; text-align: left; font-size: 12px; font-weight: 700; }
+.douane-table td, .transaction-table td { padding: 12px 14px; border-top: 1px solid #f0f0f0; font-size: 13px; }
+.douane-table tr.total-row, .transaction-table tr.total-row { background: #fff3cd; font-weight: 700; }
+
 .photo-viewer { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 2000; display: flex; justify-content: center; align-items: center; padding: 20px; }
 .photo-viewer-content { background: white; padding: 24px; border-radius: 20px; max-width: 90%; max-height: 90%; overflow: auto; }
 .photo-viewer-content img { max-width: 100%; border-radius: 12px; }
+
 .confirmation-code { background: #fff9e6; padding: 24px; border-radius: 16px; text-align: center; margin: 20px 0; border: 3px dashed var(--accent); }
 .confirmation-code .code { font-size: 36px; font-weight: 700; color: var(--primary); letter-spacing: 6px; margin: 12px 0; }
-.company-detail-card { background: white; padding: 20px; border-radius: 16px; margin-bottom: 16px; }
+
+.company-detail-card { background: white; padding: 20px; border-radius: 16px; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-left: 5px solid var(--primary); }
 .company-detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-.company-detail-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.company-stat-item { text-align: center; padding: 12px; background: #f8f9fa; border-radius: 12px; }
-.company-stat-item .num { font-size: 20px; font-weight: 700; color: var(--primary); }
-.company-stat-item .lbl { font-size: 12px; color: var(--gray); }
+.company-stats-row { display: flex; gap: 12px; margin-top: 12px; }
+.company-stat-item { flex: 1; text-align: center; padding: 10px; background: #f8f9fa; border-radius: 8px; }
+.company-stat-item .num { font-size: 18px; font-weight: 700; color: var(--primary); }
+.company-stat-item .lbl { font-size: 11px; color: var(--gray); }
 </style>
 </head>
 <body>
 
+<!-- LOGIN -->
 <div class="login-screen" id="loginScreen">
     <div class="login-box">
         <div class="logo-container">
@@ -160,6 +160,7 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
     </div>
 </div>
 
+<!-- SUIVI PUBLIC -->
 <div class="public-screen" id="publicTrackingScreen" style="display:none;">
     <div class="public-box">
         <h2>🔍 Suivre votre colis</h2>
@@ -171,6 +172,7 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
     </div>
 </div>
 
+<!-- CONFIRMATION CLIENT -->
 <div class="public-screen" id="clientConfirmationScreen" style="display:none;">
     <div class="public-box">
         <h2>✅ Confirmer la réception</h2>
@@ -182,6 +184,7 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
     </div>
 </div>
 
+<!-- APP -->
 <div id="appLayout" style="display:none;">
     <div class="topbar">
         <h2><img src="https://raw.githubusercontent.com/hmicommunication24-ui/HMi-Gest-Co/main/Logo.png" alt="Logo"><span id="companyName"></span></h2>
@@ -193,8 +196,20 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
     </div>
 
     <div class="main-content">
+        <!-- DASHBOARD GLOBAL (SUPER ADMIN) -->
+        <div class="section" id="sec-superDashboard">
+            <h3 style="margin-bottom:16px;">👑 Tableau de bord global</h3>
+            <div class="stats-grid" id="superStats"></div>
+            <h3 style="margin:20px 0 12px;"> Situation par compagnie</h3>
+            <div id="companiesDetails"></div>
+            <h3 style="margin:20px 0 12px;">🏢 Gestion des compagnies</h3>
+            <button class="btn btn-primary" onclick="showAddCompanyModal()" style="margin-bottom:16px;">➕ Ajouter une compagnie</button>
+            <div id="companiesList"></div>
+        </div>
+
+        <!-- DASHBOARD COMPAGNIE -->
         <div class="section" id="sec-dashboard">
-            <h3 style="margin-bottom:16px;"> Vue d'ensemble</h3>
+            <h3 style="margin-bottom:16px;">🏠 Vue d'ensemble</h3>
             <div class="stats-grid" id="statsGrid"></div>
             <div class="chart-container"><h4>📈 Évolution (7 jours)</h4><div class="chart-wrapper"><canvas id="chartParcels"></canvas></div></div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
@@ -202,13 +217,14 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
                 <button class="btn btn-success btn-lg" onclick="showSection('bordereaux')">🚌 Bordereaux</button>
                 <button class="btn btn-warning btn-lg" onclick="showSection('douane')">🛃 Douane</button>
                 <button class="btn btn-info btn-lg" onclick="showSection('transactions')">💰 Transactions</button>
-                <button class="btn btn-outline btn-lg" onclick="showSection('tracking')"> Suivi</button>
+                <button class="btn btn-outline btn-lg" onclick="showSection('tracking')">🔍 Suivi</button>
                 <button class="btn btn-outline btn-lg" onclick="showSection('reports')">📊 Rapports</button>
             </div>
         </div>
 
+        <!-- NOUVEL ENVOI -->
         <div class="section" id="sec-newParcel">
-            <h3 style="margin-bottom:16px;"> Nouvel envoi</h3>
+            <h3 style="margin-bottom:16px;">📦 Nouvel envoi</h3>
             <div class="form-group"><label>Expéditeur *</label><input id="senderName"></div>
             <div class="form-group"><label>Téléphone expéditeur *</label><input id="senderPhone"></div>
             <div class="form-group"><label>Destinataire *</label><input id="recipientName"></div>
@@ -219,22 +235,24 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
             <div class="form-group"><label>📸 Photo *</label><div class="photo-zone" onclick="document.getElementById('parcelPhoto').click()"><div class="icon">📷</div><p id="photoLabel">Cliquez pour photo</p><input type="file" id="parcelPhoto" accept="image/*" capture="environment" style="display:none" onchange="previewParcelPhoto(this)"><img id="photoPreview" class="photo-preview hidden"></div></div>
             <div class="form-group"><label>Poids (kg) *</label><input type="number" id="weightKg" step="0.1" oninput="calcPrice()"></div>
             <div class="form-group"><label>Valeur (FCFA) *</label><input type="number" id="declaredValue" value="0" oninput="calcPrice()"></div>
-            <div class="form-group"><label><input type="checkbox" id="isInsured" onchange="calcPrice()"> 🛡️ Assurance</label></div>
+            <div class="form-group"><label><input type="checkbox" id="isInsured" onchange="calcPrice()"> ️ Assurance</label></div>
             <div class="form-group"><label><input type="checkbox" id="isCustoms" onchange="calcPrice()"> 🛃 Douane</label></div>
             <div id="priceSummary" class="simulator-box"><p style="text-align:center;color:var(--gray)">Entrez poids et valeur</p></div>
             <div class="form-group" style="margin-top:16px;"><label>Paiement</label><div style="display:flex;gap:10px;"><label style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px;text-align:center;"><input type="radio" name="payment" value="cash" checked> 💵 Espèces</label><label style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px;text-align:center;"><input type="radio" name="payment" value="mobile"> 📱 Mobile</label></div></div>
             <button class="btn btn-success" onclick="submitParcel()">✅ Valider</button>
         </div>
 
+        <!-- LISTE COLIS -->
         <div class="section" id="sec-parcelsList">
-            <h3 style="margin-bottom:16px;">📋 Colis</h3>
+            <h3 style="margin-bottom:16px;"> Colis</h3>
             <div class="search-bar"><input type="text" id="searchParcels" placeholder="🔍 Rechercher..." oninput="filterParcels()"><select id="filterStatus" onchange="filterParcels()"><option value="">Tous</option><option value="paid">Payé</option><option value="loaded">Chargé</option><option value="in_transit">Transit</option><option value="arrived">Arrivé</option><option value="delivered">Livré</option></select></div>
             <div class="filter-tags"><div class="filter-tag active" onclick="setFilter('all')">Tous</div><div class="filter-tag" onclick="setFilter('today')">Aujourd'hui</div><div class="filter-tag" onclick="setFilter('week')">Semaine</div></div>
             <div id="parcelsListContainer"></div>
         </div>
 
+        <!-- BORDEREAUX -->
         <div class="section" id="sec-bordereaux">
-            <h3 style="margin-bottom:16px;"> Bordereaux</h3>
+            <h3 style="margin-bottom:16px;">🚌 Bordereaux</h3>
             <button class="btn btn-primary" onclick="showSection('createBordereau')" style="margin-bottom:16px;">➕ Créer</button>
             <div id="bordereauxList"></div>
         </div>
@@ -252,6 +270,7 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
             <button class="btn btn-success" onclick="saveBordereau()" style="margin-top:16px;">✅ Créer & PDF</button>
         </div>
 
+        <!-- DOUANE -->
         <div class="section" id="sec-douane">
             <h3 style="margin-bottom:16px;">🛃 Douane</h3>
             <div style="display:flex;gap:8px;margin-bottom:16px;"><button class="btn btn-sm btn-primary" onclick="setDouanePeriod('today')">Aujourd'hui</button><button class="btn btn-sm btn-outline" onclick="setDouanePeriod('week')">Semaine</button><button class="btn btn-sm btn-outline" onclick="setDouanePeriod('month')">Mois</button></div>
@@ -259,6 +278,7 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
             <div class="douane-table" id="douaneTable"></div>
         </div>
 
+        <!-- TRANSACTIONS -->
         <div class="section" id="sec-transactions">
             <h3 style="margin-bottom:16px;">💰 Transactions</h3>
             <div style="display:flex;gap:8px;margin-bottom:16px;"><button class="btn btn-sm btn-primary period-btn active" onclick="setTransactionPeriod('today',this)">Aujourd'hui</button><button class="btn btn-sm btn-outline period-btn" onclick="setTransactionPeriod('week',this)">Semaine</button><button class="btn btn-sm btn-outline period-btn" onclick="setTransactionPeriod('month',this)">Mois</button></div>
@@ -266,25 +286,29 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
             <div class="transaction-table" id="transactionTable"></div>
         </div>
 
+        <!-- RAPPORTS -->
         <div class="section" id="sec-reports">
             <h3 style="margin-bottom:16px;">📊 Rapports</h3>
             <div style="display:flex;gap:8px;margin-bottom:16px;"><button class="btn btn-sm btn-primary" onclick="generateReport('daily')">Journalier</button><button class="btn btn-sm btn-outline" onclick="generateReport('weekly')">Hebdo</button><button class="btn btn-sm btn-outline" onclick="generateReport('monthly')">Mensuel</button></div>
             <div id="reportContent"></div>
         </div>
 
+        <!-- UTILISATEURS -->
         <div class="section" id="sec-users">
-            <h3 style="margin-bottom:16px;">👥 Personnel</h3>
+            <h3 style="margin-bottom:16px;"> Personnel</h3>
             <button class="btn btn-primary" onclick="showAddUserModal()" style="margin-bottom:16px;">➕ Ajouter</button>
             <div id="usersList"></div>
         </div>
 
+        <!-- PARAMÈTRES -->
         <div class="section" id="sec-settings">
             <h3 style="margin-bottom:16px;">⚙️ Paramètres</h3>
             <div class="settings-card"><h3>🗺️ Destinations</h3><div id="routesList"></div><button class="btn btn-outline btn-sm" onclick="addRouteRow()">+ Ajouter</button><button class="btn btn-success btn-sm" onclick="saveRoutes()" style="margin-top:10px;">💾</button></div>
             <div class="settings-card"><h3>⚖️ Prix Poids</h3><div id="weightTiersList"></div><button class="btn btn-outline btn-sm" onclick="addWeightTierRow()">+ Ajouter</button><button class="btn btn-success btn-sm" onclick="saveWeightTiers()" style="margin-top:10px;">💾</button></div>
-            <div class="settings-card"><h3>🛣️ Prix Distance</h3><div id="distanceTiersList"></div><button class="btn btn-outline btn-sm" onclick="addDistanceTierRow()">+ Ajouter</button><button class="btn btn-success btn-sm" onclick="saveDistanceTiers()" style="margin-top:10px;">💾</button></div>
+            <div class="settings-card"><h3>🛣️ Prix Distance</h3><div id="distanceTiersList"></div><button class="btn btn-outline btn-sm" onclick="addDistanceTierRow()">+ Ajouter</button><button class="btn btn-success btn-sm" onclick="saveDistanceTiers()" style="margin-top:10px;"></button></div>
         </div>
 
+        <!-- SUIVI -->
         <div class="section" id="sec-tracking">
             <h3 style="margin-bottom:12px;">🔍 Suivi</h3>
             <input type="text" id="trackInput" placeholder="Numéro de suivi" style="width:100%;padding:14px;border:2px solid #e0e0e0;border-radius:10px;margin-bottom:12px;">
@@ -297,16 +321,16 @@ body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, 
 </div>
 
 <!-- MODALS -->
-<div class="modal" id="recuModal"><div class="modal-content"><h3 style="margin-bottom:16px;"> Reçu</h3><div id="recuContent"></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-success" onclick="downloadRecuPDF()">📄 PDF</button><button class="btn btn-outline" onclick="closeRecuModal()">Fermer</button></div></div></div>
+<div class="modal" id="recuModal"><div class="modal-content"><h3 style="margin-bottom:16px;">🧾 Reçu</h3><div id="recuContent"></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-success" onclick="downloadRecuPDF()">📄 PDF</button><button class="btn btn-outline" onclick="closeRecuModal()">Fermer</button></div></div></div>
 <div class="modal" id="smsModal"><div class="modal-content"><h3 style="margin-bottom:16px;">📱 SMS</h3><div id="smsContent"></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-primary" onclick="simulateSendSMS()">Envoyer</button><button class="btn btn-outline" onclick="closeSmsModal()">Fermer</button></div></div></div>
 <div class="modal" id="ticketModal"><div class="modal-content"><h3 style="margin-bottom:16px;">🖨️ Ticket</h3><div id="ticketContent"></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-success" onclick="printTicket()">Imprimer</button><button class="btn btn-outline" onclick="closeTicketModal()">Fermer</button></div></div></div>
-<div class="modal" id="addCompanyModal"><div class="modal-content"><h3 style="margin-bottom:16px;">🏢 Compagnie</h3><div class="form-group"><label>Nom</label><input id="newCompanyName"></div><div class="form-group"><label>Pays</label><input id="newCompanyCountry"></div><div class="form-group"><label>Plan</label><select id="newCompanyPlan"><option value="basic">Basic - 50k</option><option value="pro">Pro - 100k</option><option value="enterprise">Enterprise - 200k</option></select></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-outline" onclick="closeAddCompanyModal()">Annuler</button><button class="btn btn-primary" onclick="saveCompany()">OK</button></div></div></div>
-<div class="modal" id="addUserModal"><div class="modal-content"><h3 style="margin-bottom:16px;"> Utilisateur</h3><div class="form-group"><label>Prénom</label><input id="newUserFirstName"></div><div class="form-group"><label>Nom</label><input id="newUserLastName"></div><div class="form-group"><label>Téléphone</label><input id="newUserPhone"></div><div class="form-group"><label>Mot de passe</label><input id="newUserPassword"></div><div class="form-group"><label>Rôle</label><select id="newUserRole"><option value="admin">Admin</option><option value="clerk">Guichetier</option></select></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-outline" onclick="closeAddUserModal()">Annuler</button><button class="btn btn-primary" onclick="saveUser()">OK</button></div></div></div>
+<div class="modal" id="addCompanyModal"><div class="modal-content"><h3 style="margin-bottom:16px;">🏢 Nouvelle compagnie</h3><div class="form-group"><label>Nom</label><input id="newCompanyName"></div><div class="form-group"><label>Pays</label><input id="newCompanyCountry"></div><div class="form-group"><label>Plan</label><select id="newCompanyPlan"><option value="basic">Basic - 50k</option><option value="pro">Pro - 100k</option><option value="enterprise">Enterprise - 200k</option></select></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-outline" onclick="closeAddCompanyModal()">Annuler</button><button class="btn btn-primary" onclick="saveCompany()">Enregistrer</button></div></div></div>
+<div class="modal" id="addUserModal"><div class="modal-content"><h3 style="margin-bottom:16px;">👤 Utilisateur</h3><div class="form-group"><label>Prénom</label><input id="newUserFirstName"></div><div class="form-group"><label>Nom</label><input id="newUserLastName"></div><div class="form-group"><label>Téléphone</label><input id="newUserPhone"></div><div class="form-group"><label>Mot de passe</label><input id="newUserPassword"></div><div class="form-group"><label>Rôle</label><select id="newUserRole"><option value="admin">Admin</option><option value="clerk">Guichetier</option></select></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-outline" onclick="closeAddUserModal()">Annuler</button><button class="btn btn-primary" onclick="saveUser()">OK</button></div></div></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getFirestore, collection, getDocs, addDoc, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc, doc, setDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCxKBtfZOra84es1toOWkkH3k8xIMjxs38",
@@ -338,7 +362,6 @@ async function refreshCache() {
         const snap = await getDocs(collection(db, col));
         Cache[col] = snap.docs.map(d => ({id:d.id,...d.data()}));
     }
-    console.log("Cache actualisé. Utilisateurs:", Cache.users.length);
 }
 
 window.login = async function() {
@@ -346,19 +369,12 @@ window.login = async function() {
     const phone = document.getElementById('loginPhone').value.trim();
     const password = document.getElementById('loginPassword').value;
     
-    if(!companyId) { alert('Sélectionnez une compagnie'); return; }
-    if(!phone || !password) { alert('Entrez identifiant et mot de passe'); return; }
+    if(!companyId || !phone || !password) { alert('Remplissez tous les champs'); return; }
     
-    console.log("Tentative de connexion:", phone, "Compagnie:", companyId);
-    
-    // Convertir le téléphone en email pour Firebase Auth
     const email = phone.includes('@') ? phone : `${phone}@hmigestco.app`;
     
     try {
-        // Essayer de se connecter avec Firebase Auth
         await signInWithEmailAndPassword(auth, email, password);
-        
-        // Si la connexion Auth réussit, chercher l'utilisateur dans Firestore
         await refreshCache();
         
         let user;
@@ -369,69 +385,41 @@ window.login = async function() {
         }
         
         if(!user) {
-            // Si l'utilisateur n'existe pas dans Firestore, le créer
-            console.log("Utilisateur non trouvé dans Firestore, création...");
-            const newUser = {
-                role: companyId === 'super' ? 'super_admin' : 'admin',
-                first_name: phone.split('@')[0],
-                last_name: '',
-                phone: phone,
-                email: email,
-                password: password,
-                company_id: companyId === 'super' ? null : companyId,
-                agency_id: companyId === 'super' ? null : '1'
-            };
-            const docRef = await addDoc(collection(db, 'users'), newUser);
-            user = { id: docRef.id, ...newUser };
+            // Création automatique si inexistant dans Firestore
+            const newUser = { role: companyId==='super'?'super_admin':'admin', first_name: phone.split('@')[0], last_name: '', phone, email, password, company_id: companyId==='super'?null:companyId, agency_id: companyId==='super'?null:'1' };
+            const ref = await addDoc(collection(db, 'users'), newUser);
+            user = { id: ref.id, ...newUser };
             await refreshCache();
         }
         
-        currentUser = {...user, isSuperAdmin: companyId === 'super'};
-        currentUser.company_name = companyId === 'super' ? 'HMi-Gest-Co Platform' : (Cache.companies.find(c => c.id === companyId)?.name || 'Inconnu');
+        currentUser = {...user, isSuperAdmin: companyId==='super'};
+        currentUser.company_name = companyId==='super' ? 'HMi-Gest-Co Platform' : (Cache.companies.find(c=>c.id===companyId)?.name || 'Inconnu');
         showApp();
         if(currentUser.isSuperAdmin) loadSuperDashboard(); else loadDashboard();
         
     } catch(e) {
-        console.error("Erreur de connexion:", e);
         if(e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
-            // L'utilisateur n'existe pas dans Firebase Auth, le créer
-            console.log("Création du compte Firebase Auth...");
             try {
                 await createUserWithEmailAndPassword(auth, email, password);
-                
-                // Après création Auth, chercher ou créer dans Firestore
                 await refreshCache();
                 let user = Cache.users.find(u => (u.phone === phone || u.email === email));
-                
                 if(!user) {
-                    const newUser = {
-                        role: companyId === 'super' ? 'super_admin' : 'admin',
-                        first_name: phone.split('@')[0],
-                        last_name: '',
-                        phone: phone,
-                        email: email,
-                        password: password,
-                        company_id: companyId === 'super' ? null : companyId,
-                        agency_id: companyId === 'super' ? null : '1'
-                    };
-                    const docRef = await addDoc(collection(db, 'users'), newUser);
-                    user = { id: docRef.id, ...newUser };
+                    const newUser = { role: companyId==='super'?'super_admin':'admin', first_name: phone.split('@')[0], last_name: '', phone, email, password, company_id: companyId==='super'?null:companyId, agency_id: companyId==='super'?null:'1' };
+                    const ref = await addDoc(collection(db, 'users'), newUser);
+                    user = { id: ref.id, ...newUser };
                     await refreshCache();
                 }
-                
-                currentUser = {...user, isSuperAdmin: companyId === 'super'};
-                currentUser.company_name = companyId === 'super' ? 'HMi-Gest-Co Platform' : (Cache.companies.find(c => c.id === companyId)?.name || 'Inconnu');
+                currentUser = {...user, isSuperAdmin: companyId==='super'};
+                currentUser.company_name = companyId==='super' ? 'HMi-Gest-Co Platform' : (Cache.companies.find(c=>c.id===companyId)?.name || 'Inconnu');
                 showApp();
                 if(currentUser.isSuperAdmin) loadSuperDashboard(); else loadDashboard();
-                
-            } catch(e2) {
-                console.error("Erreur création compte:", e2);
-                document.getElementById('loginError').style.display = 'block';
-                document.getElementById('loginError').textContent = '❌ Erreur: ' + e2.message;
+            } catch(e2) { 
+                console.error(e2); 
+                document.getElementById('loginError').style.display='block'; 
             }
-        } else {
-            document.getElementById('loginError').style.display = 'block';
-            document.getElementById('loginError').textContent = '❌ Erreur: ' + e.message;
+        } else { 
+            console.error(e); 
+            document.getElementById('loginError').style.display='block'; 
         }
     }
 };
@@ -443,7 +431,6 @@ function showApp() {
     document.getElementById('userName').textContent = currentUser.first_name;
     const badge = document.getElementById('userRole');
     badge.textContent = currentUser.isSuperAdmin?'Super Admin':(currentUser.role||'');
-    badge.className = 'badge '+(currentUser.isSuperAdmin?'badge-super':'');
     buildNav();
 }
 
@@ -451,14 +438,18 @@ window.logout = function() { signOut(auth); location.reload(); }
 
 function buildNav() {
     const nav = document.getElementById('bottomNav');
-    if(currentUser.isSuperAdmin) nav.innerHTML = '<div class="bottom-nav-item active" onclick="showSection(\'dashboard\')"><div class="icon"></div>Global</div>';
-    else nav.innerHTML = '<div class="bottom-nav-item active" onclick="showSection(\'dashboard\')"><div class="icon">🏠</div>Accueil</div><div class="bottom-nav-item" onclick="showSection(\'newParcel\')"><div class="icon"></div>Envoi</div><div class="bottom-nav-item" onclick="showSection(\'parcelsList\')"><div class="icon">📋</div>Colis</div><div class="bottom-nav-item" onclick="showSection(\'transactions\')"><div class="icon">💰</div>Finance</div><div class="bottom-nav-item" onclick="showSection(\'tracking\')"><div class="icon"></div>Suivi</div>';
+    if(currentUser.isSuperAdmin) {
+        nav.innerHTML = `<div class="bottom-nav-item active" onclick="showSection('superDashboard')"><div class="icon">👑</div>Global</div><div class="bottom-nav-item" onclick="showSection('companies')"><div class="icon">🏢</div>Compagnies</div>`;
+    } else {
+        nav.innerHTML = `<div class="bottom-nav-item active" onclick="showSection('dashboard')"><div class="icon">🏠</div>Accueil</div><div class="bottom-nav-item" onclick="showSection('newParcel')"><div class="icon">📦</div>Envoi</div><div class="bottom-nav-item" onclick="showSection('parcelsList')"><div class="icon"></div>Colis</div><div class="bottom-nav-item" onclick="showSection('transactions')"><div class="icon">💰</div>Finance</div><div class="bottom-nav-item" onclick="showSection('tracking')"><div class="icon"></div>Suivi</div>`;
+    }
 }
 
 window.showSection = function(name) {
     document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
     document.getElementById('sec-'+name)?.classList.add('active');
     if(name==='dashboard') loadDashboard();
+    if(name==='superDashboard' || name==='companies') loadSuperDashboard();
     if(name==='newParcel') initNewParcel();
     if(name==='parcelsList') loadParcelsList();
     if(name==='bordereaux') loadBordereaux();
@@ -470,6 +461,72 @@ window.showSection = function(name) {
     if(name==='tracking') showTracking();
 };
 
+// --- SUPER ADMIN LOGIC ---
+async function loadSuperDashboard() {
+    await refreshCache();
+    const allParcels = Cache.parcels;
+    const today = new Date().toISOString().split('T')[0];
+    const todayP = allParcels.filter(p=>p.created_at?.startsWith(today));
+    const totalRevenue = allParcels.reduce((s,p)=>s+(p.total_price||0),0);
+    
+    document.getElementById('superStats').innerHTML = `
+        <div class="stat-card"><div class="label">🏢 Compagnies</div><div class="value">${Cache.companies.length}</div></div>
+        <div class="stat-card"><div class="label"> Total Colis</div><div class="value">${allParcels.length}</div><div class="sub">Auj: ${todayP.length}</div></div>
+        <div class="stat-card" style="background:linear-gradient(135deg, var(--accent) 0%, #f1c40f 100%);color:var(--primary)"><div class="label">💰 CA Global</div><div class="value">${roundPrice(totalRevenue).toLocaleString()} F</div></div>
+    `;
+
+    // Liste détaillée des compagnies
+    let detailsHTML = '';
+    Cache.companies.forEach(c => {
+        const cParcels = allParcels.filter(p=>p.company_id===c.id);
+        const cToday = cParcels.filter(p=>p.created_at?.startsWith(today));
+        const cRev = cParcels.reduce((s,p)=>s+(p.total_price||0),0);
+        detailsHTML += `
+        <div class="company-detail-card">
+            <div class="company-detail-header">
+                <div><h4 style="color:var(--primary);margin-bottom:4px;">${c.name}</h4><div style="font-size:12px;color:var(--gray)">${c.country} • Plan ${c.plan}</div></div>
+                <span style="background:${c.status==='active'?'var(--success)':'var(--danger)'};color:white;padding:4px 12px;border-radius:12px;font-size:11px;">${c.status==='active'?'✅ Active':'❌ Suspendue'}</span>
+            </div>
+            <div class="company-stats-row">
+                <div class="company-stat-item"><div class="num">${cParcels.length}</div><div class="lbl">Total</div></div>
+                <div class="company-stat-item"><div class="num">${cToday.length}</div><div class="lbl">Auj.</div></div>
+                <div class="company-stat-item"><div class="num">${roundPrice(cRev).toLocaleString()}</div><div class="lbl">CA</div></div>
+            </div>
+        </div>`;
+    });
+    document.getElementById('companiesDetails').innerHTML = detailsHTML || '<p style="text-align:center;color:var(--gray)">Aucune compagnie</p>';
+    
+    // Liste simple pour gestion
+    document.getElementById('companiesList').innerHTML = Cache.companies.map(c => `
+        <div class="user-card" style="border-left: 4px solid var(--primary);">
+            <div class="user-info-block"><div style="font-weight:700;">${c.name}</div><div style="font-size:12px;color:var(--gray);">${c.country} • Plan ${c.plan}</div></div>
+            <button class="btn btn-sm btn-danger" onclick="toggleCompanyStatus('${c.id}', '${c.status}')">${c.status==='active'?'Suspendre':'Activer'}</button>
+        </div>
+    `).join('');
+}
+
+window.showAddCompanyModal = function() { document.getElementById('addCompanyModal').classList.add('active'); };
+window.closeAddCompanyModal = function() { document.getElementById('addCompanyModal').classList.remove('active'); };
+window.saveCompany = async function() {
+    const name = document.getElementById('newCompanyName').value.trim();
+    if(!name) { alert('Nom requis'); return; }
+    const newId = Date.now().toString();
+    await setDoc(doc(db, 'companies', newId), {
+        name, country: document.getElementById('newCompanyCountry').value, plan: document.getElementById('newCompanyPlan').value, status: 'active'
+    });
+    closeAddCompanyModal();
+    alert(`✅ ${name} créée !`);
+    loadSuperDashboard();
+};
+
+window.toggleCompanyStatus = async function(id, currentStatus) {
+    const newStatus = currentStatus === 'active' ? 'suspended' : 'active';
+    await updateDoc(doc(db, 'companies', id), { status: newStatus });
+    alert(`Compagnie ${newStatus === 'active' ? 'activée' : 'suspendue'}`);
+    loadSuperDashboard();
+};
+
+// --- COMPANY DASHBOARD LOGIC ---
 async function loadDashboard() {
     await refreshCache();
     const parcels = Cache.parcels.filter(p=>p.company_id===currentUser.company_id);
@@ -478,7 +535,12 @@ async function loadDashboard() {
     const weekAgo = new Date(Date.now()-7*86400000);
     const weekP = parcels.filter(p=>new Date(p.created_at)>=weekAgo);
     
-    document.getElementById('statsGrid').innerHTML = `<div class="stat-card"><div class="label">📦 Aujourd'hui</div><div class="value">${todayP.length}</div><div class="sub">Total: ${parcels.length}</div></div><div class="stat-card"><div class="label">💰 Recettes</div><div class="value">${roundPrice(todayP.reduce((s,p)=>s+(p.total_price||0),0)).toLocaleString()} F</div><div class="sub">Semaine: ${roundPrice(weekP.reduce((s,p)=>s+(p.total_price||0),0)).toLocaleString()} F</div></div><div class="stat-card"><div class="label">✅ Livrés</div><div class="value">${parcels.filter(p=>p.status==='delivered').length}</div></div><div class="stat-card"><div class="label">🚚 Transit</div><div class="value">${parcels.filter(p=>p.status==='in_transit').length}</div></div>`;
+    document.getElementById('statsGrid').innerHTML = `
+        <div class="stat-card"><div class="label">📦 Aujourd'hui</div><div class="value">${todayP.length}</div><div class="sub">Total: ${parcels.length}</div></div>
+        <div class="stat-card"><div class="label">💰 Recettes</div><div class="value">${roundPrice(todayP.reduce((s,p)=>s+(p.total_price||0),0)).toLocaleString()} F</div><div class="sub">Semaine: ${roundPrice(weekP.reduce((s,p)=>s+(p.total_price||0),0)).toLocaleString()} F</div></div>
+        <div class="stat-card"><div class="label">✅ Livrés</div><div class="value">${parcels.filter(p=>p.status==='delivered').length}</div></div>
+        <div class="stat-card"><div class="label">🚚 Transit</div><div class="value">${parcels.filter(p=>p.status==='in_transit').length}</div></div>
+    `;
     
     const days=[], counts=[];
     for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const ds=d.toISOString().split('T')[0];days.push(d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric'}));counts.push(parcels.filter(p=>p.created_at?.startsWith(ds)).length);}
@@ -486,6 +548,7 @@ async function loadDashboard() {
     charts.parcels = new Chart(document.getElementById('chartParcels'),{type:'line',data:{labels:days,datasets:[{label:'Colis',data:counts,borderColor:'#1e3a5f',backgroundColor:'rgba(30,58,95,0.1)',fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
 }
 
+// --- PARCEL CREATION & MANAGEMENT ---
 window.initNewParcel = async function() {
     await refreshCache();
     const agencies = Cache.agencies.filter(a=>a.company_id===currentUser.company_id);
@@ -524,7 +587,7 @@ window.calcPrice = function() {
     const cFee = document.getElementById('isCustoms').checked?roundPrice(fees.customs_flat):0;
     const total = wPrice+dPrice+hFee+iFee+cFee;
     
-    document.getElementById('priceSummary').innerHTML = `<div style="display:flex;justify-content:space-between;padding:6px"><span>📦 Poids</span><span>${wPrice.toLocaleString()} F</span></div><div style="display:flex;justify-content:space-between;padding:6px"><span>🛣️ Distance (${dist}km)</span><span>${dPrice.toLocaleString()} F</span></div>${hFee?'<div style="display:flex;justify-content:space-between;padding:6px;color:#f39c12"><span>🔹 Gestion</span><span>'+hFee.toLocaleString()+' F</span></div>':''}${iFee?'<div style="display:flex;justify-content:space-between;padding:6px"><span>️ Assurance</span><span>'+iFee.toLocaleString()+' F</span></div>':''}${cFee?'<div style="display:flex;justify-content:space-between;padding:6px;color:#e67e22"><span>🛃 Douane</span><span>'+cFee.toLocaleString()+' F</span></div>':''}<div style="display:flex;justify-content:space-between;padding:10px;border-top:2px solid var(--primary);margin-top:8px;font-weight:700;font-size:18px;color:var(--primary)"><span>TOTAL</span><span>${total.toLocaleString()} FCFA</span></div>`;
+    document.getElementById('priceSummary').innerHTML = `<div style="display:flex;justify-content:space-between;padding:6px"><span>📦 Poids</span><span>${wPrice.toLocaleString()} F</span></div><div style="display:flex;justify-content:space-between;padding:6px"><span>🛣️ Distance (${dist}km)</span><span>${dPrice.toLocaleString()} F</span></div>${hFee?'<div style="display:flex;justify-content:space-between;padding:6px;color:#f39c12"><span> Gestion</span><span>'+hFee.toLocaleString()+' F</span></div>':''}${iFee?'<div style="display:flex;justify-content:space-between;padding:6px"><span>🛡️ Assurance</span><span>'+iFee.toLocaleString()+' F</span></div>':''}${cFee?'<div style="display:flex;justify-content:space-between;padding:6px;color:#e67e22"><span>🛃 Douane</span><span>'+cFee.toLocaleString()+' F</span></div>':''}<div style="display:flex;justify-content:space-between;padding:10px;border-top:2px solid var(--primary);margin-top:8px;font-weight:700;font-size:18px;color:var(--primary)"><span>TOTAL</span><span>${total.toLocaleString()} FCFA</span></div>`;
 };
 
 window.previewParcelPhoto = function(input) {
@@ -544,15 +607,13 @@ window.submitParcel = async function() {
     const weight = parseFloat(document.getElementById('weightKg').value);
     const value = parseFloat(document.getElementById('declaredValue').value)||0;
     const cityId = document.getElementById('destCity').value;
-    const agencyId = document.getElementById('destAgency').value;
     
     if(!sender||!sPhone||!recipient||!rPhone) { alert('Remplissez tout'); return; }
     if(!desc) { alert('Description requise'); return; }
     if(!weight||weight<=0) { alert('Poids valide'); return; }
     if(!cityId) { alert('Ville requise'); return; }
-    if(!currentParcelPhoto) { alert(' Photo obligatoire!'); return; }
+    if(!currentParcelPhoto) { alert('📸 Photo obligatoire!'); return; }
     
-    const company = Cache.companies.find(c=>c.id===currentUser.company_id)||Cache.companies[0];
     const count = Cache.parcels.filter(p=>p.company_id===currentUser.company_id).length;
     const tracking = `HMiG-${new Date().getFullYear()}-${String(count+1).padStart(6,'0')}`;
     const code = genCode();
@@ -598,7 +659,6 @@ function showRecuModalTemp(parcel) {
     document.getElementById('recuContent').innerHTML = html;
     document.getElementById('recuModal').classList.add('active');
 }
-
 window.closeRecuModal = function() { document.getElementById('recuModal').classList.remove('active'); };
 
 window.loadParcelsList = async function() {
@@ -607,36 +667,31 @@ window.loadParcelsList = async function() {
     let parcels = Cache.parcels.filter(p=>p.company_id===currentUser.company_id);
     
     const search = document.getElementById('searchParcels').value.toLowerCase();
-    if(search) parcels = parcels.filter(p=>p.tracking_number.toLowerCase().includes(search)||p.sender_name.toLowerCase().includes(search)||p.recipient_name.toLowerCase().includes(search));
-    
+    if(search) parcels = parcels.filter(p=>p.tracking_number.toLowerCase().includes(search)||p.sender_name.toLowerCase().includes(search));
     const status = document.getElementById('filterStatus').value;
     if(status) parcels = parcels.filter(p=>p.status===status);
-    
     if(currentFilter==='today') { const today=new Date().toISOString().split('T')[0]; parcels=parcels.filter(p=>p.created_at?.startsWith(today)); }
     else if(currentFilter==='week') { const week=new Date(Date.now()-7*86400000); parcels=parcels.filter(p=>new Date(p.created_at)>=week); }
     
     parcels.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
-    
     if(!parcels.length) { container.innerHTML='<div class="empty-state"><div style="font-size:48px">📦</div><p>Aucun colis</p></div>'; return; }
     
     container.innerHTML = parcels.map(p=>{
         const dest = Cache.cities.find(c=>c.id===p.destination_city_id);
-        return `<div class="user-card" onclick="showParcelActions('${p.id}')"><div class="user-info-block"><div style="font-weight:700">${p.tracking_number} ${p.confirmed_by_recipient?'<span style="background:#27ae60;color:white;padding:2px 6px;border-radius:8px;font-size:10px">✅</span>':''}</div><div style="font-size:12px;color:var(--gray);margin-top:4px">${p.sender_name} → ${p.recipient_name}</div><div style="font-size:12px;color:var(--gray);margin-top:2px">📍 ${dest?.name||'?'} • ${p.weight_kg}kg • ${p.status}</div></div><div style="text-align:right"><div style="font-weight:700;color:var(--primary)">${roundPrice(p.total_price).toLocaleString()} F</div><div style="font-size:11px;color:var(--gray)">${new Date(p.created_at).toLocaleDateString('fr-FR')}</div></div></div>`;
+        return `<div class="user-card" onclick="showParcelActions('${p.id}')"><div class="user-info-block"><div style="font-weight:700">${p.tracking_number} ${p.confirmed_by_recipient?'<span style="background:#27ae60;color:white;padding:2px 6px;border-radius:8px;font-size:10px">✅</span>':''}</div><div style="font-size:12px;color:var(--gray);margin-top:4px">${p.sender_name} → ${p.recipient_name}</div><div style="font-size:12px;color:var(--gray);margin-top:2px">📍 ${dest?.name||'?'} • ${p.weight_kg}kg • ${p.status}</div></div><div style="text-align:right"><div style="font-weight:700;color:var(--primary)">${roundPrice(p.total_price).toLocaleString()} F</div></div></div>`;
     }).join('');
 };
-
 window.setFilter = function(f) { currentFilter=f; document.querySelectorAll('.filter-tag').forEach(t=>t.classList.remove('active')); event.target.classList.add('active'); loadParcelsList(); };
-
 window.showParcelActions = function(id) {
     const p = Cache.parcels.find(x=>x.id===id);
     if(!p) return;
     alert(`Colis: ${p.tracking_number}\nStatut: ${p.status}\nTotal: ${roundPrice(p.total_price).toLocaleString()} F\nCode: ${p.confirmation_code||'N/A'}`);
 };
 
+// --- TRANSACTIONS WITH PHOTO COLUMN ---
 window.loadTransactions = async function() {
     await refreshCache();
     let parcels = Cache.parcels.filter(p=>p.company_id===currentUser.company_id);
-    
     if(transactionPeriod==='today') { const today=new Date().toISOString().split('T')[0]; parcels=parcels.filter(p=>p.created_at?.startsWith(today)); }
     else if(transactionPeriod==='week') { const week=new Date(Date.now()-7*86400000); parcels=parcels.filter(p=>new Date(p.created_at)>=week); }
     else if(transactionPeriod==='month') { const month=new Date();month.setDate(1); parcels=parcels.filter(p=>new Date(p.created_at)>=month); }
@@ -653,7 +708,6 @@ window.loadTransactions = async function() {
         table += `<tr><td><strong>${p.tracking_number}</strong></td><td>${new Date(p.created_at).toLocaleDateString('fr-FR')}</td><td>${p.sender_name}</td><td>${dest?.name||'?'}</td><td><strong>${roundPrice(p.total_price).toLocaleString()} F</strong></td><td>${p.payment_method==='cash'?'💵':'📱'}</td><td>${p.photo?'<button class="btn btn-sm btn-info" onclick="showPhoto(\''+p.id+'\')">👁️ Voir</button>':'-'}</td></tr>`;
     });
     table += `</tbody><tfoot><tr class="total-row"><td colspan="4">TOTAL (${parcels.length})</td><td colspan="3">${roundPrice(total).toLocaleString()} FCFA</td></tr></tfoot></table>`;
-    
     document.getElementById('transactionTable').innerHTML = parcels.length?table:'<p style="text-align:center;padding:40px;color:var(--gray)">Aucune transaction</p>';
 };
 
@@ -665,14 +719,13 @@ window.showPhoto = function(id) {
     modal.innerHTML = `<div class="photo-viewer-content"><h3 style="margin-bottom:12px">${p.tracking_number}</h3><img src="${p.photo}"><button onclick="this.closest('.photo-viewer').remove()" class="btn btn-outline" style="margin-top:12px;width:auto">Fermer</button></div>`;
     document.body.appendChild(modal);
 };
-
 window.setTransactionPeriod = function(p,btn) { transactionPeriod=p; document.querySelectorAll('.period-btn').forEach(b=>{b.classList.remove('btn-primary','active');b.classList.add('btn-outline')}); btn.classList.remove('btn-outline'); btn.classList.add('btn-primary','active'); loadTransactions(); };
 
+// --- TRACKING & PUBLIC FEATURES ---
 window.showTracking = function() {
     document.getElementById('trackInput').value = '';
     document.getElementById('trackResult').innerHTML = '<div style="background:white;padding:30px;border-radius:12px;text-align:center"><div style="font-size:64px">🔍</div><h3>Suivre un colis</h3><p style="color:var(--gray);margin:12px 0">Entrez le numéro</p><div style="display:flex;gap:10px;max-width:500px;margin:0 auto"><input type="text" id="trackInputMain" placeholder="Ex: HMiG-2026-000001" style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px"><button class="btn btn-primary" onclick="trackSpecificParcel()" style="width:auto">🔍</button></div></div>';
 };
-
 window.trackSpecificParcel = async function() {
     const num = document.getElementById('trackInputMain').value.trim();
     if(!num) { alert('Entrez un numéro'); return; }
@@ -681,22 +734,18 @@ window.trackSpecificParcel = async function() {
     const p = Cache.parcels.find(x=>x.tracking_number===num);
     const el = document.getElementById('trackResult');
     if(!p) { el.innerHTML='<p style="color:#e74c3c;text-align:center">❌ Non trouvé</p>'; return; }
-    
     const origin = Cache.cities.find(c=>c.id===p.origin_city_id);
     const dest = Cache.cities.find(c=>c.id===p.destination_city_id);
     let html = `<div style="background:white;padding:20px;border-radius:12px;margin-top:16px"><h3>📦 ${p.tracking_number}</h3><p><strong>Trajet:</strong> ${origin?.name||'?'} → ${dest?.name||'?'}</p><p><strong>Statut:</strong> ${p.status}</p>`;
     if(p.trajet) {
-        html += '<div class="trajet-timeline" style="margin-top:20px"><h4>️ Historique</h4>';
-        const icons = {created:'📝',paid:'',loaded:'🚌',in_transit:'',arrived:'📍',delivered:'✅'};
-        p.trajet.forEach((step,i)=>{
-            html += `<div class="trajet-step ${i===p.trajet.length-1?'current':'done'}"><div class="trajet-icon">${icons[step.status]||''}</div><div class="trajet-content"><div class="trajet-title">${step.label}</div><div class="trajet-subtitle">📍 ${step.location}</div><div class="trajet-date">${new Date(step.date).toLocaleString('fr-FR')}</div></div></div>`;
-        });
+        html += '<div class="trajet-timeline" style="margin-top:20px"><h4>🗺️ Historique</h4>';
+        const icons = {created:'📝',paid:'💰',loaded:'',in_transit:'🚚',arrived:'📍',delivered:'✅'};
+        p.trajet.forEach((step,i)=>{ html += `<div class="trajet-step ${i===p.trajet.length-1?'current':'done'}"><div class="trajet-icon">${icons[step.status]||'📦'}</div><div class="trajet-content"><div class="trajet-title">${step.label}</div><div class="trajet-subtitle">📍 ${step.location}</div><div class="trajet-date">${new Date(step.date).toLocaleString('fr-FR')}</div></div></div>`; });
         html += '</div>';
     }
     html += '</div>';
     el.innerHTML = html;
 };
-
 window.trackParcel = window.trackSpecificParcel;
 
 window.showPublicTracking = function() { document.getElementById('loginScreen').style.display='none'; document.getElementById('publicTrackingScreen').style.display='block'; };
@@ -710,16 +759,11 @@ window.publicTrackParcel = async function() {
     await refreshCache();
     const p = Cache.parcels.find(x=>x.tracking_number===num);
     const el = document.getElementById('publicTrackResult');
-    if(!p) { el.innerHTML='<p style="color:#e74c3c;text-align:center"> Non trouvé</p>'; return; }
+    if(!p) { el.innerHTML='<p style="color:#e74c3c;text-align:center">❌ Non trouvé</p>'; return; }
     const origin = Cache.cities.find(c=>c.id===p.origin_city_id);
     const dest = Cache.cities.find(c=>c.id===p.destination_city_id);
     let html = `<div style="background:white;padding:20px;border-radius:12px"><h3 style="color:var(--primary)">📦 ${p.tracking_number}</h3><p><strong>Trajet:</strong> ${origin?.name||'?'} → ${dest?.name||'?'}</p><p><strong>Statut:</strong> ${p.status}</p>`;
     if(p.confirmation_code&&p.status!=='delivered') html += `<div class="confirmation-code"><p style="font-size:12px;color:#666">Code</p><div class="code">${p.confirmation_code}</div></div>`;
-    if(p.trajet) {
-        html += '<div class="trajet-timeline" style="margin-top:20px"><h4>🗺️ Historique</h4>';
-        p.trajet.forEach((step,i)=>{ html += `<div class="trajet-step ${i===p.trajet.length-1?'current':'done'}"><div class="trajet-icon">📦</div><div class="trajet-content"><div class="trajet-title">${step.label}</div><div class="trajet-subtitle">📍 ${step.location}</div></div></div>`; });
-        html += '</div>';
-    }
     html += '</div>';
     el.innerHTML = html;
 };
@@ -730,21 +774,18 @@ window.confirmReception = async function() {
     await refreshCache();
     const p = Cache.parcels.find(x=>x.confirmation_code===code);
     const el = document.getElementById('confirmationResult');
-    if(!p) { el.innerHTML='<div style="background:#fee;color:#c33;padding:20px;border-radius:12px;text-align:center"> Code invalide</div>'; return; }
+    if(!p) { el.innerHTML='<div style="background:#fee;color:#c33;padding:20px;border-radius:12px;text-align:center">❌ Code invalide</div>'; return; }
     if(p.status==='delivered') { el.innerHTML='<div style="background:#e8f5e9;color:#2e7d32;padding:20px;border-radius:12px;text-align:center">✅ Déjà confirmé</div>'; return; }
-    
-    p.status = 'delivered';
-    p.confirmed_by_recipient = true;
+    p.status = 'delivered'; p.confirmed_by_recipient = true;
     if(!p.trajet) p.trajet = [];
     p.trajet.push({status:'delivered',label:'Livré et confirmé',location:'Confirmé par destinataire',date:new Date().toISOString()});
-    
     await setDoc(doc(db,'parcels',p.id),p);
     await refreshCache();
     el.innerHTML = `<div style="background:#e8f5e9;color:#2e7d32;padding:20px;border-radius:12px;text-align:center">✅ Confirmé!<br>N°: ${p.tracking_number}</div>`;
     document.getElementById('confirmationCodeInput').value = '';
 };
 
-window.loadSuperDashboard = loadDashboard;
+// --- PLACEHOLDER FUNCTIONS FOR OTHER SECTIONS ---
 window.loadBordereaux = async function() { await refreshCache(); document.getElementById('bordereauxList').innerHTML = '<div class="empty-state"><p>Fonctionnalité bordereaux disponible</p></div>'; };
 window.initCreateBordereau = function() { document.getElementById('bordCity').innerHTML = '<option>Lomé</option><option>Niamey</option>'; };
 window.filterParcelsByDestination = function() {};
@@ -752,13 +793,10 @@ window.saveBordereau = function() { alert('Fonctionnalité en cours de développ
 window.loadDouane = async function() { await refreshCache(); document.getElementById('douaneStats').innerHTML = '<div class="stat-card"><div class="label">Douane</div><div class="value">0</div></div>'; document.getElementById('douaneTable').innerHTML = '<p style="text-align:center;padding:20px">Aucun</p>'; };
 window.setDouanePeriod = function() {};
 window.generateReport = function() { document.getElementById('reportContent').innerHTML = '<div class="report-card"><h4>📊 Rapport</h4><p>Fonctionnalité disponible</p></div>'; };
-window.loadUsers = async function() { await refreshCache(); document.getElementById('usersList').innerHTML = Cache.users.map(u=>`<div class="user-card"><div class="user-info-block"><div style="font-weight:700">${u.first_name} ${u.last_name}</div><div style="font-size:12px;color:var(--gray)">${u.phone}</div></div></div>`).join(''); };
+window.loadUsers = async function() { await refreshCache(); document.getElementById('usersList').innerHTML = Cache.users.filter(u=>u.company_id===currentUser.company_id).map(u=>`<div class="user-card"><div class="user-info-block"><div style="font-weight:700">${u.first_name} ${u.last_name}</div><div style="font-size:12px;color:var(--gray)">${u.phone}</div></div></div>`).join(''); };
 window.showAddUserModal = function() { document.getElementById('addUserModal').classList.add('active'); };
 window.closeAddUserModal = function() { document.getElementById('addUserModal').classList.remove('active'); };
 window.saveUser = function() { alert('Utilisateur ajouté (simulation)'); closeAddUserModal(); };
-window.showAddCompanyModal = function() { document.getElementById('addCompanyModal').classList.add('active'); };
-window.closeAddCompanyModal = function() { document.getElementById('addCompanyModal').classList.remove('active'); };
-window.saveCompany = function() { alert('Compagnie ajoutée (simulation)'); closeAddCompanyModal(); };
 window.addRouteRow = function() {};
 window.saveRoutes = function() { alert('Routes enregistrées'); };
 window.addWeightTierRow = function() {};
@@ -771,7 +809,6 @@ window.closeSmsModal = function() { document.getElementById('smsModal').classLis
 window.printTicket = function() { alert('Impression...'); closeTicketModal(); };
 window.closeTicketModal = function() { document.getElementById('ticketModal').classList.remove('active'); };
 
-window.showSection('dashboard');
 refreshCache();
 </script>
 </body>
