@@ -3,147 +3,551 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HMi-Gest-Co - Solution digitale de gestion des colis</title>
+<title>HMi-Gest-Co - Gestion professionnelle des colis</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a1628 0%, #1e3a5f 100%); color: #1a1a2e; min-height: 100vh; }
-:root { --primary: #1e3a5f; --primary-light: #2e5984; --accent: #f39c12; --success: #27ae60; --danger: #e74c3c; --white: #fff; --gray: #6c757d; }
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; color: #2c3e50; min-height: 100vh; }
+:root { 
+    --primary: #1e3a5f; 
+    --primary-light: #2e5984; 
+    --primary-dark: #0f2440;
+    --accent: #f39c12; 
+    --accent-light: #f1c40f;
+    --success: #27ae60; 
+    --danger: #e74c3c; 
+    --info: #3498db;
+    --white: #fff; 
+    --gray: #7f8c8d;
+    --light-bg: #ecf0f1;
+    --shadow: 0 4px 6px rgba(0,0,0,0.07);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.12);
+}
 
-.login-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; background: linear-gradient(135deg, #0a1628 0%, #1e3a5f 50%, #2e5984 100%); }
-.login-box { background: var(--white); padding: 40px 30px; border-radius: 24px; width: 100%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); border-top: 6px solid var(--accent); }
-.login-box .logo-container { text-align: center; margin-bottom: 24px; }
-.login-box .logo-container img { width: 180px; height: auto; margin-bottom: 16px; }
-.login-box h1 { text-align: center; color: var(--primary); margin-bottom: 8px; font-size: 28px; font-weight: 700; }
-.login-box .subtitle { text-align: center; color: var(--gray); margin-bottom: 32px; font-size: 14px; }
-.login-box input, .login-box select { width: 100%; padding: 16px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 16px; margin-bottom: 16px; }
-.login-box input:focus, .login-box select:focus { border-color: var(--accent); outline: none; }
-.login-box button { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-bottom: 12px; }
-.login-box .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
-.login-error { color: var(--danger); text-align: center; margin-top: 12px; display: none; padding: 12px; background: rgba(231,76,60,0.1); border-radius: 8px; font-weight: 600; }
+/* LOGIN SCREEN - DESIGN AMÉLIORÉ */
+.login-screen { 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    min-height: 100vh; 
+    padding: 20px; 
+    background: linear-gradient(135deg, #1e3a5f 0%, #2e5984 50%, #3498db 100%);
+    position: relative;
+    overflow: hidden;
+}
+.login-screen::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(243,156,18,0.1) 0%, transparent 70%);
+    animation: pulse 15s ease-in-out infinite;
+}
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+.login-box { 
+    background: var(--white); 
+    padding: 40px 35px; 
+    border-radius: 20px; 
+    width: 100%; 
+    max-width: 400px; 
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3); 
+    position: relative;
+    z-index: 1;
+}
+.login-box .logo-container { text-align: center; margin-bottom: 30px; }
+.login-box .logo-container img { width: 160px; height: auto; margin-bottom: 12px; }
+.login-box h1 { text-align: center; color: var(--primary); margin-bottom: 6px; font-size: 26px; font-weight: 700; }
+.login-box .subtitle { text-align: center; color: var(--gray); margin-bottom: 28px; font-size: 13px; }
+.login-box input, .login-box select { 
+    width: 100%; 
+    padding: 14px 16px; 
+    border: 2px solid #e0e0e0; 
+    border-radius: 10px; 
+    font-size: 15px; 
+    margin-bottom: 14px;
+    transition: all 0.3s;
+}
+.login-box input:focus, .login-box select:focus { 
+    border-color: var(--accent); 
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(243,156,18,0.1);
+}
+.login-box button { 
+    width: 100%; 
+    padding: 15px; 
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); 
+    color: white; 
+    border: none; 
+    border-radius: 10px; 
+    font-size: 16px; 
+    font-weight: 600; 
+    cursor: pointer; 
+    margin-bottom: 10px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.login-box button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(30,58,95,0.3);
+}
+.login-box .btn-outline { 
+    background: transparent; 
+    border: 2px solid var(--primary); 
+    color: var(--primary);
+}
+.login-box .btn-outline:hover {
+    background: var(--primary);
+    color: white;
+}
+.login-error { 
+    color: var(--danger); 
+    text-align: center; 
+    margin-top: 10px; 
+    display: none; 
+    padding: 10px; 
+    background: rgba(231,76,60,0.1); 
+    border-radius: 8px; 
+    font-weight: 600; 
+    font-size: 14px;
+}
 
-.public-screen { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); min-height: 100vh; padding: 20px; }
-.public-box { background: white; padding: 40px; border-radius: 24px; max-width: 500px; margin: 0 auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); border-top: 6px solid var(--accent); }
-.public-box h2 { text-align: center; color: var(--primary); margin-bottom: 12px; }
-.public-box .subtitle { text-align: center; color: var(--gray); margin-bottom: 24px; }
+/* PUBLIC SCREENS */
+.public-screen { 
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); 
+    min-height: 100vh; 
+    padding: 20px; 
+}
+.public-box { 
+    background: white; 
+    padding: 35px; 
+    border-radius: 20px; 
+    max-width: 480px; 
+    margin: 0 auto; 
+    box-shadow: var(--shadow-lg); 
+}
+.public-box h2 { text-align: center; color: var(--primary); margin-bottom: 10px; font-size: 24px; }
+.public-box .subtitle { text-align: center; color: var(--gray); margin-bottom: 24px; font-size: 14px; }
 
-.topbar { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 3px solid var(--accent); }
-.topbar h2 { font-size: 18px; display: flex; align-items: center; gap: 8px; }
-.topbar h2 img { width: 32px; height: 32px; border-radius: 6px; }
+/* TOPBAR */
+.topbar { 
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); 
+    color: white; 
+    padding: 14px 20px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    position: sticky; 
+    top: 0; 
+    z-index: 100; 
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+.topbar h2 { font-size: 17px; display: flex; align-items: center; gap: 10px; font-weight: 600; }
+.topbar h2 img { width: 36px; height: 36px; border-radius: 8px; background: white; padding: 3px; }
 .topbar .user-info { display: flex; align-items: center; gap: 10px; font-size: 13px; }
-.topbar .badge { background: linear-gradient(135deg, var(--accent) 0%, #f1c40f 100%); color: var(--primary); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
-.btn-logout { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 14px; border-radius: 8px; cursor: pointer; }
+.topbar .badge { 
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%); 
+    color: var(--primary); 
+    padding: 5px 12px; 
+    border-radius: 20px; 
+    font-size: 11px; 
+    font-weight: 700;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.btn-logout { 
+    background: rgba(255,255,255,0.2); 
+    border: 1px solid rgba(255,255,255,0.4); 
+    color: white; 
+    padding: 7px 12px; 
+    border-radius: 8px; 
+    cursor: pointer;
+    font-size: 13px;
+    transition: background 0.2s;
+}
+.btn-logout:hover { background: rgba(255,255,255,0.3); }
 
-.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -4px 12px rgba(0,0,0,0.1); z-index: 100; border-top: 3px solid var(--accent); }
-.bottom-nav-item { display: flex; flex-direction: column; align-items: center; padding: 8px 6px; font-size: 11px; color: var(--gray); cursor: pointer; }
-.bottom-nav-item.active { color: var(--primary); }
-.bottom-nav-item .icon { font-size: 24px; margin-bottom: 4px; }
+/* BOTTOM NAV */
+.bottom-nav { 
+    position: fixed; 
+    bottom: 0; 
+    left: 0; 
+    right: 0; 
+    background: white; 
+    display: flex; 
+    justify-content: space-around; 
+    padding: 8px 0; 
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.08); 
+    z-index: 100; 
+    border-top: 3px solid var(--accent);
+}
+.bottom-nav-item { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    padding: 8px 6px; 
+    font-size: 11px; 
+    color: var(--gray); 
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.bottom-nav-item.active { color: var(--primary); font-weight: 600; }
+.bottom-nav-item .icon { font-size: 22px; margin-bottom: 3px; }
 
-.main-content { padding: 20px; padding-bottom: 100px; max-width: 900px; margin: 0 auto; background: #f8f9fa; min-height: 100vh; }
+/* MAIN CONTENT */
+.main-content { 
+    padding: 20px; 
+    padding-bottom: 90px; 
+    max-width: 950px; 
+    margin: 0 auto; 
+    background: #f5f7fa; 
+    min-height: 100vh; 
+}
 
-.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 24px; }
-.stat-card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-left: 5px solid var(--accent); }
-.stat-card .label { font-size: 12px; color: var(--gray); margin-bottom: 6px; }
-.stat-card .value { font-size: 24px; font-weight: 700; color: var(--primary); }
-.stat-card .sub { font-size: 12px; color: var(--gray); margin-top: 4px; }
+/* STATS GRID */
+.stats-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); 
+    gap: 14px; 
+    margin-bottom: 22px; 
+}
+.stat-card { 
+    background: white; 
+    padding: 18px; 
+    border-radius: 14px; 
+    box-shadow: var(--shadow); 
+    border-left: 4px solid var(--accent);
+    transition: transform 0.2s;
+}
+.stat-card:hover { transform: translateY(-2px); }
+.stat-card .label { font-size: 12px; color: var(--gray); margin-bottom: 6px; font-weight: 500; }
+.stat-card .value { font-size: 22px; font-weight: 700; color: var(--primary); }
+.stat-card .sub { font-size: 11px; color: var(--gray); margin-top: 4px; }
 
-.chart-container { background: white; padding: 20px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-.chart-container h4 { margin-bottom: 16px; color: var(--primary); }
+/* CHART */
+.chart-container { 
+    background: white; 
+    padding: 20px; 
+    border-radius: 14px; 
+    margin-bottom: 20px; 
+    box-shadow: var(--shadow); 
+}
+.chart-container h4 { margin-bottom: 14px; color: var(--primary); font-size: 16px; }
 .chart-wrapper { position: relative; height: 220px; }
 
-.btn { padding: 14px 24px; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; margin-bottom: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+/* BUTTONS */
+.btn { 
+    padding: 13px 22px; 
+    border: none; 
+    border-radius: 10px; 
+    font-size: 14px; 
+    font-weight: 600; 
+    cursor: pointer; 
+    width: 100%; 
+    margin-bottom: 10px; 
+    display: inline-flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 8px;
+    transition: all 0.2s;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
 .btn-primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; }
 .btn-success { background: linear-gradient(135deg, var(--success) 0%, #229954 100%); color: white; }
-.btn-warning { background: linear-gradient(135deg, var(--accent) 0%, #f1c40f 100%); color: var(--primary); }
-.btn-info { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; }
+.btn-warning { background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%); color: var(--primary); }
+.btn-info { background: linear-gradient(135deg, var(--info) 0%, #2980b9 100%); color: white; }
 .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
-.btn-lg { padding: 18px; font-size: 17px; }
-.btn-sm { padding: 10px 14px; font-size: 13px; width: auto; }
+.btn-outline:hover { background: var(--primary); color: white; }
+.btn-lg { padding: 16px; font-size: 15px; }
+.btn-sm { padding: 9px 12px; font-size: 12px; width: auto; }
 .btn-danger { background: var(--danger); color: white; }
 
-.form-group { margin-bottom: 16px; }
-.form-group label { display: block; font-size: 14px; font-weight: 600; color: var(--primary); margin-bottom: 8px; }
-.form-group input, .form-group select { width: 100%; padding: 14px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 15px; }
-.form-group input:focus, .form-group select:focus { border-color: var(--accent); outline: none; }
+/* FORMS */
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--primary); margin-bottom: 6px; }
+.form-group input, .form-group select { 
+    width: 100%; 
+    padding: 12px 14px; 
+    border: 2px solid #e0e0e0; 
+    border-radius: 10px; 
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+.form-group input:focus, .form-group select:focus { 
+    border-color: var(--accent); 
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(243,156,18,0.1);
+}
 
-.section { display: none; }
+/* SECTIONS */
+.section { display: none; animation: fadeIn 0.3s; }
 .section.active { display: block; }
-.settings-card { background: white; padding: 24px; border-radius: 16px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-.settings-card h3 { margin-bottom: 20px; color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 12px; }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.settings-card { 
+    background: white; 
+    padding: 22px; 
+    border-radius: 14px; 
+    margin-bottom: 20px; 
+    box-shadow: var(--shadow); 
+}
+.settings-card h3 { 
+    margin-bottom: 16px; 
+    color: var(--primary); 
+    border-bottom: 2px solid var(--accent); 
+    padding-bottom: 10px;
+    font-size: 16px;
+}
 
-.modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
-.modal.active { display: flex; }
-.modal-content { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; max-height: 90vh; overflow-y: auto; border-top: 5px solid var(--accent); }
+/* MODALS */
+.modal { 
+    display: none; 
+    position: fixed; 
+    top: 0; left: 0; right: 0; bottom: 0; 
+    background: rgba(0,0,0,0.85); 
+    z-index: 1000; 
+    justify-content: center; 
+    align-items: center; 
+    padding: 20px; 
+}
+.modal.active { display: flex; animation: fadeIn 0.2s; }
+.modal-content { 
+    background: white; 
+    padding: 28px; 
+    border-radius: 18px; 
+    width: 92%; 
+    max-width: 440px; 
+    max-height: 90vh; 
+    overflow-y: auto; 
+    border-top: 5px solid var(--accent); 
+}
 
-.empty-state { text-align: center; padding: 60px 20px; color: var(--gray); }
-.hidden { display: none !important; }
+/* EMPTY STATE */
+.empty-state { text-align: center; padding: 50px 20px; color: var(--gray); }
 
-.photo-zone { border: 3px dashed var(--primary-light); border-radius: 16px; padding: 30px; text-align: center; cursor: pointer; background: #f8f9fa; }
+/* PHOTO ZONE */
+.photo-zone { 
+    border: 3px dashed var(--primary-light); 
+    border-radius: 14px; 
+    padding: 25px; 
+    text-align: center; 
+    cursor: pointer; 
+    background: #f8f9fa;
+    transition: all 0.2s;
+}
 .photo-zone:hover { border-color: var(--accent); background: #fff9e6; }
-.photo-zone .icon { font-size: 48px; margin-bottom: 12px; }
-.photo-preview { max-width: 100%; max-height: 220px; border-radius: 12px; margin-top: 16px; }
+.photo-zone .icon { font-size: 42px; margin-bottom: 10px; }
+.photo-preview { max-width: 100%; max-height: 200px; border-radius: 10px; margin-top: 14px; }
 
-.user-card { background: white; padding: 20px; border-radius: 16px; margin-bottom: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-left: 5px solid var(--primary); }
-.user-card:hover { transform: translateX(4px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
+/* USER CARD */
+.user-card { 
+    background: white; 
+    padding: 18px; 
+    border-radius: 14px; 
+    margin-bottom: 12px; 
+    box-shadow: var(--shadow); 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    cursor: pointer; 
+    border-left: 4px solid var(--primary);
+    transition: all 0.2s;
+}
+.user-card:hover { transform: translateX(3px); box-shadow: 0 6px 12px rgba(0,0,0,0.1); }
 .user-info-block { flex: 1; }
 
-.simulator-box { background: #e8f4fd; padding: 20px; border-radius: 16px; margin-top: 20px; border: 2px solid #b6d4fe; }
+/* SIMULATOR BOX */
+.simulator-box { 
+    background: linear-gradient(135deg, #e8f4fd 0%, #d6eaf8 100%); 
+    padding: 18px; 
+    border-radius: 14px; 
+    margin-top: 18px; 
+    border: 2px solid #b6d4fe; 
+}
 
-.trajet-timeline { background: white; padding: 24px; border-radius: 16px; margin-top: 20px; }
-.trajet-timeline h4 { margin-bottom: 20px; color: var(--primary); }
-.trajet-step { display: flex; align-items: flex-start; margin-bottom: 24px; position: relative; }
+/* TRAJET TIMELINE */
+.trajet-timeline { background: white; padding: 22px; border-radius: 14px; margin-top: 18px; box-shadow: var(--shadow); }
+.trajet-timeline h4 { margin-bottom: 16px; color: var(--primary); font-size: 15px; }
+.trajet-step { display: flex; align-items: flex-start; margin-bottom: 20px; position: relative; }
 .trajet-step:last-child { margin-bottom: 0; }
-.trajet-step::before { content: ''; position: absolute; left: 19px; top: 42px; bottom: -24px; width: 3px; background: linear-gradient(180deg, var(--accent) 0%, #e0e0e0 100%); }
+.trajet-step::before { 
+    content: ''; 
+    position: absolute; 
+    left: 19px; 
+    top: 42px; 
+    bottom: -24px; 
+    width: 3px; 
+    background: linear-gradient(180deg, var(--accent) 0%, #e0e0e0 100%); 
+}
 .trajet-step:last-child::before { display: none; }
-.trajet-icon { width: 42px; height: 42px; border-radius: 50%; background: #e0e0e0; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-right: 16px; }
+.trajet-icon { 
+    width: 40px; height: 40px; 
+    border-radius: 50%; 
+    background: #e0e0e0; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 18px; 
+    margin-right: 14px; 
+}
 .trajet-step.done .trajet-icon { background: var(--success); }
 .trajet-step.current .trajet-icon { background: var(--primary); }
 .trajet-content { flex: 1; }
-.trajet-title { font-weight: 700; margin-bottom: 4px; }
-.trajet-subtitle { font-size: 13px; color: var(--gray); }
-.trajet-date { font-size: 12px; color: var(--gray); margin-top: 4px; }
+.trajet-title { font-weight: 700; margin-bottom: 3px; font-size: 14px; }
+.trajet-subtitle { font-size: 12px; color: var(--gray); }
+.trajet-date { font-size: 11px; color: var(--gray); margin-top: 3px; }
 
-.search-bar { display: flex; gap: 12px; margin-bottom: 20px; }
-.search-bar input { flex: 1; padding: 14px; border: 2px solid #e0e0e0; border-radius: 12px; }
-.filter-tags { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-.filter-tag { padding: 8px 16px; background: #f0f2f5; border-radius: 24px; font-size: 13px; cursor: pointer; }
+/* SEARCH & FILTERS */
+.search-bar { display: flex; gap: 10px; margin-bottom: 16px; }
+.search-bar input { flex: 1; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; }
+.filter-tags { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.filter-tag { 
+    padding: 7px 14px; 
+    background: #f0f2f5; 
+    border-radius: 20px; 
+    font-size: 12px; 
+    cursor: pointer;
+    transition: all 0.2s;
+}
 .filter-tag.active { background: var(--primary); color: white; }
 
-.douane-table, .transaction-table { background: white; border-radius: 16px; overflow-x: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px; }
+/* TABLES */
+.douane-table, .transaction-table { 
+    background: white; 
+    border-radius: 14px; 
+    overflow-x: auto; 
+    box-shadow: var(--shadow); 
+    margin-bottom: 18px; 
+}
 .douane-table table, .transaction-table table { width: 100%; border-collapse: collapse; min-width: 600px; }
-.douane-table th, .transaction-table th { background: linear-gradient(135deg, var(--accent) 0%, #e67e22 100%); color: white; padding: 14px; text-align: left; font-size: 12px; font-weight: 700; }
-.douane-table td, .transaction-table td { padding: 12px 14px; border-top: 1px solid #f0f0f0; font-size: 13px; }
+.douane-table th, .transaction-table th { 
+    background: linear-gradient(135deg, var(--accent) 0%, #e67e22 100%); 
+    color: white; 
+    padding: 12px; 
+    text-align: left; 
+    font-size: 12px; 
+    font-weight: 700; 
+}
+.douane-table td, .transaction-table td { padding: 11px 12px; border-top: 1px solid #f0f0f0; font-size: 13px; }
 .douane-table tr.total-row, .transaction-table tr.total-row { background: #fff3cd; font-weight: 700; }
 
-.photo-viewer { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 2000; display: flex; justify-content: center; align-items: center; padding: 20px; }
-.photo-viewer-content { background: white; padding: 24px; border-radius: 20px; max-width: 90%; max-height: 90%; overflow: auto; }
-.photo-viewer-content img { max-width: 100%; border-radius: 12px; }
+/* PHOTO VIEWER */
+.photo-viewer { 
+    position: fixed; 
+    top: 0; left: 0; right: 0; bottom: 0; 
+    background: rgba(0,0,0,0.95); 
+    z-index: 2000; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    padding: 20px; 
+}
+.photo-viewer-content { 
+    background: white; 
+    padding: 22px; 
+    border-radius: 18px; 
+    max-width: 90%; 
+    max-height: 90%; 
+    overflow: auto; 
+}
+.photo-viewer-content img { max-width: 100%; border-radius: 10px; }
 
-.confirmation-code { background: #fff9e6; padding: 24px; border-radius: 16px; text-align: center; margin: 20px 0; border: 3px dashed var(--accent); }
-.confirmation-code .code { font-size: 36px; font-weight: 700; color: var(--primary); letter-spacing: 6px; margin: 12px 0; }
+/* CONFIRMATION CODE */
+.confirmation-code { 
+    background: #fff9e6; 
+    padding: 20px; 
+    border-radius: 14px; 
+    text-align: center; 
+    margin: 16px 0; 
+    border: 3px dashed var(--accent); 
+}
+.confirmation-code .code { font-size: 32px; font-weight: 700; color: var(--primary); letter-spacing: 5px; margin: 10px 0; }
 
-.company-detail-card { background: white; padding: 20px; border-radius: 16px; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-left: 5px solid var(--primary); }
-.company-detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-.company-contact-info { font-size: 12px; color: var(--gray); margin-top: 6px; padding-top: 6px; border-top: 1px dashed #e0e0e0; }
-.company-plan-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; margin-top: 4px; }
+/* COMPANY CARDS */
+.company-detail-card { 
+    background: white; 
+    padding: 18px; 
+    border-radius: 14px; 
+    margin-bottom: 14px; 
+    box-shadow: var(--shadow); 
+    border-left: 4px solid var(--primary); 
+}
+.company-detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.company-contact-info { 
+    font-size: 12px; 
+    color: var(--gray); 
+    margin-top: 6px; 
+    padding-top: 6px; 
+    border-top: 1px dashed #e0e0e0; 
+    background: #f8f9fa;
+    padding: 8px;
+    border-radius: 8px;
+}
+.company-plan-badge { 
+    display: inline-block; 
+    padding: 4px 10px; 
+    border-radius: 12px; 
+    font-size: 11px; 
+    font-weight: 700; 
+    margin-top: 4px; 
+}
 .plan-basic { background: #e8f4fd; color: #2980b9; }
 .plan-pro { background: #fff9e6; color: #f39c12; }
 .plan-enterprise { background: #f0e6ff; color: #8e44ad; }
-.company-stats-row { display: flex; gap: 12px; margin-top: 12px; }
+.company-stats-row { display: flex; gap: 10px; margin-top: 10px; }
 .company-stat-item { flex: 1; text-align: center; padding: 10px; background: #f8f9fa; border-radius: 8px; }
-.company-stat-item .num { font-size: 18px; font-weight: 700; color: var(--primary); }
-.company-stat-item .lbl { font-size: 11px; color: var(--gray); }
+.company-stat-item .num { font-size: 17px; font-weight: 700; color: var(--primary); }
+.company-stat-item .lbl { font-size: 10px; color: var(--gray); }
 
-.tier-row, .route-row { display: grid; gap: 12px; align-items: end; margin-bottom: 12px; padding: 12px; background: #f8f9fa; border-radius: 12px; border-left: 4px solid var(--accent); }
+/* TIERS & ROUTES */
+.tier-row, .route-row { 
+    display: grid; 
+    gap: 10px; 
+    align-items: end; 
+    margin-bottom: 10px; 
+    padding: 12px; 
+    background: #f8f9fa; 
+    border-radius: 10px; 
+    border-left: 4px solid var(--accent); 
+}
 .tier-row { grid-template-columns: 1fr 1fr 1fr auto; }
 .route-row { grid-template-columns: 2fr 2fr 1fr auto; }
-.tier-row input, .route-row input, .route-row select { padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; }
+.tier-row input, .route-row input, .route-row select { 
+    padding: 9px; 
+    border: 2px solid #ddd; 
+    border-radius: 8px; 
+    font-size: 13px; 
+}
+
+/* SECTION TITLE */
+.section-title { 
+    font-size: 20px; 
+    font-weight: 700; 
+    color: var(--primary); 
+    margin-bottom: 16px; 
+    display: flex; 
+    align-items: center; 
+    gap: 8px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .stat-card .value { font-size: 18px; }
+    .login-box { padding: 30px 25px; }
+    .main-content { padding: 15px; }
+}
 </style>
 </head>
 <body>
 
-<!-- LOGIN - VERSION CORRIGÉE (sans doublon) -->
+<!-- LOGIN SCREEN - UNE SEULE FOIS LE LOGO -->
 <div class="login-screen" id="loginScreen">
     <div class="login-box">
         <div class="logo-container">
@@ -158,33 +562,36 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
         <input type="password" id="loginPassword" placeholder="Mot de passe">
         <button onclick="login()">Se connecter</button>
         <div class="login-error" id="loginError">Identifiants incorrects</div>
-        <button class="btn btn-outline" onclick="showPublicTracking()">Suivi client</button>
-        <button class="btn btn-outline" onclick="showClientConfirmation()">Confirmer réception</button>
+        <button class="btn btn-outline" onclick="showPublicTracking()"> Suivi client</button>
+        <button class="btn btn-outline" onclick="showClientConfirmation()">✅ Confirmer réception</button>
     </div>
 </div>
 
+<!-- SUIVI PUBLIC -->
 <div class="public-screen" id="publicTrackingScreen" style="display:none;">
     <div class="public-box">
-        <h2>Suivre votre colis</h2>
+        <h2>🔍 Suivre votre colis</h2>
         <p class="subtitle">Entrez votre numéro de suivi</p>
-        <input type="text" id="publicTrackInput" placeholder="Ex: HMiG-2026-000001" style="width:100%;padding:14px;border:2px solid #e0e0e0;border-radius:10px;margin-bottom:12px;">
+        <input type="text" id="publicTrackInput" placeholder="Ex: HMiG-2026-000001" style="width:100%;padding:13px;border:2px solid #e0e0e0;border-radius:10px;margin-bottom:12px;">
         <button class="btn btn-primary" onclick="publicTrackParcel()">Rechercher</button>
-        <div id="publicTrackResult" style="margin-top:20px;"></div>
-        <button class="btn btn-outline" onclick="hidePublicTracking()" style="margin-top:20px;">Retour</button>
+        <div id="publicTrackResult" style="margin-top:18px;"></div>
+        <button class="btn btn-outline" onclick="hidePublicTracking()" style="margin-top:18px;">← Retour</button>
     </div>
 </div>
 
+<!-- CONFIRMATION CLIENT -->
 <div class="public-screen" id="clientConfirmationScreen" style="display:none;">
     <div class="public-box">
-        <h2>Confirmer la réception</h2>
+        <h2>✅ Confirmer la réception</h2>
         <p class="subtitle">Entrez votre code</p>
-        <input type="text" id="confirmationCodeInput" placeholder="Code (ex: ABC123)" style="width:100%;padding:14px;border:2px solid #e0e0e0;border-radius:10px;margin-bottom:12px;text-transform:uppercase;">
+        <input type="text" id="confirmationCodeInput" placeholder="Code (ex: ABC123)" style="width:100%;padding:13px;border:2px solid #e0e0e0;border-radius:10px;margin-bottom:12px;text-transform:uppercase;">
         <button class="btn btn-success" onclick="confirmReception()">Confirmer</button>
-        <div id="confirmationResult" style="margin-top:20px;"></div>
-        <button class="btn btn-outline" onclick="hideClientConfirmation()" style="margin-top:20px;">Retour</button>
+        <div id="confirmationResult" style="margin-top:18px;"></div>
+        <button class="btn btn-outline" onclick="hideClientConfirmation()" style="margin-top:18px;">← Retour</button>
     </div>
 </div>
 
+<!-- APP LAYOUT -->
 <div id="appLayout" style="display:none;">
     <div class="topbar">
         <h2><img src="https://raw.githubusercontent.com/hmicommunication24-ui/HMi-Gest-Co/main/Logo.png" alt="Logo"><span id="companyName"></span></h2>
@@ -196,35 +603,39 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
     </div>
 
     <div class="main-content">
+        <!-- SUPER ADMIN DASHBOARD -->
         <div class="section" id="sec-superDashboard">
-            <h3 style="margin-bottom:16px;">Tableau de bord global</h3>
+            <h3 class="section-title">👑 Tableau de bord global</h3>
             <div class="stats-grid" id="superStats"></div>
-            <h3 style="margin:20px 0 12px;">Situation par compagnie</h3>
+            <h3 style="margin:18px 0 12px; color:var(--primary); font-size:17px;">📊 Situation par compagnie</h3>
             <div id="companiesDetails"></div>
         </div>
 
+        <!-- GESTION COMPAGNIES -->
         <div class="section" id="sec-companies">
-            <h3 style="margin-bottom:16px;">Gestion des compagnies</h3>
-            <button class="btn btn-primary" onclick="showAddCompanyModal()" style="margin-bottom:16px;">+ Ajouter une compagnie</button>
+            <h3 class="section-title">🏢 Gestion des compagnies</h3>
+            <button class="btn btn-primary" onclick="showAddCompanyModal()" style="margin-bottom:14px;">➕ Ajouter une compagnie</button>
             <div id="companiesListFull"></div>
         </div>
 
+        <!-- DASHBOARD COMPAGNIE -->
         <div class="section" id="sec-dashboard">
-            <h3 style="margin-bottom:16px;">Vue d'ensemble</h3>
+            <h3 class="section-title">🏠 Vue d'ensemble</h3>
             <div class="stats-grid" id="statsGrid"></div>
-            <div class="chart-container"><h4>Évolution (7 jours)</h4><div class="chart-wrapper"><canvas id="chartParcels"></canvas></div></div>
+            <div class="chart-container"><h4>📈 Évolution (7 jours)</h4><div class="chart-wrapper"><canvas id="chartParcels"></canvas></div></div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                <button class="btn btn-primary btn-lg" onclick="showSection('newParcel')">Nouvel Envoi</button>
-                <button class="btn btn-success btn-lg" onclick="showSection('bordereaux')">Bordereaux</button>
-                <button class="btn btn-warning btn-lg" onclick="showSection('douane')">Douane</button>
-                <button class="btn btn-info btn-lg" onclick="showSection('transactions')">Transactions</button>
-                <button class="btn btn-outline btn-lg" onclick="showSection('tracking')">Suivi</button>
-                <button class="btn btn-outline btn-lg" onclick="showSection('reports')">Rapports</button>
+                <button class="btn btn-primary btn-lg" onclick="showSection('newParcel')"> Nouvel Envoi</button>
+                <button class="btn btn-success btn-lg" onclick="showSection('bordereaux')">🚌 Bordereaux</button>
+                <button class="btn btn-warning btn-lg" onclick="showSection('douane')"> Douane</button>
+                <button class="btn btn-info btn-lg" onclick="showSection('douaneAccounting')">💰 Compta. Douane</button>
+                <button class="btn btn-outline btn-lg" onclick="showSection('transactions')">💳 Transactions</button>
+                <button class="btn btn-outline btn-lg" onclick="showSection('tracking')">🔍 Suivi</button>
             </div>
         </div>
 
+        <!-- NOUVEL ENVOI -->
         <div class="section" id="sec-newParcel">
-            <h3 style="margin-bottom:16px;">Nouvel envoi</h3>
+            <h3 class="section-title">📦 Nouvel envoi</h3>
             <div class="form-group"><label>Expéditeur *</label><input id="senderName"></div>
             <div class="form-group"><label>Téléphone expéditeur *</label><input id="senderPhone"></div>
             <div class="form-group"><label>Destinataire *</label><input id="recipientName"></div>
@@ -232,111 +643,136 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
             <div class="form-group"><label>Ville destination *</label><select id="destCity" onchange="onDestCityChange()"><option value="">-- Choisir --</option></select></div>
             <div class="form-group"><label>Agence</label><select id="destAgency"></select></div>
             <div class="form-group"><label>Description *</label><input id="description"></div>
-            <div class="form-group"><label>Photo *</label><div class="photo-zone" onclick="document.getElementById('parcelPhoto').click()"><div class="icon">📷</div><p id="photoLabel">Cliquez pour photo</p><input type="file" id="parcelPhoto" accept="image/*" capture="environment" style="display:none" onchange="previewParcelPhoto(this)"><img id="photoPreview" class="photo-preview hidden"></div></div>
+            <div class="form-group"><label>📸 Photo *</label><div class="photo-zone" onclick="document.getElementById('parcelPhoto').click()"><div class="icon"></div><p id="photoLabel">Cliquez pour photo</p><input type="file" id="parcelPhoto" accept="image/*" capture="environment" style="display:none" onchange="previewParcelPhoto(this)"><img id="photoPreview" class="photo-preview hidden"></div></div>
             <div class="form-group"><label>Poids (kg) *</label><input type="number" id="weightKg" step="0.1" oninput="calcPrice()"></div>
             <div class="form-group"><label>Valeur (FCFA) *</label><input type="number" id="declaredValue" value="0" oninput="calcPrice()"></div>
-            <div class="form-group"><label><input type="checkbox" id="isInsured" onchange="calcPrice()"> Assurance</label></div>
-            <div class="form-group"><label><input type="checkbox" id="isCustoms" onchange="calcPrice()"> Douane</label></div>
+            <div class="form-group"><label><input type="checkbox" id="isInsured" onchange="calcPrice()"> ️ Assurance</label></div>
+            <div class="form-group"><label><input type="checkbox" id="isCustoms" onchange="calcPrice()"> 🛃 Douane</label></div>
             <div id="priceSummary" class="simulator-box"><p style="text-align:center;color:var(--gray)">Entrez poids et valeur</p></div>
-            <div class="form-group" style="margin-top:16px;"><label>Paiement</label><div style="display:flex;gap:10px;"><label style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px;text-align:center;"><input type="radio" name="payment" value="cash" checked> Espèces</label><label style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px;text-align:center;"><input type="radio" name="payment" value="mobile"> Mobile</label></div></div>
-            <button class="btn btn-success" onclick="submitParcel()">Valider</button>
+            <div class="form-group" style="margin-top:14px;"><label>Paiement</label><div style="display:flex;gap:10px;"><label style="flex:1;padding:13px;border:2px solid #e0e0e0;border-radius:10px;text-align:center;"><input type="radio" name="payment" value="cash" checked> 💵 Espèces</label><label style="flex:1;padding:13px;border:2px solid #e0e0e0;border-radius:10px;text-align:center;"><input type="radio" name="payment" value="mobile"> 📱 Mobile</label></div></div>
+            <button class="btn btn-success" onclick="submitParcel()">✅ Valider</button>
         </div>
 
+        <!-- LISTE COLIS -->
         <div class="section" id="sec-parcelsList">
-            <h3 style="margin-bottom:16px;">Colis</h3>
-            <div class="search-bar"><input type="text" id="searchParcels" placeholder="Rechercher..." oninput="filterParcels()"><select id="filterStatus" onchange="filterParcels()"><option value="">Tous</option><option value="paid">Payé</option><option value="loaded">Chargé</option><option value="in_transit">Transit</option><option value="arrived">Arrivé</option><option value="delivered">Livré</option></select></div>
+            <h3 class="section-title">📋 Colis</h3>
+            <div class="search-bar"><input type="text" id="searchParcels" placeholder="🔍 Rechercher..." oninput="filterParcels()"><select id="filterStatus" onchange="filterParcels()"><option value="">Tous</option><option value="paid">Payé</option><option value="loaded">Chargé</option><option value="in_transit">Transit</option><option value="arrived">Arrivé</option><option value="delivered">Livré</option></select></div>
             <div class="filter-tags"><div class="filter-tag active" onclick="setFilter('all')">Tous</div><div class="filter-tag" onclick="setFilter('today')">Aujourd'hui</div><div class="filter-tag" onclick="setFilter('week')">Semaine</div></div>
             <div id="parcelsListContainer"></div>
         </div>
 
+        <!-- BORDEREAUX -->
         <div class="section" id="sec-bordereaux">
-            <h3 style="margin-bottom:16px;">Bordereaux</h3>
-            <button class="btn btn-primary" onclick="showSection('createBordereau')" style="margin-bottom:16px;">+ Créer</button>
+            <h3 class="section-title">🚌 Bordereaux</h3>
+            <button class="btn btn-primary" onclick="showSection('createBordereau')" style="margin-bottom:14px;">➕ Créer</button>
             <div id="bordereauxList"></div>
         </div>
 
         <div class="section" id="sec-createBordereau">
-            <button class="btn btn-outline btn-sm" onclick="showSection('bordereaux')" style="margin-bottom:16px;">Retour</button>
-            <h3 style="margin-bottom:16px;">Nouveau bordereau</h3>
+            <button class="btn btn-outline btn-sm" onclick="showSection('bordereaux')" style="margin-bottom:14px;">← Retour</button>
+            <h3 style="margin-bottom:14px; color:var(--primary);">🚌 Nouveau bordereau</h3>
             <div class="form-group"><label>Ville *</label><select id="bordCity" onchange="filterParcelsByDestination()"><option value="">-- Choisir --</option></select></div>
             <div class="form-group"><label>Chauffeur *</label><input id="bordDriver"></div>
             <div class="form-group"><label>Plaque *</label><input id="bordPlate"></div>
             <div class="form-group"><label>Date</label><input type="date" id="bordDate"></div>
-            <h4 style="margin:20px 0 12px;">Colis</h4>
-            <div id="parcelsToLoad"><p style="text-align:center;color:var(--gray);padding:20px;">Sélectionnez destination</p></div>
-            <div style="background:#f8f9fa;padding:16px;border-radius:12px;margin-top:16px;"><div style="display:flex;justify-content:space-between;"><span>Colis:</span><strong id="selectedCount">0</strong></div><div style="display:flex;justify-content:space-between;"><span>Poids:</span><strong id="totalWeight">0 kg</strong></div></div>
-            <button class="btn btn-success" onclick="saveBordereau()" style="margin-top:16px;">Créer & PDF</button>
+            <h4 style="margin:18px 0 10px; color:var(--primary);"> Colis</h4>
+            <div id="parcelsToLoad"><p style="text-align:center;color:var(--gray);padding:18px;">Sélectionnez destination</p></div>
+            <div style="background:#f8f9fa;padding:14px;border-radius:10px;margin-top:14px;"><div style="display:flex;justify-content:space-between;"><span>Colis:</span><strong id="selectedCount">0</strong></div><div style="display:flex;justify-content:space-between;"><span>Poids:</span><strong id="totalWeight">0 kg</strong></div></div>
+            <button class="btn btn-success" onclick="saveBordereau()" style="margin-top:14px;">✅ Créer & PDF</button>
         </div>
 
+        <!-- DOUANE -->
         <div class="section" id="sec-douane">
-            <h3 style="margin-bottom:16px;">Douane</h3>
-            <div style="display:flex;gap:8px;margin-bottom:16px;"><button class="btn btn-sm btn-primary" onclick="setDouanePeriod('today')">Aujourd'hui</button><button class="btn btn-sm btn-outline" onclick="setDouanePeriod('week')">Semaine</button><button class="btn btn-sm btn-outline" onclick="setDouanePeriod('month')">Mois</button></div>
+            <h3 class="section-title">🛃 Douane</h3>
+            <div style="display:flex;gap:8px;margin-bottom:14px;"><button class="btn btn-sm btn-primary" onclick="setDouanePeriod('today')">Aujourd'hui</button><button class="btn btn-sm btn-outline" onclick="setDouanePeriod('week')">Semaine</button><button class="btn btn-sm btn-outline" onclick="setDouanePeriod('month')">Mois</button></div>
             <div class="stats-grid" id="douaneStats"></div>
             <div class="douane-table" id="douaneTable"></div>
         </div>
 
+        <!-- COMPTABILITÉ DOUANE -->
+        <div class="section" id="sec-douaneAccounting">
+            <h3 class="section-title">💰 Comptabilité Douane</h3>
+            <div style="display:flex;gap:8px;margin-bottom:14px;">
+                <button class="btn btn-sm btn-primary period-btn active" onclick="setDouaneAccountingPeriod('today',this)">Aujourd'hui</button>
+                <button class="btn btn-sm btn-outline period-btn" onclick="setDouaneAccountingPeriod('week',this)">Semaine</button>
+                <button class="btn btn-sm btn-outline period-btn" onclick="setDouaneAccountingPeriod('month',this)">Mois</button>
+            </div>
+            <div class="stats-grid" id="douaneAccountingStats"></div>
+            <div class="transaction-table" id="douaneAccountingTable"></div>
+        </div>
+
+        <!-- TRANSACTIONS -->
         <div class="section" id="sec-transactions">
-            <h3 style="margin-bottom:16px;">Transactions</h3>
-            <div style="display:flex;gap:8px;margin-bottom:16px;"><button class="btn btn-sm btn-primary period-btn active" onclick="setTransactionPeriod('today',this)">Aujourd'hui</button><button class="btn btn-sm btn-outline period-btn" onclick="setTransactionPeriod('week',this)">Semaine</button><button class="btn btn-sm btn-outline period-btn" onclick="setTransactionPeriod('month',this)">Mois</button></div>
+            <h3 class="section-title">💳 Transactions</h3>
+            <div style="display:flex;gap:8px;margin-bottom:14px;">
+                <button class="btn btn-sm btn-primary period-btn active" onclick="setTransactionPeriod('today',this)">Aujourd'hui</button>
+                <button class="btn btn-sm btn-outline period-btn" onclick="setTransactionPeriod('week',this)">Semaine</button>
+                <button class="btn btn-sm btn-outline period-btn" onclick="setTransactionPeriod('month',this)">Mois</button>
+            </div>
             <div class="stats-grid" id="transactionStats"></div>
             <div class="transaction-table" id="transactionTable"></div>
         </div>
 
+        <!-- RAPPORTS -->
         <div class="section" id="sec-reports">
-            <h3 style="margin-bottom:16px;">Rapports</h3>
-            <div style="display:flex;gap:8px;margin-bottom:16px;"><button class="btn btn-sm btn-primary" onclick="generateReport('daily')">Journalier</button><button class="btn btn-sm btn-outline" onclick="generateReport('weekly')">Hebdo</button><button class="btn btn-sm btn-outline" onclick="generateReport('monthly')">Mensuel</button></div>
+            <h3 class="section-title">📊 Rapports</h3>
+            <div style="display:flex;gap:8px;margin-bottom:14px;"><button class="btn btn-sm btn-primary" onclick="generateReport('daily')">Journalier</button><button class="btn btn-sm btn-outline" onclick="generateReport('weekly')">Hebdo</button><button class="btn btn-sm btn-outline" onclick="generateReport('monthly')">Mensuel</button></div>
             <div id="reportContent"></div>
         </div>
 
+        <!-- UTILISATEURS -->
         <div class="section" id="sec-users">
-            <h3 style="margin-bottom:16px;">Personnel</h3>
-            <button class="btn btn-primary" onclick="showAddUserModal()" style="margin-bottom:16px;">+ Ajouter</button>
+            <h3 class="section-title">👥 Personnel</h3>
+            <button class="btn btn-primary" onclick="showAddUserModal()" style="margin-bottom:14px;">➕ Ajouter</button>
             <div id="usersList"></div>
         </div>
 
+        <!-- PARAMÈTRES -->
         <div class="section" id="sec-settings">
-            <h3 style="margin-bottom:16px;">Paramètres de ma compagnie</h3>
+            <h3 class="section-title">⚙️ Paramètres de ma compagnie</h3>
             <div class="settings-card">
-                <h3>Destinations (Routes)</h3>
+                <h3>🗺️ Destinations (Routes)</h3>
                 <div id="routesList"></div>
                 <button class="btn btn-outline btn-sm" onclick="addRouteRow()">+ Ajouter une route</button>
-                <button class="btn btn-success btn-sm" onclick="saveRoutes()" style="margin-top:10px;">Enregistrer</button>
+                <button class="btn btn-success btn-sm" onclick="saveRoutes()" style="margin-top:8px;">💾 Enregistrer</button>
             </div>
             <div class="settings-card">
-                <h3>Prix par Poids</h3>
+                <h3>⚖️ Prix par Poids</h3>
                 <div id="weightTiersList"></div>
                 <button class="btn btn-outline btn-sm" onclick="addWeightTierRow()">+ Ajouter une tranche</button>
-                <button class="btn btn-success btn-sm" onclick="saveWeightTiers()" style="margin-top:10px;">Enregistrer</button>
+                <button class="btn btn-success btn-sm" onclick="saveWeightTiers()" style="margin-top:8px;">💾 Enregistrer</button>
             </div>
             <div class="settings-card">
-                <h3>Prix par Distance</h3>
+                <h3>🛣️ Prix par Distance</h3>
                 <div id="distanceTiersList"></div>
                 <button class="btn btn-outline btn-sm" onclick="addDistanceTierRow()">+ Ajouter une tranche</button>
-                <button class="btn btn-success btn-sm" onclick="saveDistanceTiers()" style="margin-top:10px;">Enregistrer</button>
+                <button class="btn btn-success btn-sm" onclick="saveDistanceTiers()" style="margin-top:8px;">💾 Enregistrer</button>
             </div>
             <div class="settings-card">
-                <h3>Frais & Pourcentages</h3>
+                <h3>💰 Frais & Pourcentages</h3>
                 <div id="feeSettingsList"></div>
-                <button class="btn btn-success btn-sm" onclick="saveFeeSettings()">Enregistrer</button>
+                <button class="btn btn-success btn-sm" onclick="saveFeeSettings()"> Enregistrer</button>
             </div>
         </div>
 
+        <!-- SUIVI -->
         <div class="section" id="sec-tracking">
-            <h3 style="margin-bottom:12px;">Suivi</h3>
-            <input type="text" id="trackInput" placeholder="Numéro de suivi" style="width:100%;padding:14px;border:2px solid #e0e0e0;border-radius:10px;margin-bottom:12px;">
+            <h3 class="section-title"> Suivi</h3>
+            <input type="text" id="trackInput" placeholder="Numéro de suivi" style="width:100%;padding:13px;border:2px solid #e0e0e0;border-radius:10px;margin-bottom:12px;">
             <button class="btn btn-primary" onclick="trackParcel()">Rechercher</button>
-            <div id="trackResult" style="margin-top:16px;"></div>
+            <div id="trackResult" style="margin-top:14px;"></div>
         </div>
     </div>
 
     <div class="bottom-nav" id="bottomNav"></div>
 </div>
 
-<div class="modal" id="recuModal"><div class="modal-content"><h3 style="margin-bottom:16px;">Reçu</h3><div id="recuContent"></div><div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;"><button class="btn btn-success" onclick="downloadRecuPDF()" style="flex:1;min-width:120px;">Reçu PDF</button><button class="btn btn-info" onclick="downloadTicketPDF()" style="flex:1;min-width:120px;">Ticket</button><button class="btn btn-outline" onclick="closeRecuModal()" style="flex:1;min-width:120px;">Fermer</button></div></div></div>
-<div class="modal" id="smsModal"><div class="modal-content"><h3 style="margin-bottom:16px;">SMS</h3><div id="smsContent"></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-primary" onclick="simulateSendSMS()">Envoyer</button><button class="btn btn-outline" onclick="closeSmsModal()">Fermer</button></div></div></div>
-<div class="modal" id="ticketModal"><div class="modal-content"><h3 style="margin-bottom:16px;">Ticket</h3><div id="ticketContent"></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-success" onclick="printTicket()">Imprimer</button><button class="btn btn-outline" onclick="closeTicketModal()">Fermer</button></div></div></div>
-<div class="modal" id="addCompanyModal"><div class="modal-content"><h3 style="margin-bottom:16px;">Nouvelle compagnie</h3><div class="form-group"><label>Nom</label><input id="newCompanyName"></div><div class="form-group"><label>Pays</label><input id="newCompanyCountry"></div><div class="form-group"><label>Téléphone de contact</label><input id="newCompanyPhone" placeholder="Ex: +228 70 00 00 00"></div><div class="form-group"><label>Plan</label><select id="newCompanyPlan"><option value="basic">Basic - 50 000 FCFA/mois</option><option value="pro">Pro - 100 000 FCFA/mois</option><option value="enterprise">Enterprise - 200 000 FCFA/mois</option></select></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-outline" onclick="closeAddCompanyModal()">Annuler</button><button class="btn btn-primary" onclick="saveCompany()">Enregistrer</button></div></div></div>
-<div class="modal" id="addUserModal"><div class="modal-content"><h3 style="margin-bottom:16px;">Utilisateur</h3><div class="form-group"><label>Prénom</label><input id="newUserFirstName"></div><div class="form-group"><label>Nom</label><input id="newUserLastName"></div><div class="form-group"><label>Téléphone</label><input id="newUserPhone"></div><div class="form-group"><label>Mot de passe</label><input id="newUserPassword"></div><div class="form-group"><label>Rôle</label><select id="newUserRole"><option value="admin">Admin</option><option value="clerk">Guichetier</option></select></div><div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-outline" onclick="closeAddUserModal()">Annuler</button><button class="btn btn-primary" onclick="saveUser()">OK</button></div></div></div>
+<!-- MODALS -->
+<div class="modal" id="recuModal"><div class="modal-content"><h3 style="margin-bottom:14px;">🧾 Reçu</h3><div id="recuContent"></div><div style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;"><button class="btn btn-success" onclick="downloadRecuPDF()" style="flex:1;min-width:110px;">📄 Reçu PDF</button><button class="btn btn-info" onclick="downloadTicketPDF()" style="flex:1;min-width:110px;">🖨️ Ticket</button><button class="btn btn-outline" onclick="closeRecuModal()" style="flex:1;min-width:110px;">Fermer</button></div></div></div>
+<div class="modal" id="smsModal"><div class="modal-content"><h3 style="margin-bottom:14px;">📱 SMS</h3><div id="smsContent"></div><div style="display:flex;gap:8px;margin-top:18px;"><button class="btn btn-primary" onclick="simulateSendSMS()">Envoyer</button><button class="btn btn-outline" onclick="closeSmsModal()">Fermer</button></div></div></div>
+<div class="modal" id="ticketModal"><div class="modal-content"><h3 style="margin-bottom:14px;">🖨️ Ticket</h3><div id="ticketContent"></div><div style="display:flex;gap:8px;margin-top:18px;"><button class="btn btn-success" onclick="printTicket()">Imprimer</button><button class="btn btn-outline" onclick="closeTicketModal()">Fermer</button></div></div></div>
+<div class="modal" id="addCompanyModal"><div class="modal-content"><h3 style="margin-bottom:14px;">🏢 Nouvelle compagnie</h3><div class="form-group"><label>Nom</label><input id="newCompanyName"></div><div class="form-group"><label>Pays</label><input id="newCompanyCountry"></div><div class="form-group"><label>Téléphone de contact</label><input id="newCompanyPhone" placeholder="Ex: +228 70 00 00 00"></div><div class="form-group"><label>Plan</label><select id="newCompanyPlan"><option value="basic">Basic - 50 000 FCFA/mois</option><option value="pro">Pro - 100 000 FCFA/mois</option><option value="enterprise">Enterprise - 200 000 FCFA/mois</option></select></div><div style="display:flex;gap:8px;margin-top:18px;"><button class="btn btn-outline" onclick="closeAddCompanyModal()">Annuler</button><button class="btn btn-primary" onclick="saveCompany()">Enregistrer</button></div></div></div>
+<div class="modal" id="addUserModal"><div class="modal-content"><h3 style="margin-bottom:14px;">👤 Utilisateur</h3><div class="form-group"><label>Prénom</label><input id="newUserFirstName"></div><div class="form-group"><label>Nom</label><input id="newUserLastName"></div><div class="form-group"><label>Téléphone</label><input id="newUserPhone"></div><div class="form-group"><label>Mot de passe</label><input id="newUserPassword"></div><div class="form-group"><label>Rôle</label><select id="newUserRole"><option value="admin">Admin</option><option value="clerk">Guichetier</option></select></div><div style="display:flex;gap:8px;margin-top:18px;"><button class="btn btn-outline" onclick="closeAddUserModal()">Annuler</button><button class="btn btn-primary" onclick="saveUser()">OK</button></div></div></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -364,6 +800,7 @@ let currentParcelPhoto = null;
 let currentRecuParcel = null;
 let currentFilter = 'all';
 let transactionPeriod = 'today';
+let douaneAccountingPeriod = 'today';
 
 const roundPrice = v => Math.ceil(v / 100) * 100;
 const genCode = () => { let c=''; for(let i=0;i<6;i++) c+='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random()*34)]; return c; };
@@ -382,10 +819,10 @@ async function loadCompaniesInDropdown() {
     await refreshCache();
     const select = document.getElementById('loginCompany');
     select.innerHTML = '<option value="">-- Sélectionner --</option>';
-    select.innerHTML += '<option value="super">SUPER ADMIN</option>';
+    select.innerHTML += '<option value="super">👑 SUPER ADMIN</option>';
     Cache.companies.forEach(c => {
         if(c.status === 'active') {
-            select.innerHTML += `<option value="${c.id}">${c.name} (${c.country})</option>`;
+            select.innerHTML += `<option value="${c.id}">🏢 ${c.name} (${c.country})</option>`;
         }
     });
 }
@@ -481,6 +918,7 @@ window.showSection = function(name) {
     if(name==='bordereaux') loadBordereaux();
     if(name==='createBordereau') initCreateBordereau();
     if(name==='douane') loadDouane();
+    if(name==='douaneAccounting') loadDouaneAccounting();
     if(name==='transactions') loadTransactions();
     if(name==='reports') generateReport('daily');
     if(name==='users') loadUsers();
@@ -488,7 +926,7 @@ window.showSection = function(name) {
     if(name==='settings') loadSettings();
 };
 
-// ========== SUPER ADMIN DASHBOARD AMÉLIORÉ ==========
+// ========== SUPER ADMIN DASHBOARD ==========
 async function loadSuperDashboard() {
     await refreshCache();
     const allParcels = Cache.parcels;
@@ -496,27 +934,24 @@ async function loadSuperDashboard() {
     const todayP = allParcels.filter(p=>p.created_at?.startsWith(today));
     const totalRevenue = allParcels.reduce((s,p)=>s+(p.total_price||0),0);
     
-    // Calcul du CA mensuel des forfaits
     const totalPlanRevenue = Cache.companies.reduce((s,c) => {
         const planPrice = c.plan === 'basic' ? 50000 : c.plan === 'pro' ? 100000 : 200000;
         return s + (c.status === 'active' ? planPrice : 0);
     }, 0);
     
     document.getElementById('superStats').innerHTML = `
-        <div class="stat-card"><div class="label">Compagnies actives</div><div class="value">${Cache.companies.filter(c=>c.status==='active').length}/${Cache.companies.length}</div></div>
-        <div class="stat-card"><div class="label">Total Colis</div><div class="value">${allParcels.length}</div><div class="sub">Auj: ${todayP.length}</div></div>
-        <div class="stat-card" style="background:linear-gradient(135deg, var(--accent) 0%, #f1c40f 100%);color:var(--primary)"><div class="label">CA Global (colis)</div><div class="value">${roundPrice(totalRevenue).toLocaleString()} F</div></div>
-        <div class="stat-card" style="background:linear-gradient(135deg, var(--success) 0%, #229954 100%);color:white"><div class="label">CA Forfaits/mois</div><div class="value">${totalPlanRevenue.toLocaleString()} F</div></div>
+        <div class="stat-card"><div class="label"> Compagnies actives</div><div class="value">${Cache.companies.filter(c=>c.status==='active').length}/${Cache.companies.length}</div></div>
+        <div class="stat-card"><div class="label">📦 Total Colis</div><div class="value">${allParcels.length}</div><div class="sub">Auj: ${todayP.length}</div></div>
+        <div class="stat-card" style="background:linear-gradient(135deg, var(--accent) 0%, #f1c40f 100%);color:var(--primary)"><div class="label">💰 CA Global (colis)</div><div class="value">${roundPrice(totalRevenue).toLocaleString()} F</div></div>
+        <div class="stat-card" style="background:linear-gradient(135deg, var(--success) 0%, #229954 100%);color:white"><div class="label">💵 CA Forfaits/mois</div><div class="value">${totalPlanRevenue.toLocaleString()} F</div></div>
     `;
 
-    // Liste détaillée des compagnies avec contact et forfait
     let detailsHTML = '';
     Cache.companies.forEach(c => {
         const cParcels = allParcels.filter(p=>p.company_id===c.id);
         const cToday = cParcels.filter(p=>p.created_at?.startsWith(today));
         const cRev = cParcels.reduce((s,p)=>s+(p.total_price||0),0);
         
-        // Trouver l'admin de la compagnie
         const companyAdmin = Cache.users.find(u => u.company_id === c.id && u.role === 'admin');
         const planLabel = getPlanLabel(c.plan);
         const planClass = getPlanClass(c.plan);
@@ -614,10 +1049,10 @@ async function loadDashboard() {
     const weekP = parcels.filter(p=>new Date(p.created_at)>=weekAgo);
     
     document.getElementById('statsGrid').innerHTML = `
-        <div class="stat-card"><div class="label">Aujourd'hui</div><div class="value">${todayP.length}</div><div class="sub">Total: ${parcels.length}</div></div>
-        <div class="stat-card"><div class="label">Recettes</div><div class="value">${roundPrice(todayP.reduce((s,p)=>s+(p.total_price||0),0)).toLocaleString()} F</div><div class="sub">Semaine: ${roundPrice(weekP.reduce((s,p)=>s+(p.total_price||0),0)).toLocaleString()} F</div></div>
-        <div class="stat-card"><div class="label">Livrés</div><div class="value">${parcels.filter(p=>p.status==='delivered').length}</div></div>
-        <div class="stat-card"><div class="label">Transit</div><div class="value">${parcels.filter(p=>p.status==='in_transit').length}</div></div>
+        <div class="stat-card"><div class="label">📦 Aujourd'hui</div><div class="value">${todayP.length}</div><div class="sub">Total: ${parcels.length}</div></div>
+        <div class="stat-card"><div class="label">💰 Recettes</div><div class="value">${roundPrice(todayP.reduce((s,p)=>s+(p.total_price||0),0)).toLocaleString()} F</div><div class="sub">Semaine: ${roundPrice(weekP.reduce((s,p)=>s+(p.total_price||0),0)).toLocaleString()} F</div></div>
+        <div class="stat-card"><div class="label">✅ Livrés</div><div class="value">${parcels.filter(p=>p.status==='delivered').length}</div></div>
+        <div class="stat-card"><div class="label">🚚 Transit</div><div class="value">${parcels.filter(p=>p.status==='in_transit').length}</div></div>
     `;
     
     const days=[], counts=[];
@@ -648,7 +1083,7 @@ async function loadSettings() {
             <button class="btn btn-sm btn-danger" onclick="this.closest('.route-row').remove()">Suppr</button>
         </div>`;
     });
-    document.getElementById('routesList').innerHTML = routesHTML || '<p style="color:var(--gray);margin-bottom:12px;">Aucune route configurée</p>';
+    document.getElementById('routesList').innerHTML = routesHTML || '<p style="color:var(--gray);margin-bottom:10px;">Aucune route configurée</p>';
     
     let weightHTML = '';
     companyWeightTiers.forEach((w, idx) => {
@@ -660,7 +1095,7 @@ async function loadSettings() {
             <button class="btn btn-sm btn-danger" onclick="this.closest('.tier-row').remove()">Suppr</button>
         </div>`;
     });
-    document.getElementById('weightTiersList').innerHTML = weightHTML || '<p style="color:var(--gray);margin-bottom:12px;">Aucune tranche configurée</p>';
+    document.getElementById('weightTiersList').innerHTML = weightHTML || '<p style="color:var(--gray);margin-bottom:10px;">Aucune tranche configurée</p>';
     
     let distanceHTML = '';
     companyDistanceTiers.forEach((d, idx) => {
@@ -672,9 +1107,9 @@ async function loadSettings() {
             <button class="btn btn-sm btn-danger" onclick="this.closest('.tier-row').remove()">Suppr</button>
         </div>`;
     });
-    document.getElementById('distanceTiersList').innerHTML = distanceHTML || '<p style="color:var(--gray);margin-bottom:12px;">Aucune tranche configurée</p>';
+    document.getElementById('distanceTiersList').innerHTML = distanceHTML || '<p style="color:var(--gray);margin-bottom:10px;">Aucune tranche configurée</p>';
     
-    const fees = companyFeeSettings || { value_percent: 1, customs_flat: 2000, insurance_percent: 1 };
+    const fees = companyFeeSettings || { value_percent: 1, customs_flat: 1500, insurance_percent: 0.5 };
     document.getElementById('feeSettingsList').innerHTML = `
         <div class="form-group">
             <label>Frais de gestion (% de la valeur du colis)</label>
@@ -764,7 +1199,7 @@ window.saveRoutes = async function() {
         }
     }
     
-    alert('Routes enregistrées !');
+    alert('✅ Routes enregistrées !');
     await refreshCache();
     loadSettings();
 };
@@ -791,7 +1226,7 @@ window.saveWeightTiers = async function() {
         }
     }
     
-    alert('Tranches de poids enregistrées !');
+    alert('✅ Tranches de poids enregistrées !');
     await refreshCache();
     loadSettings();
 };
@@ -818,7 +1253,7 @@ window.saveDistanceTiers = async function() {
         }
     }
     
-    alert('Tranches de distance enregistrées !');
+    alert('✅ Tranches de distance enregistrées !');
     await refreshCache();
     loadSettings();
 };
@@ -841,9 +1276,57 @@ window.saveFeeSettings = async function() {
         await addDoc(collection(db, 'fee_settings'), feeData);
     }
     
-    alert('Frais enregistrés !');
+    alert('✅ Frais enregistrés !');
     await refreshCache();
     loadSettings();
+};
+
+// ========== CALCUL DES PRIX (CONFIGURABLE PAR L'ADMIN) ==========
+window.calcPrice = function() {
+    const weight = parseFloat(document.getElementById('weightKg').value)||0;
+    const value = parseFloat(document.getElementById('declaredValue').value)||0;
+    const cityId = document.getElementById('destCity').value;
+    if(!weight||!cityId) return;
+    
+    const route = Cache.routes.find(r=>r.company_id===currentUser.company_id&&r.to_city_id==cityId);
+    const dist = route?.distance_km||0;
+    
+    // Prix par poids (configurable)
+    const weightTier = Cache.weight_tiers.find(t => 
+        t.company_id === currentUser.company_id && 
+        weight >= t.min && 
+        weight <= t.max
+    );
+    const wPrice = roundPrice(weightTier?.price || 0);
+    
+    // Prix par distance (configurable)
+    const distanceTier = Cache.distance_tiers.find(d => 
+        d.company_id === currentUser.company_id && 
+        dist >= d.min && 
+        dist <= d.max
+    );
+    const pricePerKm = distanceTier?.price_per_km || 0;
+    const dPrice = roundPrice(dist * pricePerKm);
+    
+    // Frais (configurables)
+    const fees = Cache.fee_settings.find(f=>f.company_id===currentUser.company_id)||{value_percent:0,customs_flat:0,insurance_percent:0};
+    const hFee = roundPrice(value*(fees.value_percent/100));
+    const iFee = document.getElementById('isInsured').checked ? roundPrice(value*(fees.insurance_percent/100)) : 0;
+    const cFee = document.getElementById('isCustoms').checked ? roundPrice(fees.customs_flat) : 0;
+    
+    const total = wPrice + dPrice + hFee + iFee + cFee;
+    
+    document.getElementById('priceSummary').innerHTML = `
+        <div style="display:flex;justify-content:space-between;padding:6px"><span>📦 Poids</span><span>${wPrice.toLocaleString()} F</span></div>
+        <div style="display:flex;justify-content:space-between;padding:6px"><span>🛣️ Distance (${dist}km × ${pricePerKm}F/km)</span><span>${dPrice.toLocaleString()} F</span></div>
+        ${hFee ? `<div style="display:flex;justify-content:space-between;padding:6px;color:#f39c12"><span>🔹 Gestion</span><span>${hFee.toLocaleString()} F</span></div>` : ''}
+        ${iFee ? `<div style="display:flex;justify-content:space-between;padding:6px"><span>🛡️ Assurance</span><span>${iFee.toLocaleString()} F</span></div>` : ''}
+        ${cFee ? `<div style="display:flex;justify-content:space-between;padding:6px;color:#e67e22"><span>🛃 Douane</span><span>${cFee.toLocaleString()} F</span></div>` : ''}
+        <div style="display:flex;justify-content:space-between;padding:10px;border-top:2px solid var(--primary);margin-top:8px;font-weight:700;font-size:18px;color:var(--primary)">
+            <span>TOTAL</span><span>${total.toLocaleString()} FCFA</span>
+        </div>
+        ${total === 0 ? '<p style="color:#e74c3c;text-align:center;margin-top:10px">⚠️ Configurez vos tarifs dans Paramètres</p>' : ''}
+    `;
 };
 
 window.initNewParcel = async function() {
@@ -852,7 +1335,7 @@ window.initNewParcel = async function() {
     const routes = Cache.routes.filter(r=>r.company_id===currentUser.company_id);
     
     if(routes.length === 0) {
-        alert('Aucune destination configurée ! Allez dans Paramètres pour ajouter des routes.');
+        alert('⚠️ Aucune destination configurée ! Allez dans Paramètres pour ajouter des routes.');
         document.getElementById('destCity').innerHTML = '<option value="">-- Aucune destination --</option>';
     } else {
         document.getElementById('destCity').innerHTML = '<option value="">-- Choisir --</option>'+routes.map(r=>{
@@ -877,30 +1360,10 @@ window.onDestCityChange = function() {
     calcPrice();
 };
 
-window.calcPrice = function() {
-    const weight = parseFloat(document.getElementById('weightKg').value)||0;
-    const value = parseFloat(document.getElementById('declaredValue').value)||0;
-    const cityId = document.getElementById('destCity').value;
-    if(!weight||!cityId) return;
-    
-    const route = Cache.routes.find(r=>r.company_id===currentUser.company_id&&r.to_city_id==cityId);
-    const dist = route?.distance_km||300;
-    const tier = Cache.weight_tiers.find(t=>t.company_id===currentUser.company_id&&weight>=t.min&&weight<=t.max)||Cache.weight_tiers.find(t=>t.company_id===currentUser.company_id);
-    const wPrice = roundPrice(tier?.price||0);
-    const dPrice = roundPrice(dist*30);
-    const fees = Cache.fee_settings.find(f=>f.company_id===currentUser.company_id)||{value_percent:1,customs_flat:2000,insurance_percent:1};
-    const hFee = roundPrice(value*(fees.value_percent/100));
-    const iFee = document.getElementById('isInsured').checked?roundPrice(value*(fees.insurance_percent/100)):0;
-    const cFee = document.getElementById('isCustoms').checked?roundPrice(fees.customs_flat):0;
-    const total = wPrice+dPrice+hFee+iFee+cFee;
-    
-    document.getElementById('priceSummary').innerHTML = `<div style="display:flex;justify-content:space-between;padding:6px"><span>Poids</span><span>${wPrice.toLocaleString()} F</span></div><div style="display:flex;justify-content:space-between;padding:6px"><span>Distance (${dist}km)</span><span>${dPrice.toLocaleString()} F</span></div>${hFee?'<div style="display:flex;justify-content:space-between;padding:6px;color:#f39c12"><span>Gestion</span><span>'+hFee.toLocaleString()+' F</span></div>':''}${iFee?'<div style="display:flex;justify-content:space-between;padding:6px"><span>Assurance</span><span>'+iFee.toLocaleString()+' F</span></div>':''}${cFee?'<div style="display:flex;justify-content:space-between;padding:6px;color:#e67e22"><span>Douane</span><span>'+cFee.toLocaleString()+' F</span></div>':''}<div style="display:flex;justify-content:space-between;padding:10px;border-top:2px solid var(--primary);margin-top:8px;font-weight:700;font-size:18px;color:var(--primary)"><span>TOTAL</span><span>${total.toLocaleString()} FCFA</span></div>`;
-};
-
 window.previewParcelPhoto = function(input) {
     if(input.files&&input.files[0]) {
         const reader = new FileReader();
-        reader.onload = e => { currentParcelPhoto = e.target.result; document.getElementById('photoPreview').src=e.target.result; document.getElementById('photoPreview').classList.remove('hidden'); document.getElementById('photoLabel').textContent='Photo prise'; };
+        reader.onload = e => { currentParcelPhoto = e.target.result; document.getElementById('photoPreview').src=e.target.result; document.getElementById('photoPreview').classList.remove('hidden'); document.getElementById('photoLabel').textContent='✅ Photo prise'; };
         reader.readAsDataURL(input.files[0]);
     }
 };
@@ -919,22 +1382,26 @@ window.submitParcel = async function() {
     if(!desc) { alert('Description requise'); return; }
     if(!weight||weight<=0) { alert('Poids valide'); return; }
     if(!cityId) { alert('Ville requise'); return; }
-    if(!currentParcelPhoto) { alert('Photo obligatoire!'); return; }
+    if(!currentParcelPhoto) { alert('📸 Photo obligatoire!'); return; }
     
     const count = Cache.parcels.filter(p=>p.company_id===currentUser.company_id).length;
     const tracking = `HMiG-${new Date().getFullYear()}-${String(count+1).padStart(6,'0')}`;
     const code = genCode();
     const route = Cache.routes.find(r=>r.company_id===currentUser.company_id&&r.to_city_id==cityId);
-    const dist = route?.distance_km||300;
+    const dist = route?.distance_km||0;
     
-    const tier = Cache.weight_tiers.find(t=>t.company_id===currentUser.company_id&&weight>=t.min&&weight<=t.max)||Cache.weight_tiers.find(t=>t.company_id===currentUser.company_id);
-    const wPrice = roundPrice(tier?.price||0);
-    const dPrice = roundPrice(dist*30);
-    const fees = Cache.fee_settings.find(f=>f.company_id===currentUser.company_id)||{value_percent:1,customs_flat:2000,insurance_percent:1};
+    const weightTier = Cache.weight_tiers.find(t=>t.company_id===currentUser.company_id&&weight>=t.min&&weight<=t.max);
+    const wPrice = roundPrice(weightTier?.price || 0);
+    
+    const distanceTier = Cache.distance_tiers.find(d=>d.company_id===currentUser.company_id&&dist>=d.min&&dist<=d.max);
+    const pricePerKm = distanceTier?.price_per_km || 0;
+    const dPrice = roundPrice(dist * pricePerKm);
+    
+    const fees = Cache.fee_settings.find(f=>f.company_id===currentUser.company_id)||{value_percent:0,customs_flat:0,insurance_percent:0};
     const hFee = roundPrice(value*(fees.value_percent/100));
-    const iFee = document.getElementById('isInsured').checked?roundPrice(value*(fees.insurance_percent/100)):0;
-    const cFee = document.getElementById('isCustoms').checked?roundPrice(fees.customs_flat):0;
-    const total = wPrice+dPrice+hFee+iFee+cFee;
+    const iFee = document.getElementById('isInsured').checked ? roundPrice(value*(fees.insurance_percent/100)) : 0;
+    const cFee = document.getElementById('isCustoms').checked ? roundPrice(fees.customs_flat) : 0;
+    const total = wPrice + dPrice + hFee + iFee + cFee;
     
     const origin = Cache.cities.find(c=>{const a=Cache.agencies.find(x=>x.company_id===currentUser.company_id);return a&&c.id===a.city_id;});
     
@@ -953,7 +1420,7 @@ window.submitParcel = async function() {
     
     await addDoc(collection(db,'parcels'), parcel);
     await refreshCache();
-    alert('Colis créé! Code: '+code);
+    alert('✅ Colis créé! Code: '+code);
     currentRecuParcel = parcel;
     showRecuModalTemp(parcel);
 };
@@ -962,12 +1429,13 @@ function showRecuModalTemp(parcel) {
     currentRecuParcel = parcel;
     const origin = Cache.cities.find(c=>c.id===parcel.origin_city_id);
     const dest = Cache.cities.find(c=>c.id===parcel.destination_city_id);
-    let html = `<div style="background:#f8f9fa;padding:20px;border-radius:12px"><h4 style="color:var(--primary);margin-bottom:12px">Reçu ${parcel.tracking_number}</h4><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px"><div><strong>Expéditeur:</strong><br>${parcel.sender_name}<br>${parcel.sender_phone}</div><div><strong>Destinataire:</strong><br>${parcel.recipient_name}<br>${parcel.recipient_phone}</div><div><strong>Départ:</strong> ${origin?.name||'?'}</div><div><strong>Destination:</strong> ${dest?.name||'?'}</div><div><strong>Poids:</strong> ${parcel.weight_kg} kg</div><div><strong>Distance:</strong> ${parcel.distance_km} km</div></div><div style="margin-top:16px;padding-top:16px;border-top:2px solid var(--primary)"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span>Transport:</span><span>${roundPrice(parcel.weight_price+parcel.distance_price).toLocaleString()} F</span></div>${parcel.handling_fee?'<div style="display:flex;justify-content:space-between;margin-bottom:8px"><span>Frais:</span><span>'+roundPrice(parcel.handling_fee).toLocaleString()+' F</span></div>':''}${parcel.insurance_fee?'<div style="display:flex;justify-content:space-between;margin-bottom:8px"><span>Assurance:</span><span>'+roundPrice(parcel.insurance_fee).toLocaleString()+' F</span></div>':''}${parcel.customs_fee?'<div style="display:flex;justify-content:space-between;margin-bottom:8px;color:#e67e22"><span>Douane:</span><span>'+roundPrice(parcel.customs_fee).toLocaleString()+' F</span></div>':''}<div style="display:flex;justify-content:space-between;font-size:18px;font-weight:700;color:var(--primary);margin-top:12px;padding-top:12px;border-top:2px solid var(--primary)"><span>TOTAL</span><span>${roundPrice(parcel.total_price).toLocaleString()} FCFA</span></div></div>${parcel.confirmation_code?'<div class="confirmation-code" style="margin-top:16px"><p style="font-size:12px;color:#666">Code confirmation</p><div class="code">'+parcel.confirmation_code+'</div></div>':''}<div style="margin-top:16px;font-size:11px;color:var(--gray);text-align:center">Date: ${new Date(parcel.created_at).toLocaleString('fr-FR')}</div></div>`;
+    let html = `<div style="background:#f8f9fa;padding:18px;border-radius:12px"><h4 style="color:var(--primary);margin-bottom:10px">Reçu ${parcel.tracking_number}</h4><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px"><div><strong>Expéditeur:</strong><br>${parcel.sender_name}<br>${parcel.sender_phone}</div><div><strong>Destinataire:</strong><br>${parcel.recipient_name}<br>${parcel.recipient_phone}</div><div><strong>Départ:</strong> ${origin?.name||'?'}</div><div><strong>Destination:</strong> ${dest?.name||'?'}</div><div><strong>Poids:</strong> ${parcel.weight_kg} kg</div><div><strong>Distance:</strong> ${parcel.distance_km} km</div></div><div style="margin-top:14px;padding-top:14px;border-top:2px solid var(--primary)"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span>Transport:</span><span>${roundPrice(parcel.weight_price+parcel.distance_price).toLocaleString()} F</span></div>${parcel.handling_fee?'<div style="display:flex;justify-content:space-between;margin-bottom:6px"><span>Frais:</span><span>'+roundPrice(parcel.handling_fee).toLocaleString()+' F</span></div>':''}${parcel.insurance_fee?'<div style="display:flex;justify-content:space-between;margin-bottom:6px"><span>Assurance:</span><span>'+roundPrice(parcel.insurance_fee).toLocaleString()+' F</span></div>':''}${parcel.customs_fee?'<div style="display:flex;justify-content:space-between;margin-bottom:6px;color:#e67e22"><span>Douane:</span><span>'+roundPrice(parcel.customs_fee).toLocaleString()+' F</span></div>':''}<div style="display:flex;justify-content:space-between;font-size:18px;font-weight:700;color:var(--primary);margin-top:10px;padding-top:10px;border-top:2px solid var(--primary)"><span>TOTAL</span><span>${roundPrice(parcel.total_price).toLocaleString()} FCFA</span></div></div>${parcel.confirmation_code?'<div class="confirmation-code" style="margin-top:14px"><p style="font-size:12px;color:#666">Code confirmation</p><div class="code">'+parcel.confirmation_code+'</div></div>':''}<div style="margin-top:14px;font-size:11px;color:var(--gray);text-align:center">Date: ${new Date(parcel.created_at).toLocaleString('fr-FR')}</div></div>`;
     document.getElementById('recuContent').innerHTML = html;
     document.getElementById('recuModal').classList.add('active');
 }
 window.closeRecuModal = function() { document.getElementById('recuModal').classList.remove('active'); };
 
+// ========== PDF REÇU A4 ==========
 window.downloadRecuPDF = function() {
     if(!currentRecuParcel) { alert('Aucun reçu à générer'); return; }
     const { jsPDF } = window.jspdf;
@@ -1073,7 +1541,7 @@ window.downloadRecuPDF = function() {
         doc.text(roundPrice(p.insurance_fee).toLocaleString() + ' FCFA', 185, y, {align: 'right'});
         y += 8;
     }
-    if(p.customs_fee) {
+    if(p.customs_fee && p.is_customs) {
         doc.setTextColor(230, 126, 34);
         doc.text('Douane', 25, y);
         doc.text(roundPrice(p.customs_fee).toLocaleString() + ' FCFA', 185, y, {align: 'right'});
@@ -1122,6 +1590,7 @@ window.downloadRecuPDF = function() {
     doc.save('Recu_' + p.tracking_number + '.pdf');
 };
 
+// ========== PDF TICKET THERMIQUE 80mm ==========
 window.downloadTicketPDF = function() {
     if(!currentRecuParcel) { alert('Aucun ticket à générer'); return; }
     const { jsPDF } = window.jspdf;
@@ -1180,7 +1649,8 @@ window.downloadTicketPDF = function() {
     y += 5;
     if(p.handling_fee) { doc.text('Gestion: ' + roundPrice(p.handling_fee).toLocaleString() + ' F', 5, y); y += 5; }
     if(p.insurance_fee) { doc.text('Assurance: ' + roundPrice(p.insurance_fee).toLocaleString() + ' F', 5, y); y += 5; }
-    if(p.customs_fee) { doc.text('Douane: ' + roundPrice(p.customs_fee).toLocaleString() + ' F', 5, y); y += 5; }
+    // ✅ DOUANE SUR LE TICKET
+    if(p.customs_fee && p.is_customs) { doc.text('Douane: ' + roundPrice(p.customs_fee).toLocaleString() + ' F', 5, y); y += 5; }
     doc.setLineDashPattern([1, 1], 0);
     doc.line(5, y+2, 75, y+2);
     doc.setLineDashPattern([], 0);
@@ -1214,6 +1684,67 @@ window.downloadTicketPDF = function() {
     doc.save('Ticket_' + p.tracking_number + '.pdf');
 };
 
+// ========== COMPTABILITÉ DOUANE ==========
+window.loadDouaneAccounting = async function() {
+    await refreshCache();
+    let parcels = Cache.parcels.filter(p => p.company_id === currentUser.company_id && p.is_customs);
+    
+    if(douaneAccountingPeriod === 'today') { 
+        const today = new Date().toISOString().split('T')[0]; 
+        parcels = parcels.filter(p => p.created_at?.startsWith(today)); 
+    }
+    else if(douaneAccountingPeriod === 'week') { 
+        const week = new Date(Date.now()-7*86400000); 
+        parcels = parcels.filter(p => new Date(p.created_at) >= week); 
+    }
+    else if(douaneAccountingPeriod === 'month') { 
+        const month = new Date(); 
+        month.setDate(1); 
+        parcels = parcels.filter(p => new Date(p.created_at) >= month); 
+    }
+    
+    const totalDouane = parcels.reduce((s,p) => s + (p.customs_fee || 0), 0);
+    const totalColis = parcels.length;
+    const avgDouane = totalColis > 0 ? totalDouane / totalColis : 0;
+    
+    document.getElementById('douaneAccountingStats').innerHTML = `
+        <div class="stat-card"><div class="label"> Colis avec douane</div><div class="value">${totalColis}</div></div>
+        <div class="stat-card" style="background:linear-gradient(135deg, var(--accent) 0%, #e67e22 100%);color:white"><div class="label">💰 Total Douane collecté</div><div class="value">${roundPrice(totalDouane).toLocaleString()} F</div></div>
+        <div class="stat-card"><div class="label"> Moyenne par colis</div><div class="value">${roundPrice(avgDouane).toLocaleString()} F</div></div>
+    `;
+    
+    let table = `<table><thead><tr><th>N°</th><th>Date</th><th>Expéditeur</th><th>Destination</th><th>Frais Douane</th><th>Total Colis</th></tr></thead><tbody>`;
+    parcels.sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).forEach(p => {
+        const dest = Cache.cities.find(c => c.id === p.destination_city_id);
+        table += `<tr>
+            <td><strong>${p.tracking_number}</strong></td>
+            <td>${new Date(p.created_at).toLocaleDateString('fr-FR')}</td>
+            <td>${p.sender_name}</td>
+            <td>${dest?.name || '?'}</td>
+            <td><strong style="color:#e67e22">${roundPrice(p.customs_fee).toLocaleString()} F</strong></td>
+            <td>${roundPrice(p.total_price).toLocaleString()} F</td>
+        </tr>`;
+    });
+    table += `</tbody><tfoot><tr class="total-row">
+        <td colspan="4">TOTAL DOUANE (${parcels.length} colis)</td>
+        <td colspan="2">${roundPrice(totalDouane).toLocaleString()} FCFA</td>
+    </tr></tfoot></table>`;
+    
+    document.getElementById('douaneAccountingTable').innerHTML = parcels.length ? table : '<p style="text-align:center;padding:40px;color:var(--gray)">Aucun colis avec douane</p>';
+};
+
+window.setDouaneAccountingPeriod = function(period, btn) {
+    douaneAccountingPeriod = period;
+    document.querySelectorAll('#sec-douaneAccounting .period-btn').forEach(b => {
+        b.classList.remove('btn-primary', 'active');
+        b.classList.add('btn-outline');
+    });
+    btn.classList.remove('btn-outline');
+    btn.classList.add('btn-primary', 'active');
+    loadDouaneAccounting();
+};
+
+// ========== AUTRES FONCTIONS ==========
 window.loadParcelsList = async function() {
     await refreshCache();
     const container = document.getElementById('parcelsListContainer');
@@ -1225,7 +1756,7 @@ window.loadParcelsList = async function() {
     if(currentFilter==='today') { const today=new Date().toISOString().split('T')[0]; parcels=parcels.filter(p=>p.created_at?.startsWith(today)); }
     else if(currentFilter==='week') { const week=new Date(Date.now()-7*86400000); parcels=parcels.filter(p=>new Date(p.created_at)>=week); }
     parcels.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
-    if(!parcels.length) { container.innerHTML='<div class="empty-state"><div style="font-size:48px">📦</div><p>Aucun colis</p></div>'; return; }
+    if(!parcels.length) { container.innerHTML='<div class="empty-state"><div style="font-size:48px"></div><p>Aucun colis</p></div>'; return; }
     container.innerHTML = parcels.map(p=>{
         const dest = Cache.cities.find(c=>c.id===p.destination_city_id);
         return `<div class="user-card" onclick="showParcelActions('${p.id}')"><div class="user-info-block"><div style="font-weight:700">${p.tracking_number} ${p.confirmed_by_recipient?'<span style="background:#27ae60;color:white;padding:2px 6px;border-radius:8px;font-size:10px">OK</span>':''}</div><div style="font-size:12px;color:var(--gray);margin-top:4px">${p.sender_name} -> ${p.recipient_name}</div><div style="font-size:12px;color:var(--gray);margin-top:2px">${dest?.name||'?'} - ${p.weight_kg}kg - ${p.status}</div></div><div style="text-align:right"><div style="font-weight:700;color:var(--primary)">${roundPrice(p.total_price).toLocaleString()} F</div></div></div>`;
@@ -1266,11 +1797,11 @@ window.showPhoto = function(id) {
     modal.innerHTML = `<div class="photo-viewer-content"><h3 style="margin-bottom:12px">${p.tracking_number}</h3><img src="${p.photo}"><button onclick="this.closest('.photo-viewer').remove()" class="btn btn-outline" style="margin-top:12px;width:auto">Fermer</button></div>`;
     document.body.appendChild(modal);
 };
-window.setTransactionPeriod = function(p,btn) { transactionPeriod=p; document.querySelectorAll('.period-btn').forEach(b=>{b.classList.remove('btn-primary','active');b.classList.add('btn-outline')}); btn.classList.remove('btn-outline'); btn.classList.add('btn-primary','active'); loadTransactions(); };
+window.setTransactionPeriod = function(p,btn) { transactionPeriod=p; document.querySelectorAll('#sec-transactions .period-btn').forEach(b=>{b.classList.remove('btn-primary','active');b.classList.add('btn-outline')}); btn.classList.remove('btn-outline'); btn.classList.add('btn-primary','active'); loadTransactions(); };
 
 window.showTracking = function() {
     document.getElementById('trackInput').value = '';
-    document.getElementById('trackResult').innerHTML = '<div style="background:white;padding:30px;border-radius:12px;text-align:center"><div style="font-size:64px">🔍</div><h3>Suivre un colis</h3><p style="color:var(--gray);margin:12px 0">Entrez le numéro</p><div style="display:flex;gap:10px;max-width:500px;margin:0 auto"><input type="text" id="trackInputMain" placeholder="Ex: HMiG-2026-000001" style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px"><button class="btn btn-primary" onclick="trackSpecificParcel()" style="width:auto">Rechercher</button></div></div>';
+    document.getElementById('trackResult').innerHTML = '<div style="background:white;padding:30px;border-radius:12px;text-align:center"><div style="font-size:64px"></div><h3>Suivre un colis</h3><p style="color:var(--gray);margin:12px 0">Entrez le numéro</p><div style="display:flex;gap:10px;max-width:500px;margin:0 auto"><input type="text" id="trackInputMain" placeholder="Ex: HMiG-2026-000001" style="flex:1;padding:14px;border:2px solid #e0e0e0;border-radius:10px"><button class="btn btn-primary" onclick="trackSpecificParcel()" style="width:auto">Rechercher</button></div></div>';
 };
 window.trackSpecificParcel = async function() {
     const num = document.getElementById('trackInputMain').value.trim();
@@ -1285,7 +1816,7 @@ window.trackSpecificParcel = async function() {
     let html = `<div style="background:white;padding:20px;border-radius:12px;margin-top:16px"><h3>${p.tracking_number}</h3><p><strong>Trajet:</strong> ${origin?.name||'?'} -> ${dest?.name||'?'}</p><p><strong>Statut:</strong> ${p.status}</p>`;
     if(p.trajet) {
         html += '<div class="trajet-timeline" style="margin-top:20px"><h4>Historique</h4>';
-        const icons = {created:'📝',paid:'💰',loaded:'🚌',in_transit:'',arrived:'📍',delivered:'✅'};
+        const icons = {created:'📝',paid:'',loaded:'🚌',in_transit:'🚚',arrived:'📍',delivered:'✅'};
         p.trajet.forEach((step,i)=>{ html += `<div class="trajet-step ${i===p.trajet.length-1?'current':'done'}"><div class="trajet-icon">${icons[step.status]||''}</div><div class="trajet-content"><div class="trajet-title">${step.label}</div><div class="trajet-subtitle">${step.location}</div><div class="trajet-date">${new Date(step.date).toLocaleString('fr-FR')}</div></div></div>`; });
         html += '</div>';
     }
