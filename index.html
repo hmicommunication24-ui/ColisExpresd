@@ -591,9 +591,8 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
                 <button class="btn btn-primary btn-lg" onclick="showSection('newParcel')">📦 Nouvel Envoi</button>
                 <button class="btn btn-success btn-lg" onclick="showSection('bordereaux')">🚌 Bordereaux</button>
-                <button class="btn btn-warning btn-lg" onclick="showSection('douane')">🛃 Douane</button>
-                <button class="btn btn-info btn-lg" onclick="showSection('douaneAccounting')">💰 Compta. Douane</button>
-                <button class="btn btn-outline btn-lg" onclick="showSection('transactions')">💳 Transactions</button>
+                <button class="btn btn-warning btn-lg" onclick="showSection('douane')"> Douane</button>
+                <button class="btn btn-info btn-lg" onclick="showSection('transactions')">💳 Transactions</button>
                 <button class="btn btn-outline btn-lg" onclick="showSection('tracking')">🔍 Suivi</button>
             </div>
         </div>
@@ -610,11 +609,11 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
             <div class="form-group"><label>📸 Photo *</label><div class="photo-zone" onclick="document.getElementById('parcelPhoto').click()"><div class="icon"></div><p id="photoLabel">Cliquez pour photo</p><input type="file" id="parcelPhoto" accept="image/*" capture="environment" style="display:none" onchange="previewParcelPhoto(this)"><img id="photoPreview" class="photo-preview hidden"></div></div>
             <div class="form-group"><label>Poids (kg) *</label><input type="number" id="weightKg" step="0.1" oninput="calcPrice()"></div>
             <div class="form-group"><label>Valeur (FCFA) *</label><input type="number" id="declaredValue" value="0" oninput="calcPrice()"></div>
-            <div class="form-group"><label><input type="checkbox" id="isInsured" onchange="calcPrice()"> ️ Assurance</label></div>
+            <div class="form-group"><label><input type="checkbox" id="isInsured" onchange="calcPrice()"> 🛡️ Assurance</label></div>
             <div class="form-group"><label><input type="checkbox" id="isCustoms" onchange="calcPrice()"> 🛃 Douane</label></div>
             <div id="priceSummary" class="simulator-box"><p style="text-align:center;color:var(--gray)">Entrez poids et valeur</p></div>
             <div class="form-group" style="margin-top:14px;"><label>Paiement</label><div style="display:flex;gap:10px;"><label style="flex:1;padding:13px;border:2px solid #e0e0e0;border-radius:10px;text-align:center;"><input type="radio" name="payment" value="cash" checked> 💵 Espèces</label><label style="flex:1;padding:13px;border:2px solid #e0e0e0;border-radius:10px;text-align:center;"><input type="radio" name="payment" value="mobile"> 📱 Mobile</label></div></div>
-            <button class="btn btn-success" onclick="submitParcel()">✅ Valider</button>
+            <button class="btn btn-success" onclick="submitParcel()" style="margin-top:10px;">✅ Valider l'envoi</button>
         </div>
 
         <div class="section" id="sec-parcelsList">
@@ -625,8 +624,8 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
         </div>
 
         <div class="section" id="sec-bordereaux">
-            <h3 class="section-title">🚌 Bordereaux</h3>
-            <button class="btn btn-primary" onclick="showSection('createBordereau')" style="margin-bottom:14px;"> Créer</button>
+            <h3 class="section-title"> Bordereaux</h3>
+            <button class="btn btn-primary" onclick="showSection('createBordereau')" style="margin-bottom:14px;">➕ Créer</button>
             <div id="bordereauxList"></div>
         </div>
 
@@ -644,21 +643,14 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
         </div>
 
         <div class="section" id="sec-douane">
-            <h3 class="section-title">🛃 Douane</h3>
-            <div style="display:flex;gap:8px;margin-bottom:14px;"><button class="btn btn-sm btn-primary" onclick="setDouanePeriod('today')">Aujourd'hui</button><button class="btn btn-sm btn-outline" onclick="setDouanePeriod('week')">Semaine</button><button class="btn btn-sm btn-outline" onclick="setDouanePeriod('month')">Mois</button></div>
+            <h3 class="section-title">🛃 Douane & Comptabilité</h3>
+            <div style="display:flex;gap:8px;margin-bottom:14px;">
+                <button class="btn btn-sm btn-primary period-btn active" onclick="setDouanePeriod('today',this)">Aujourd'hui</button>
+                <button class="btn btn-sm btn-outline period-btn" onclick="setDouanePeriod('week',this)">Semaine</button>
+                <button class="btn btn-sm btn-outline period-btn" onclick="setDouanePeriod('month',this)">Mois</button>
+            </div>
             <div class="stats-grid" id="douaneStats"></div>
             <div class="douane-table" id="douaneTable"></div>
-        </div>
-
-        <div class="section" id="sec-douaneAccounting">
-            <h3 class="section-title">💰 Comptabilité Douane</h3>
-            <div style="display:flex;gap:8px;margin-bottom:14px;">
-                <button class="btn btn-sm btn-primary period-btn active" onclick="setDouaneAccountingPeriod('today',this)">Aujourd'hui</button>
-                <button class="btn btn-sm btn-outline period-btn" onclick="setDouaneAccountingPeriod('week',this)">Semaine</button>
-                <button class="btn btn-sm btn-outline period-btn" onclick="setDouaneAccountingPeriod('month',this)">Mois</button>
-            </div>
-            <div class="stats-grid" id="douaneAccountingStats"></div>
-            <div class="transaction-table" id="douaneAccountingTable"></div>
         </div>
 
         <div class="section" id="sec-transactions">
@@ -673,7 +665,7 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
         </div>
 
         <div class="section" id="sec-reports">
-            <h3 class="section-title">📊 Rapports</h3>
+            <h3 class="section-title"> Rapports</h3>
             <div style="display:flex;gap:8px;margin-bottom:14px;"><button class="btn btn-sm btn-primary" onclick="generateReport('daily')">Journalier</button><button class="btn btn-sm btn-outline" onclick="generateReport('weekly')">Hebdo</button><button class="btn btn-sm btn-outline" onclick="generateReport('monthly')">Mensuel</button></div>
             <div id="reportContent"></div>
         </div>
@@ -699,7 +691,7 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
                 <button class="btn btn-success btn-sm" onclick="saveWeightTiers()" style="margin-top:8px;">💾 Enregistrer</button>
             </div>
             <div class="settings-card">
-                <h3>🛣️ Prix par Distance</h3>
+                <h3>️ Prix par Distance</h3>
                 <div id="distanceTiersList"></div>
                 <button class="btn btn-outline btn-sm" onclick="addDistanceTierRow()">+ Ajouter une tranche</button>
                 <button class="btn btn-success btn-sm" onclick="saveDistanceTiers()" style="margin-top:8px;">💾 Enregistrer</button>
@@ -707,7 +699,7 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
             <div class="settings-card">
                 <h3>💰 Frais & Pourcentages</h3>
                 <div id="feeSettingsList"></div>
-                <button class="btn btn-success btn-sm" onclick="saveFeeSettings()"> Enregistrer</button>
+                <button class="btn btn-success btn-sm" onclick="saveFeeSettings()">💾 Enregistrer</button>
             </div>
         </div>
 
@@ -722,7 +714,7 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
     <div class="bottom-nav" id="bottomNav"></div>
 </div>
 
-<div class="modal" id="recuModal"><div class="modal-content"><h3 style="margin-bottom:14px;">🧾 Reçu</h3><div id="recuContent"></div><div style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;"><button class="btn btn-success" onclick="downloadRecuPDF()" style="flex:1;min-width:110px;">📄 Reçu PDF</button><button class="btn btn-info" onclick="downloadTicketPDF()" style="flex:1;min-width:110px;">🖨️ Ticket</button><button class="btn btn-outline" onclick="closeRecuModal()" style="flex:1;min-width:110px;">Fermer</button></div></div></div>
+<div class="modal" id="recuModal"><div class="modal-content"><h3 style="margin-bottom:14px;">🧾 Reçu</h3><div id="recuContent"></div><div style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;"><button class="btn btn-success" onclick="downloadRecuPDF()" style="flex:1;min-width:110px;"> Reçu PDF</button><button class="btn btn-info" onclick="downloadTicketPDF()" style="flex:1;min-width:110px;">🖨️ Ticket</button><button class="btn btn-outline" onclick="closeRecuModal()" style="flex:1;min-width:110px;">Fermer</button></div></div></div>
 <div class="modal" id="smsModal"><div class="modal-content"><h3 style="margin-bottom:14px;">📱 SMS</h3><div id="smsContent"></div><div style="display:flex;gap:8px;margin-top:18px;"><button class="btn btn-primary" onclick="simulateSendSMS()">Envoyer</button><button class="btn btn-outline" onclick="closeSmsModal()">Fermer</button></div></div></div>
 <div class="modal" id="ticketModal"><div class="modal-content"><h3 style="margin-bottom:14px;">🖨️ Ticket</h3><div id="ticketContent"></div><div style="display:flex;gap:8px;margin-top:18px;"><button class="btn btn-success" onclick="printTicket()">Imprimer</button><button class="btn btn-outline" onclick="closeTicketModal()">Fermer</button></div></div></div>
 <div class="modal" id="addCompanyModal"><div class="modal-content"><h3 style="margin-bottom:14px;">🏢 Nouvelle compagnie</h3><div class="form-group"><label>Nom</label><input id="newCompanyName"></div><div class="form-group"><label>Pays</label><input id="newCompanyCountry"></div><div class="form-group"><label>Téléphone de contact</label><input id="newCompanyPhone" placeholder="Ex: +228 70 00 00 00"></div><div class="form-group"><label>Plan</label><select id="newCompanyPlan"><option value="basic">Basic - 50 000 FCFA/mois</option><option value="pro">Pro - 100 000 FCFA/mois</option><option value="enterprise">Enterprise - 200 000 FCFA/mois</option></select></div><div style="display:flex;gap:8px;margin-top:18px;"><button class="btn btn-outline" onclick="closeAddCompanyModal()">Annuler</button><button class="btn btn-primary" onclick="saveCompany()">Enregistrer</button></div></div></div>
@@ -730,7 +722,7 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore, collection, getDocs, addDoc, doc, setDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -754,12 +746,31 @@ let currentParcelPhoto = null;
 let currentRecuParcel = null;
 let currentFilter = 'all';
 let transactionPeriod = 'today';
-let douaneAccountingPeriod = 'today';
+let douanePeriod = 'today';
 
 const roundPrice = v => Math.ceil(v / 100) * 100;
 const genCode = () => { let c=''; for(let i=0;i<6;i++) c+='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random()*34)]; return c; };
 const getPlanLabel = p => p === 'basic' ? 'Basic (50 000 F/mois)' : p === 'pro' ? 'Pro (100 000 F/mois)' : 'Enterprise (200 000 F/mois)';
 const getPlanClass = p => p === 'basic' ? 'plan-basic' : p === 'pro' ? 'plan-pro' : 'plan-enterprise';
+
+// Persistance de session
+window.addEventListener('load', () => {
+    const savedSession = localStorage.getItem('hmi_session');
+    if(savedSession) {
+        const session = JSON.parse(savedSession);
+        if(session.currentUser) {
+            currentUser = session.currentUser;
+            showApp();
+            if(currentUser.isSuperAdmin) loadSuperDashboard(); else loadDashboard();
+        }
+    }
+});
+
+function saveSession() {
+    if(currentUser) {
+        localStorage.setItem('hmi_session', JSON.stringify({ currentUser }));
+    }
+}
 
 async function refreshCache() {
     const cols = ['companies','users','parcels','bordereaux','cities','agencies','routes','weight_tiers','distance_tiers','fee_settings'];
@@ -776,7 +787,7 @@ async function loadCompaniesInDropdown() {
     select.innerHTML += '<option value="super">👑 SUPER ADMIN</option>';
     Cache.companies.forEach(c => {
         if(c.status === 'active') {
-            select.innerHTML += `<option value="${c.id}">🏢 ${c.name} (${c.country})</option>`;
+            select.innerHTML += `<option value="${c.id}"> ${c.name} (${c.country})</option>`;
         }
     });
 }
@@ -810,6 +821,7 @@ window.login = async function() {
         
         currentUser = {...user, isSuperAdmin: companyId==='super'};
         currentUser.company_name = companyId==='super' ? 'HMi-Gest-Co Platform' : (Cache.companies.find(c=>c.id===companyId)?.name || 'Inconnu');
+        saveSession();
         showApp();
         if(currentUser.isSuperAdmin) loadSuperDashboard(); else loadDashboard();
         
@@ -827,6 +839,7 @@ window.login = async function() {
                 }
                 currentUser = {...user, isSuperAdmin: companyId==='super'};
                 currentUser.company_name = companyId==='super' ? 'HMi-Gest-Co Platform' : (Cache.companies.find(c=>c.id===companyId)?.name || 'Inconnu');
+                saveSession();
                 showApp();
                 if(currentUser.isSuperAdmin) loadSuperDashboard(); else loadDashboard();
             } catch(e2) { 
@@ -850,12 +863,16 @@ function showApp() {
     buildNav();
 }
 
-window.logout = function() { signOut(auth); location.reload(); }
+window.logout = function() { 
+    localStorage.removeItem('hmi_session');
+    signOut(auth); 
+    location.reload(); 
+}
 
 function buildNav() {
     const nav = document.getElementById('bottomNav');
     if(currentUser.isSuperAdmin) {
-        nav.innerHTML = `<div class="bottom-nav-item active" onclick="showSection('superDashboard')"><div class="icon">👑</div>Global</div><div class="bottom-nav-item" onclick="showSection('companies')"><div class="icon">🏢</div>Compagnies</div>`;
+        nav.innerHTML = `<div class="bottom-nav-item active" onclick="showSection('superDashboard')"><div class="icon">👑</div>Global</div><div class="bottom-nav-item" onclick="showSection('companies')"><div class="icon"></div>Compagnies</div>`;
     } else {
         nav.innerHTML = `<div class="bottom-nav-item active" onclick="showSection('dashboard')"><div class="icon">🏠</div>Accueil</div><div class="bottom-nav-item" onclick="showSection('newParcel')"><div class="icon">📦</div>Envoi</div><div class="bottom-nav-item" onclick="showSection('parcelsList')"><div class="icon">📋</div>Colis</div><div class="bottom-nav-item" onclick="showSection('transactions')"><div class="icon">💰</div>Finance</div><div class="bottom-nav-item" onclick="showSection('settings')"><div class="icon">⚙️</div>Param.</div>`;
     }
@@ -863,7 +880,17 @@ function buildNav() {
 
 window.showSection = function(name) {
     document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.bottom-nav-item').forEach(i=>i.classList.remove('active'));
     document.getElementById('sec-'+name)?.classList.add('active');
+    
+    // Mettre à jour l'item actif dans la nav
+    const navItems = document.querySelectorAll('.bottom-nav-item');
+    if(name === 'dashboard') navItems[0]?.classList.add('active');
+    else if(name === 'newParcel') navItems[1]?.classList.add('active');
+    else if(name === 'parcelsList') navItems[2]?.classList.add('active');
+    else if(name === 'transactions') navItems[3]?.classList.add('active');
+    else if(name === 'settings') navItems[4]?.classList.add('active');
+    
     if(name==='dashboard') loadDashboard();
     if(name==='superDashboard') loadSuperDashboard();
     if(name==='companies') loadCompaniesManagement();
@@ -872,7 +899,6 @@ window.showSection = function(name) {
     if(name==='bordereaux') loadBordereaux();
     if(name==='createBordereau') initCreateBordereau();
     if(name==='douane') loadDouane();
-    if(name==='douaneAccounting') loadDouaneAccounting();
     if(name==='transactions') loadTransactions();
     if(name==='reports') generateReport('daily');
     if(name==='users') loadUsers();
@@ -894,8 +920,8 @@ async function loadSuperDashboard() {
     
     document.getElementById('superStats').innerHTML = `
         <div class="stat-card"><div class="label">🏢 Compagnies actives</div><div class="value">${Cache.companies.filter(c=>c.status==='active').length}/${Cache.companies.length}</div></div>
-        <div class="stat-card"><div class="label">📦 Total Colis</div><div class="value">${allParcels.length}</div><div class="sub">Auj: ${todayP.length}</div></div>
-        <div class="stat-card" style="background:linear-gradient(135deg, var(--accent) 0%, #f1c40f 100%);color:var(--primary)"><div class="label">💰 CA Global (colis)</div><div class="value">${roundPrice(totalRevenue).toLocaleString()} F</div></div>
+        <div class="stat-card"><div class="label"> Total Colis</div><div class="value">${allParcels.length}</div><div class="sub">Auj: ${todayP.length}</div></div>
+        <div class="stat-card" style="background:linear-gradient(135deg, var(--accent) 0%, #f1c40f 100%);color:var(--primary)"><div class="label"> CA Global (colis)</div><div class="value">${roundPrice(totalRevenue).toLocaleString()} F</div></div>
         <div class="stat-card" style="background:linear-gradient(135deg, var(--success) 0%, #229954 100%);color:white"><div class="label">💵 CA Forfaits/mois</div><div class="value">${totalPlanRevenue.toLocaleString()} F</div></div>
     `;
 
@@ -1061,15 +1087,15 @@ async function loadSettings() {
     });
     document.getElementById('distanceTiersList').innerHTML = distanceHTML || '<p style="color:var(--gray);margin-bottom:10px;">Aucune tranche configurée</p>';
     
-    const fees = companyFeeSettings || { value_percent: 1, customs_flat: 1500, insurance_percent: 0.5 };
+    const fees = companyFeeSettings || { value_percent: 1, customs_percent: 2, insurance_percent: 0.5 };
     document.getElementById('feeSettingsList').innerHTML = `
         <div class="form-group">
             <label>Frais de gestion (% de la valeur du colis)</label>
             <input type="number" id="feeValuePercent" value="${fees.value_percent}" step="0.1">
         </div>
         <div class="form-group">
-            <label>Frais de douane fixe (FCFA)</label>
-            <input type="number" id="feeCustomsFlat" value="${fees.customs_flat}">
+            <label>Frais de douane (% de la valeur)</label>
+            <input type="number" id="feeCustomsPercent" value="${fees.customs_percent}" step="0.1">
         </div>
         <div class="form-group">
             <label>Assurance (% de la valeur)</label>
@@ -1217,8 +1243,7 @@ window.saveFeeSettings = async function() {
     const feeData = {
         company_id: companyId,
         value_percent: parseFloat(document.getElementById('feeValuePercent').value) || 0,
-        customs_flat: parseFloat(document.getElementById('feeCustomsFlat').value) || 0,
-        customs_percent: 2,
+        customs_percent: parseFloat(document.getElementById('feeCustomsPercent').value) || 0,
         insurance_percent: parseFloat(document.getElementById('feeInsurancePercent').value) || 0
     };
     
@@ -1257,19 +1282,19 @@ window.calcPrice = function() {
     const pricePerKm = distanceTier?.price_per_km || 0;
     const dPrice = roundPrice(dist * pricePerKm);
     
-    const fees = Cache.fee_settings.find(f=>f.company_id===currentUser.company_id)||{value_percent:0,customs_flat:0,insurance_percent:0};
+    const fees = Cache.fee_settings.find(f=>f.company_id===currentUser.company_id)||{value_percent:0,customs_percent:0,insurance_percent:0};
     const hFee = roundPrice(value*(fees.value_percent/100));
     const iFee = document.getElementById('isInsured').checked ? roundPrice(value*(fees.insurance_percent/100)) : 0;
-    const cFee = document.getElementById('isCustoms').checked ? roundPrice(fees.customs_flat) : 0;
+    const cFee = document.getElementById('isCustoms').checked ? roundPrice(value*(fees.customs_percent/100)) : 0;
     
     const total = wPrice + dPrice + hFee + iFee + cFee;
     
     document.getElementById('priceSummary').innerHTML = `
-        <div style="display:flex;justify-content:space-between;padding:6px"><span>📦 Poids</span><span>${wPrice.toLocaleString()} F</span></div>
-        <div style="display:flex;justify-content:space-between;padding:6px"><span>️ Distance (${dist}km × ${pricePerKm}F/km)</span><span>${dPrice.toLocaleString()} F</span></div>
+        <div style="display:flex;justify-content:space-between;padding:6px"><span> Poids</span><span>${wPrice.toLocaleString()} F</span></div>
+        <div style="display:flex;justify-content:space-between;padding:6px"><span>🛣️ Distance (${dist}km × ${pricePerKm}F/km)</span><span>${dPrice.toLocaleString()} F</span></div>
         ${hFee ? `<div style="display:flex;justify-content:space-between;padding:6px;color:#f39c12"><span>🔹 Gestion</span><span>${hFee.toLocaleString()} F</span></div>` : ''}
         ${iFee ? `<div style="display:flex;justify-content:space-between;padding:6px"><span>🛡️ Assurance</span><span>${iFee.toLocaleString()} F</span></div>` : ''}
-        ${cFee ? `<div style="display:flex;justify-content:space-between;padding:6px;color:#e67e22"><span>🛃 Douane</span><span>${cFee.toLocaleString()} F</span></div>` : ''}
+        ${cFee ? `<div style="display:flex;justify-content:space-between;padding:6px;color:#e67e22"><span>🛃 Douane (${fees.customs_percent}%)</span><span>${cFee.toLocaleString()} F</span></div>` : ''}
         <div style="display:flex;justify-content:space-between;padding:10px;border-top:2px solid var(--primary);margin-top:8px;font-weight:700;font-size:18px;color:var(--primary)">
             <span>TOTAL</span><span>${total.toLocaleString()} FCFA</span>
         </div>
@@ -1330,7 +1355,7 @@ window.submitParcel = async function() {
     if(!desc) { alert('Description requise'); return; }
     if(!weight||weight<=0) { alert('Poids valide'); return; }
     if(!cityId) { alert('Ville requise'); return; }
-    if(!currentParcelPhoto) { alert('📸 Photo obligatoire!'); return; }
+    if(!currentParcelPhoto) { alert(' Photo obligatoire!'); return; }
     
     const count = Cache.parcels.filter(p=>p.company_id===currentUser.company_id).length;
     const tracking = `HMiG-${new Date().getFullYear()}-${String(count+1).padStart(6,'0')}`;
@@ -1345,10 +1370,10 @@ window.submitParcel = async function() {
     const pricePerKm = distanceTier?.price_per_km || 0;
     const dPrice = roundPrice(dist * pricePerKm);
     
-    const fees = Cache.fee_settings.find(f=>f.company_id===currentUser.company_id)||{value_percent:0,customs_flat:0,insurance_percent:0};
+    const fees = Cache.fee_settings.find(f=>f.company_id===currentUser.company_id)||{value_percent:0,customs_percent:0,insurance_percent:0};
     const hFee = roundPrice(value*(fees.value_percent/100));
     const iFee = document.getElementById('isInsured').checked ? roundPrice(value*(fees.insurance_percent/100)) : 0;
-    const cFee = document.getElementById('isCustoms').checked ? roundPrice(fees.customs_flat) : 0;
+    const cFee = document.getElementById('isCustoms').checked ? roundPrice(value*(fees.customs_percent/100)) : 0;
     const total = wPrice + dPrice + hFee + iFee + cFee;
     
     const origin = Cache.cities.find(c=>{const a=Cache.agencies.find(x=>x.company_id===currentUser.company_id);return a&&c.id===a.city_id;});
@@ -1629,19 +1654,19 @@ window.downloadTicketPDF = function() {
     doc.save('Ticket_' + p.tracking_number + '.pdf');
 };
 
-window.loadDouaneAccounting = async function() {
+window.loadDouane = async function() {
     await refreshCache();
     let parcels = Cache.parcels.filter(p => p.company_id === currentUser.company_id && p.is_customs);
     
-    if(douaneAccountingPeriod === 'today') { 
+    if(douanePeriod === 'today') { 
         const today = new Date().toISOString().split('T')[0]; 
         parcels = parcels.filter(p => p.created_at?.startsWith(today)); 
     }
-    else if(douaneAccountingPeriod === 'week') { 
+    else if(douanePeriod === 'week') { 
         const week = new Date(Date.now()-7*86400000); 
         parcels = parcels.filter(p => new Date(p.created_at) >= week); 
     }
-    else if(douaneAccountingPeriod === 'month') { 
+    else if(douanePeriod === 'month') { 
         const month = new Date(); 
         month.setDate(1); 
         parcels = parcels.filter(p => new Date(p.created_at) >= month); 
@@ -1650,14 +1675,16 @@ window.loadDouaneAccounting = async function() {
     const totalDouane = parcels.reduce((s,p) => s + (p.customs_fee || 0), 0);
     const totalColis = parcels.length;
     const avgDouane = totalColis > 0 ? totalDouane / totalColis : 0;
+    const totalGeneral = parcels.reduce((s,p) => s + (p.total_price || 0), 0);
     
-    document.getElementById('douaneAccountingStats').innerHTML = `
+    document.getElementById('douaneStats').innerHTML = `
         <div class="stat-card"><div class="label">📦 Colis avec douane</div><div class="value">${totalColis}</div></div>
-        <div class="stat-card" style="background:linear-gradient(135deg, var(--accent) 0%, #e67e22 100%);color:white"><div class="label">💰 Total Douane collecté</div><div class="value">${roundPrice(totalDouane).toLocaleString()} F</div></div>
-        <div class="stat-card"><div class="label"> Moyenne par colis</div><div class="value">${roundPrice(avgDouane).toLocaleString()} F</div></div>
+        <div class="stat-card" style="background:linear-gradient(135deg, var(--accent) 0%, #e67e22 100%);color:white"><div class="label"> Total Douane collecté</div><div class="value">${roundPrice(totalDouane).toLocaleString()} F</div></div>
+        <div class="stat-card"><div class="label">📊 Moyenne par colis</div><div class="value">${roundPrice(avgDouane).toLocaleString()} F</div></div>
+        <div class="stat-card" style="background:linear-gradient(135deg, var(--success) 0%, #229954 100%);color:white"><div class="label">💵 Total général</div><div class="value">${roundPrice(totalGeneral).toLocaleString()} F</div></div>
     `;
     
-    let table = `<table><thead><tr><th>N°</th><th>Date</th><th>Expéditeur</th><th>Destination</th><th>Frais Douane</th><th>Total Colis</th></tr></thead><tbody>`;
+    let table = `<table><thead><tr><th>N°</th><th>Date</th><th>Expéditeur</th><th>Destination</th><th>Valeur</th><th>Frais Douane</th><th>Total Colis</th></tr></thead><tbody>`;
     parcels.sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).forEach(p => {
         const dest = Cache.cities.find(c => c.id === p.destination_city_id);
         table += `<tr>
@@ -1665,71 +1692,78 @@ window.loadDouaneAccounting = async function() {
             <td>${new Date(p.created_at).toLocaleDateString('fr-FR')}</td>
             <td>${p.sender_name}</td>
             <td>${dest?.name || '?'}</td>
+            <td>${roundPrice(p.declared_value).toLocaleString()} F</td>
             <td><strong style="color:#e67e22">${roundPrice(p.customs_fee).toLocaleString()} F</strong></td>
             <td>${roundPrice(p.total_price).toLocaleString()} F</td>
         </tr>`;
     });
     table += `</tbody><tfoot><tr class="total-row">
-        <td colspan="4">TOTAL DOUANE (${parcels.length} colis)</td>
+        <td colspan="5">TOTAL DOUANE (${parcels.length} colis)</td>
         <td colspan="2">${roundPrice(totalDouane).toLocaleString()} FCFA</td>
     </tr></tfoot></table>`;
     
-    document.getElementById('douaneAccountingTable').innerHTML = parcels.length ? table : '<p style="text-align:center;padding:40px;color:var(--gray)">Aucun colis avec douane</p>';
+    document.getElementById('douaneTable').innerHTML = parcels.length ? table : '<p style="text-align:center;padding:40px;color:var(--gray)">Aucun colis avec douane</p>';
 };
 
-window.setDouaneAccountingPeriod = function(period, btn) {
-    douaneAccountingPeriod = period;
-    document.querySelectorAll('#sec-douaneAccounting .period-btn').forEach(b => {
+window.setDouanePeriod = function(period, btn) {
+    douanePeriod = period;
+    document.querySelectorAll('#sec-douane .period-btn').forEach(b => {
         b.classList.remove('btn-primary', 'active');
         b.classList.add('btn-outline');
     });
     btn.classList.remove('btn-outline');
     btn.classList.add('btn-primary', 'active');
-    loadDouaneAccounting();
-};
-
-window.loadParcelsList = async function() {
-    await refreshCache();
-    const container = document.getElementById('parcelsListContainer');
-    let parcels = Cache.parcels.filter(p=>p.company_id===currentUser.company_id);
-    const search = document.getElementById('searchParcels').value.toLowerCase();
-    if(search) parcels = parcels.filter(p=>p.tracking_number.toLowerCase().includes(search)||p.sender_name.toLowerCase().includes(search));
-    const status = document.getElementById('filterStatus').value;
-    if(status) parcels = parcels.filter(p=>p.status===status);
-    if(currentFilter==='today') { const today=new Date().toISOString().split('T')[0]; parcels=parcels.filter(p=>p.created_at?.startsWith(today)); }
-    else if(currentFilter==='week') { const week=new Date(Date.now()-7*86400000); parcels=parcels.filter(p=>new Date(p.created_at)>=week); }
-    parcels.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
-    if(!parcels.length) { container.innerHTML='<div class="empty-state"><div style="font-size:48px">📦</div><p>Aucun colis</p></div>'; return; }
-    container.innerHTML = parcels.map(p=>{
-        const dest = Cache.cities.find(c=>c.id===p.destination_city_id);
-        return `<div class="user-card" onclick="showParcelActions('${p.id}')"><div class="user-info-block"><div style="font-weight:700">${p.tracking_number} ${p.confirmed_by_recipient?'<span style="background:#27ae60;color:white;padding:2px 6px;border-radius:8px;font-size:10px">OK</span>':''}</div><div style="font-size:12px;color:var(--gray);margin-top:4px">${p.sender_name} -> ${p.recipient_name}</div><div style="font-size:12px;color:var(--gray);margin-top:2px">${dest?.name||'?'} - ${p.weight_kg}kg - ${p.status}</div></div><div style="text-align:right"><div style="font-weight:700;color:var(--primary)">${roundPrice(p.total_price).toLocaleString()} F</div></div></div>`;
-    }).join('');
-};
-window.setFilter = function(f) { currentFilter=f; document.querySelectorAll('.filter-tag').forEach(t=>t.classList.remove('active')); event.target.classList.add('active'); loadParcelsList(); };
-window.showParcelActions = function(id) {
-    const p = Cache.parcels.find(x=>x.id===id);
-    if(!p) return;
-    currentRecuParcel = p;
-    showRecuModalTemp(p);
+    loadDouane();
 };
 
 window.loadTransactions = async function() {
     await refreshCache();
     let parcels = Cache.parcels.filter(p=>p.company_id===currentUser.company_id);
-    if(transactionPeriod==='today') { const today=new Date().toISOString().split('T')[0]; parcels=parcels.filter(p=>p.created_at?.startsWith(today)); }
-    else if(transactionPeriod==='week') { const week=new Date(Date.now()-7*86400000); parcels=parcels.filter(p=>new Date(p.created_at)>=week); }
-    else if(transactionPeriod==='month') { const month=new Date();month.setDate(1); parcels=parcels.filter(p=>new Date(p.created_at)>=month); }
+    
+    if(transactionPeriod==='today') { 
+        const today=new Date().toISOString().split('T')[0]; 
+        parcels=parcels.filter(p=>p.created_at?.startsWith(today)); 
+    }
+    else if(transactionPeriod==='week') { 
+        const week=new Date(Date.now()-7*86400000); 
+        parcels=parcels.filter(p=>new Date(p.created_at)>=week); 
+    }
+    else if(transactionPeriod==='month') { 
+        const month=new Date();
+        month.setDate(1); 
+        parcels=parcels.filter(p=>new Date(p.created_at)>=month); 
+    }
+    
     const total = parcels.reduce((s,p)=>s+(p.total_price||0),0);
     const cash = parcels.filter(p=>p.payment_method==='cash').reduce((s,p)=>s+(p.total_price||0),0);
     const mobile = parcels.filter(p=>p.payment_method==='mobile').reduce((s,p)=>s+(p.total_price||0),0);
-    document.getElementById('transactionStats').innerHTML = `<div class="stat-card"><div class="label">Transactions</div><div class="value">${parcels.length}</div></div><div class="stat-card" style="background:var(--success);color:white"><div class="label">Total</div><div class="value">${roundPrice(total).toLocaleString()} F</div></div><div class="stat-card"><div class="label"> Espèces</div><div class="value">${roundPrice(cash).toLocaleString()} F</div></div><div class="stat-card"><div class="label">📱 Mobile</div><div class="value">${roundPrice(mobile).toLocaleString()} F</div></div>`;
+    
+    document.getElementById('transactionStats').innerHTML = `
+        <div class="stat-card"><div class="label">Transactions</div><div class="value">${parcels.length}</div></div>
+        <div class="stat-card" style="background:var(--success);color:white"><div class="label">Total</div><div class="value">${roundPrice(total).toLocaleString()} F</div></div>
+        <div class="stat-card"><div class="label">💵 Espèces</div><div class="value">${roundPrice(cash).toLocaleString()} F</div></div>
+        <div class="stat-card"><div class="label">📱 Mobile</div><div class="value">${roundPrice(mobile).toLocaleString()} F</div></div>
+    `;
+    
     let table = `<table><thead><tr><th>N°</th><th>Date</th><th>Expéditeur</th><th>Destination</th><th>Total</th><th>Paiement</th><th>Photo</th></tr></thead><tbody>`;
     parcels.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).forEach(p=>{
         const dest = Cache.cities.find(c=>c.id===p.destination_city_id);
-        table += `<tr><td><strong>${p.tracking_number}</strong></td><td>${new Date(p.created_at).toLocaleDateString('fr-FR')}</td><td>${p.sender_name}</td><td>${dest?.name||'?'}</td><td><strong>${roundPrice(p.total_price).toLocaleString()} F</strong></td><td>${p.payment_method==='cash'?'💵':'📱'}</td><td>${p.photo?'<button class="btn btn-sm btn-info" onclick="showPhoto(\''+p.id+'\')">👁️ Voir</button>':'-'}</td></tr>`;
+        table += `<tr>
+            <td><strong>${p.tracking_number}</strong></td>
+            <td>${new Date(p.created_at).toLocaleDateString('fr-FR')}</td>
+            <td>${p.sender_name}</td>
+            <td>${dest?.name||'?'}</td>
+            <td><strong>${roundPrice(p.total_price).toLocaleString()} F</strong></td>
+            <td>${p.payment_method==='cash'?'💵':''}</td>
+            <td>${p.photo?'<button class="btn btn-sm btn-info" onclick="showPhoto(\''+p.id+'\')">👁️ Voir</button>':'-'}</td>
+        </tr>`;
     });
-    table += `</tbody><tfoot><tr class="total-row"><td colspan="4">TOTAL (${parcels.length})</td><td colspan="3">${roundPrice(total).toLocaleString()} FCFA</td></tr></tfoot></table>`;
-    document.getElementById('transactionTable').innerHTML = parcels.length?table:'<p style="text-align:center;padding:40px;color:var(--gray)">Aucune transaction</p>';
+    table += `</tbody><tfoot><tr class="total-row">
+        <td colspan="4">TOTAL (${parcels.length})</td>
+        <td colspan="3">${roundPrice(total).toLocaleString()} FCFA</td>
+    </tr></tfoot></table>`;
+    
+    document.getElementById('transactionTable').innerHTML = parcels.length ? table : '<p style="text-align:center;padding:40px;color:var(--gray)">Aucune transaction</p>';
 };
 
 window.showPhoto = function(id) {
@@ -1753,13 +1787,13 @@ window.trackSpecificParcel = async function() {
     await refreshCache();
     const p = Cache.parcels.find(x=>x.tracking_number===num);
     const el = document.getElementById('trackResult');
-    if(!p) { el.innerHTML='<p style="color:#e74c3c;text-align:center">❌ Non trouvé</p>'; return; }
+    if(!p) { el.innerHTML='<p style="color:#e74c3c;text-align:center"> Non trouvé</p>'; return; }
     const origin = Cache.cities.find(c=>c.id===p.origin_city_id);
     const dest = Cache.cities.find(c=>c.id===p.destination_city_id);
-    let html = `<div style="background:white;padding:20px;border-radius:12px;margin-top:16px"><h3>📦 ${p.tracking_number}</h3><p><strong>Trajet:</strong> ${origin?.name||'?'} -> ${dest?.name||'?'}</p><p><strong>Statut:</strong> ${p.status}</p>`;
+    let html = `<div style="background:white;padding:20px;border-radius:12px;margin-top:16px"><h3> ${p.tracking_number}</h3><p><strong>Trajet:</strong> ${origin?.name||'?'} -> ${dest?.name||'?'}</p><p><strong>Statut:</strong> ${p.status}</p>`;
     if(p.trajet) {
         html += '<div class="trajet-timeline" style="margin-top:20px"><h4>🗺️ Historique</h4>';
-        const icons = {created:'📝',paid:'💰',loaded:'🚌',in_transit:'🚚',arrived:'📍',delivered:'✅'};
+        const icons = {created:'📝',paid:'💰',loaded:'🚌',in_transit:'🚚',arrived:'',delivered:'✅'};
         p.trajet.forEach((step,i)=>{ html += `<div class="trajet-step ${i===p.trajet.length-1?'current':'done'}"><div class="trajet-icon">${icons[step.status]||'📦'}</div><div class="trajet-content"><div class="trajet-title">${step.label}</div><div class="trajet-subtitle">📍 ${step.location}</div><div class="trajet-date">${new Date(step.date).toLocaleString('fr-FR')}</div></div></div>`; });
         html += '</div>';
     }
@@ -1812,8 +1846,6 @@ window.initCreateBordereau = function() {
 };
 window.filterParcelsByDestination = function() {};
 window.saveBordereau = function() { alert('Fonctionnalité en cours de développement'); };
-window.loadDouane = async function() { await refreshCache(); document.getElementById('douaneStats').innerHTML = '<div class="stat-card"><div class="label">🛃 Douane</div><div class="value">0</div></div>'; document.getElementById('douaneTable').innerHTML = '<p style="text-align:center;padding:20px">Aucun</p>'; };
-window.setDouanePeriod = function() {};
 window.generateReport = function() { document.getElementById('reportContent').innerHTML = '<div class="report-card"><h4>📊 Rapport</h4><p>Fonctionnalité disponible</p></div>'; };
 window.loadUsers = async function() { await refreshCache(); document.getElementById('usersList').innerHTML = Cache.users.filter(u=>u.company_id===currentUser.company_id).map(u=>`<div class="user-card"><div class="user-info-block"><div style="font-weight:700">${u.first_name} ${u.last_name}</div><div style="font-size:12px;color:var(--gray)">${u.phone}</div></div></div>`).join(''); };
 window.showAddUserModal = function() { document.getElementById('addUserModal').classList.add('active'); };
